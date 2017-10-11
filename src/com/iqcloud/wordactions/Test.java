@@ -5,6 +5,7 @@ import org.apache.poi.xwpf.usermodel.XWPFTableRow;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTBorder;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblBorders;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STBorder;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STJc;
 
 public class Test {
 
@@ -22,7 +23,7 @@ public class Test {
 				row.setHeight(400);
 			}
 		}
-		// t.setTableWidthAndHAlign(table, "1600", STJc.CENTER);
+		t.setTableWidthAndHAlign(table, "1600", STJc.RIGHT);
 		CTTblBorders tblBorders = t.getTableBorders(table);
 		// CTBorder rBorder = tblBorders.addNewTop();
 		// rBorder.setVal(STBorder.SINGLE);
