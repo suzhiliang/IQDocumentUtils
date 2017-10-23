@@ -11,6 +11,14 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 
+/**
+ * Copyright © 2017RUIDA. All rights reserved.
+ * 
+ * @ClassName: PackingImageTest
+ * @Description: 压缩图片（不改变文件大小像素）
+ * @author: SZL
+ * @date: 2017年10月12日 上午9:20:06
+ */
 public class PackingImageTest {
 
 	public static void main(String[] args) {
