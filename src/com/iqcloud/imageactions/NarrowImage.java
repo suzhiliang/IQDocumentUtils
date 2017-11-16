@@ -36,7 +36,7 @@ public class NarrowImage {
 			int height = im.getHeight();
 
 			// 压缩计算
-			float resizeTimes = 0.3f; /* 这个参数是要转化成的倍数,如果是1就是转化成1倍 */
+			float resizeTimes = 1f; /* 这个参数是要转化成的倍数,如果是1就是转化成1倍 */
 
 			/* 调整后的图片的宽度和高度 */
 			int toWidth = (int) (width * resizeTimes);
@@ -75,9 +75,9 @@ public class NarrowImage {
 
 	public static void main(String[] args) {
 
-		String inputFoler = "E:/zlsu/testYsuo/73A9F1638C6845449E9A021DC7A9FF34.png";
+		String inputFoler = "E:/zlsu/testYsuo/12.bmp";
 		/* 这儿填写你存放要缩小图片的文件夹全地址 */
-		String outputFolder = "E:/zlsu/testYsuo/7.png";
+		String outputFolder = "E:/zlsu/testYsuo/13.bmp";
 		/* 这儿填写你转化后的图片存放的文件夹 */
 
 		NarrowImage narrowImage = new NarrowImage();

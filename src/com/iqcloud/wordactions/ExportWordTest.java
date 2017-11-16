@@ -105,7 +105,7 @@ public class ExportWordTest {
 	 */
 	public static void main(String[] args) {
 		Map<String, Object> testMap = createDatas();
-		FreeMarkerWordUtil handler = new FreeMarkerWordUtil();
+		FreeMarkerUtil handler = new FreeMarkerUtil();
 		Writer out = null;
 		try {
 			// 生成test.doc的word文件到某文件路径下

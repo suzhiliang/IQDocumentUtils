@@ -18,14 +18,14 @@ import sun.misc.BASE64Encoder;
 /**
  * Created by blinkfox on 15-11-19.
  */
-public class FreeMarkerWordUtil {
+public class FreeMarkerUtil {
 
 	private Configuration configuration = null;
 
 	/**
 	 * 构造方法
 	 */
-	public FreeMarkerWordUtil() {
+	public FreeMarkerUtil() {
 		try {
 			configuration = new Configuration();
 			configuration.setDefaultEncoding("UTF-8");
