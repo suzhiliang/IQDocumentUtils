@@ -1,0 +1,48 @@
+/*
+ * 作文题（英语）-单个
+ */
+function CCompositionEnglishItem(){
+	// 编码
+	this.fsCode = null;
+	
+	// 题号
+	this.fiTopicNum = 1;
+	
+	// 分数
+	this.ffScore = 2;
+	
+	
+	// 每题的行数（即表示：多少条直线，不包含题号）
+	this.fiEachQuestionCountRows = 0;
+	
+	// 题号x坐标
+	this.ffTopicNumX = 39;
+	
+	//每题的排序
+	
+	this.fiSort = 0;
+	
+	//每题的排序
+	
+	this.fsId = "";
+	
+	//每题的状态类型
+	this.fiAnswerType = 0;
+	
+	// 直线左右空格位置信息
+	this.ffLineX1 = 68;
+	this.ffLineX2 = 1338;
+	this.ffLineY1 = 129;	
+	this.ffLineY2 = 129;
+	//  几行
+	this.fiEachQuestionCountRows = 0;
+	
+	this.init =  function(code, sort ,score, eachQuestionCountRows, answerType, qid, id){
+		this.fsCode = code;
+		this.fiSort = sort;
+		this.fiTopicNum = qid;
+		this.ffScore = score;
+		this.fsId = id;
+		this.fiEachQuestionCountRows = eachQuestionCountRows;
+	}
+}

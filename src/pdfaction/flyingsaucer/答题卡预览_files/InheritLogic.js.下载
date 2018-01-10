@@ -1,0 +1,22 @@
+/*
+ * 继承逻辑
+ */
+
+// 设置继承关系
+function setInheritRelation(ChildClass, ParentClass){
+	var Super = function(){};
+	Super.prototype = ParentClass.prototype;
+	ChildClass.prototype = new Super();
+}
+
+// 设置继承关系
+setInheritRelation(CAnswer, CTopicModuleBasis);
+setInheritRelation(CChooseDo, CTopicModuleBasis);
+setInheritRelation(CCompositionChinese, CTopicModuleBasis);
+setInheritRelation(CCompositionEnglish, CTopicModuleBasis);
+setInheritRelation(CFillBlank, CTopicModuleBasis);
+setInheritRelation(CObjectiveTopic, CTopicModuleBasis);
+
+
+
+

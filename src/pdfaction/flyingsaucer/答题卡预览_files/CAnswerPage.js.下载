@@ -1,0 +1,731 @@
+﻿/*
+ * 页面实体   
+ */
+function CAnswerPage(){
+	// 左位置
+	this.ffLeft = 0;
+	
+	// 上位置
+	this.ffTop = 0;
+	
+	// 一页长度
+	this.ffWidth = 0;
+	
+	// 一页高度
+	this.ffHeight = 0;
+	
+	// 页码
+	this.fiPageNum = 0;
+	
+	// 页码名称
+	this.fsPageNumName = "";
+	
+	//试卷展示类型
+	this.fiTestType = 0;
+	
+	//试卷密封线
+	this.fiSealingLine = 0;
+	// 题目模块链表,存放实体：CTopicModuleBasis
+	this.foTopicModuleList = new Array();
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(pageNum, pageNumName, left, top, pageWidth, pageHeight,testType, uiInfo, sealingLine){
+		this.fiPageNum = pageNum;
+		this.fsPageNumName = pageNumName;
+		this.ffLeft = left;
+		this.ffTop = top;
+		this.ffWidth = pageWidth;
+		this.ffHeight = pageHeight;
+		this.fiTestType = testType;
+		this.fiSealingLine = sealingLine;//密封线
+		if ((null != uiInfo) && (undefined != uiInfo)){
+			// 页面容器
+//			var pageContainerUIObj = "";
+			if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+				if(this.fiTestType == 1){
+					if(this.fiPageNum%2 == 0){
+						var pageContainerUIObjHtml = this.createPageContainer();
+						pageContainerUIObj = $(pageContainerUIObjHtml);
+						if(this.fiPageNum == 0 || this.fiPageNum == 1){
+							var fiPageNum = 1; 
+							var strHtml = '<div id="fiPageNum_'+fiPageNum+'" style="width: 1000px;height: 30px;margin-top: 40px;margin-left: 783px;float: left;">第'+fiPageNum+'页</div>';
+						}else{
+							var fiPageNum = (this.fiPageNum+2)/2; 
+							
+							var strHtml = '<div id="fiPageNum_'+fiPageNum+'" style="width: 1000px;height: 30px;margin-top: 40px;margin-left: 783px;float: left;">第'+fiPageNum+'页</div>';
+						}
+						uiInfo.foPageListContainerUI.append($(pageContainerUIObj));
+						uiInfo.foPageListContainerUI.append($(strHtml));
+					}else{
+						var pageContainerUIObjHtml = this.createPageContainer();
+						pageContainerUIObj = $(pageContainerUIObjHtml);
+						if(this.fiPageNum == 0 || this.fiPageNum == 1){
+							var fiPageNum = 1; 
+							$("#fiPageNum_"+fiPageNum).remove();
+							var strHtml = '<div id="fiPageNum_'+fiPageNum+'" style="width: 1000px;height: 30px;margin-top: 40px;margin-left: 783px;float: left;">第'+fiPageNum+'页</div>';
+						}else{
+							var fiPageNum = (this.fiPageNum+1)/2;
+							$("#fiPageNum_"+fiPageNum).remove();
+							var strHtml = '<div id="fiPageNum_'+fiPageNum+'" style="width: 1000px;height: 30px;margin-top: 40px;margin-left: 783px;float: left;">第'+fiPageNum+'页</div>';
+						}
+						
+						uiInfo.foPageListContainerUI.append($(pageContainerUIObj));
+						uiInfo.foPageListContainerUI.append($(strHtml));
+					}
+				}else{
+					var pageContainerUIObjHtml = this.createPageContainer();
+					pageContainerUIObj = $(pageContainerUIObjHtml);
+					uiInfo.foPageListContainerUI.append($(pageContainerUIObj));
+					
+				}
+				
+				if(((this.fiPageNum%4 == 0 && this.fiTestType == 1) || (this.fiPageNum%2 == 0 &&  this.fiTestType == 0)) && this.fiSealingLine == 1 && this.fiPageNum != 0){//密封线
+					var preview = GetQueryString('preview');//预览
+					var download = GetQueryString('download');//下载
+					
+					var $_fiSealingLineDiv = '<div class="sealingLineSvg" id="fiSealingLineDiv' + this.fiPageNum + '"  style="position: absolute; z-index: 1; border: 1px solid rgb(187, 187, 187); background: white; top: 0px; left: -98px; height: 1169px;"></div>';
+					var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+					var style = "position: relative;";
+					var viewBox = "0 0 173 2100";
+					svg.setAttributeNS(null, "width", 86.5);
+				    svg.setAttributeNS(null, "height", 1050);
+				    svg.setAttributeNS(null, "viewBox", viewBox);
+				    svg.setAttribute('style', style);
+				    
+				    if(preview == 1 || download == 1){
+						$_fiSealingLineDiv = '<div id="fiSealingLineDiv' + this.fiPageNum + '"  style="position: absolute; z-index: 1; background: white; top: 0px; left: -150px; height: 1169px;"></div>';
+						svg.setAttributeNS(null, "width", 130);
+				    }
+				    
+				    $("#page" + this.fiPageNum).append($_fiSealingLineDiv);
+				    
+					$("#fiSealingLineDiv" + this.fiPageNum).append(svg);
+					var fiSealingLineHtml = '';
+					var fiSealingLine = '';
+					fiSealingLine +='<defs></defs>';
+					fiSealingLine +='<text x="55" y="2040" transform="matrix(0,-1,1,0,-1910,2140)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">姓名：</text>';
+					fiSealingLine +='<line x1="141" x2="141" y1="1986" y2="1671" stroke="#000000"></line>';
+					fiSealingLine +='<text x="55" y="1575" transform="matrix(0,-1,1,0,-1450,1690)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">班级：</text>';
+					fiSealingLine +='<line x1="141" x2="141" y1="1222" y2="1537" stroke="#000000"></line>';
+					
+//					fiSealingLine +='<text x="15" y="1465" transform="matrix(0,-1,1,0,-1398,1505)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">姓名</text>';
+//					fiSealingLine +='<rect x="86" y="1238" width="62" height="251" stroke="#000000" style="fill-opacity: 0;"></rect>';
+//					fiSealingLine +='<line x1="86" x2="149" y1="1301" y2="1301" stroke="#000000"></line>';
+//					fiSealingLine +='<line x1="86" x2="149" y1="1364" y2="1364" stroke="#000000"></line>';
+//					fiSealingLine +='<line x1="86" x2="149" y1="1427" y2="1427" stroke="#000000"></line>';
+					
+					fiSealingLine +='<text x="55" y="1142" transform="matrix(0,-1,1,0,-1015,1230)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">考号:</text>';
+					fiSealingLine +='<line x1="138" x2="138" y1="702.5" y2="1090" stroke="#000000" style="fill-opacity: 0;"></line>';
+					
+					fiSealingLine +='<rect x="7" y="196" width="157" height="314" stroke="#000000" rx="20" ry="20" style="fill-opacity: 0;"></rect>';
+					fiSealingLine +='<text x="0" y="367" transform="matrix(0,-1,1,0,-281.5,431.5)" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold;">贴条形码区</text>';
+					fiSealingLine +='<text x="31" y="363" transform="matrix(0,-1,1,0,-232,476)" style="font-size: 25px; font-family: 文泉驿微米黑; font-weight: bold;">（勿贴出方框）</text>';
+					
+					fiSealingLine +='<line x1="196" x2="196" y1="0" y2="23" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="55" y2="78" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="110" y2="133" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="165" y2="188" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="220" y2="244" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="275" y2="299" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="330" y2="354" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="385" y2="409" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="440" y2="464" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="496" y2="519" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="551" y2="574" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="606" y2="629" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="661" y2="685" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="716" y2="740" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="771" y2="795" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="826" y2="850" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="881" y2="905" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="937" y2="960" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="992" y2="1015" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1047" y2="1070" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1102" y2="1125" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1157" y2="1181" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1212" y2="1236" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1267" y2="1291" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1322" y2="1346" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1377" y2="1401" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1433" y2="1456" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1488" y2="1511" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1543" y2="1566" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1598" y2="1622" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1653" y2="1677" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1708" y2="1732" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1763" y2="1787" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1818" y2="1842" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1874" y2="1897" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1929" y2="1952" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="1984" y2="2007" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="196" x2="196" y1="2039" y2="2062" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<text x="182" y="153" transform="matrix(0,-1,1,0,55,338)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">答</text>';
+					fiSealingLine +='<text x="182" y="401" transform="matrix(0,-1,1,0,-193,586)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">作</text>';
+					fiSealingLine +='<text x="182" y="649" transform="matrix(0,-1,1,0,-441,834)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">勿</text>';
+					fiSealingLine +='<text x="182" y="897" transform="matrix(0,-1,1,0,-689,1082)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">请</text>';
+					fiSealingLine +='<text x="182" y="1145" transform="matrix(0,-1,1,0,-937,1330)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">内</text>';
+					fiSealingLine +='<text x="182" y="1393" transform="matrix(0,-1,1,0,-1185,1578)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">线</text>';
+					fiSealingLine +='<text x="182" y="1641" transform="matrix(0,-1,1,0,-1433,1826)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">封</text>';
+					fiSealingLine +='<text x="182" y="1889" transform="matrix(0,-1,1,0,-1681,2074)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">密</text>';
+					
+					$("#fiSealingLineDiv" + this.fiPageNum).children('svg').html(fiSealingLine);
+				}else if((((this.fiPageNum + 1)%4 == 0 && this.fiTestType == 1) || (this.fiPageNum%2 != 0 &&  this.fiTestType == 0)) && this.fiSealingLine == 1){//A3密封线
+					var preview = GetQueryString('preview');//预览
+					var download = GetQueryString('download');//下载
+					
+					var $_fiSealingLineDiv = '<div class="sealingLineSvg" id="fiSealingLineDiv' + this.fiPageNum + '"  style="position: absolute; z-index: 1; border: 1px solid rgb(187, 187, 187); background: white; top: 0px; left: -114px; height: 1169px;"></div>';
+					var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+					var style = "position: relative;";
+					var viewBox = "0 0 173 2100";
+					svg.setAttributeNS(null, "width", 110);
+				    svg.setAttributeNS(null, "height", 1050);
+				    svg.setAttributeNS(null, "viewBox", viewBox);
+				    svg.setAttribute('style', style);
+				    
+				    if(preview == 1 || download == 1){
+						$_fiSealingLineDiv = '<div class="sealingLineSvg" id="fiSealingLineDiv' + this.fiPageNum + '"  style="position: absolute;z-index: 1;background: white;top: 0px;right: -114px;height: 1169px;"></div>';
+				    }
+				    
+				    $("#page" + this.fiPageNum).append($_fiSealingLineDiv);
+				    
+					$("#fiSealingLineDiv" + this.fiPageNum).append(svg);
+					var fiSealingLineHtml = '';
+					var fiSealingLine = '';
+					fiSealingLine +='<defs></defs>';
+					fiSealingLine +='<line x1="30" x2="30" y1="0" y2="23" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="55" y2="78" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="110" y2="133" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="165" y2="188" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="220" y2="244" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="275" y2="299" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="330" y2="354" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="385" y2="409" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="440" y2="464" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="496" y2="519" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="551" y2="574" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="606" y2="629" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="661" y2="685" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="716" y2="740" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="771" y2="795" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="826" y2="850" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="881" y2="905" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="937" y2="960" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="992" y2="1015" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1047" y2="1070" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1102" y2="1125" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1157" y2="1181" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1212" y2="1236" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1267" y2="1291" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1322" y2="1346" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1377" y2="1401" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1433" y2="1456" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1488" y2="1511" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1543" y2="1566" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1598" y2="1622" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1653" y2="1677" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1708" y2="1732" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1763" y2="1787" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1818" y2="1842" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1874" y2="1897" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1929" y2="1952" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="1984" y2="2007" stroke="#000000" step="3" space="4" style=""></line>';
+					fiSealingLine +='<line x1="30" x2="30" y1="2039" y2="2062" stroke="#000000" step="3" space="4" style=""></line>';
+					
+					fiSealingLine +='<text x="20" y="153" transform="matrix(0,1,-1,0,170,110)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">密</text>';
+					fiSealingLine +='<text x="20" y="401" transform="matrix(0,1,-1,0,418,350)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">封</text>';
+					fiSealingLine +='<text x="20" y="649" transform="matrix(0,1,-1,0,665,598)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">线</text>';
+					fiSealingLine +='<text x="20" y="897" transform="matrix(0,1,-1,0,913,854)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">内</text>';
+					fiSealingLine +='<text x="20" y="1145" transform="matrix(0,1,-1,0,1161,1102)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">请</text>';
+					fiSealingLine +='<text x="20" y="1393" transform="matrix(0,1,-1,0,1409,1320)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">勿</text>';
+					fiSealingLine +='<text x="20" y="1641" transform="matrix(0,1,-1,0,1657,1560)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">作</text>';
+					fiSealingLine +='<text x="20" y="1889" transform="matrix(0,1,-1,0,1905,1790)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">答</text>';
+					
+					$("#fiSealingLineDiv" + this.fiPageNum).children('svg').html(fiSealingLine);
+				}
+				
+			
+				
+
+			}else{
+				var pageContainerUIObjHtml = this.createPageContainer();
+				pageContainerUIObj = $(pageContainerUIObjHtml);
+				uiInfo.foPageListContainerUI.append($(pageContainerUIObj));
+			}
+			
+			
+			
+			
+//				var pageContainerUIObj = this.createPageContainer();
+//			uiInfo.foPageListContainerUI.append($(pageContainerUIObj));
+			
+			 //页眉
+			
+//			$("#page0").append('<div><svg width="708.5" height="80" viewBox="0 0 1417 160"><defs></defs></svg></div>');
+			if (0 == this.fiPageNum){// 第一页，加上准考证等信息
+				if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+					if(this.fiTestType == 1){
+						$("#page0").append('<div id="herder"><svg width="708.5" height="10" viewBox="0 0 1417 160"><defs></defs></svg></div>');
+					}else{
+						$("#page0").append('<div id="herder"><svg width="708.5" height="80" viewBox="0 0 1417 160"><defs></defs></svg></div>');
+					}
+				}else{
+					$("#page0").append('<div id="herder"><svg width="708.5" height="80" viewBox="0 0 1417 160"><defs></defs></svg></div>');
+				}
+				
+				$("#page0").append('<div id ="fiTestPaperType" style="position: relative;"></div>');
+//				$("#fiTestPaperType").unbind('click').bind({
+//					click:function(){
+//						var obj = document.getElementById('fiTestPaperType');
+//						var p = GetScreenPosition(obj);
+//						alert("X:" + p.x + "Y:" + p.y);
+//					}
+//				})
+				strEdit='<div>';
+				strEdit+='<ul class="btnSetHeader btnZindex">';
+				strEdit+='<li style="position: relative; left: 660px; top: 130px;">';
+				strEdit+='<button type="button" id = "btnEidtPermission">编辑</button>';
+				strEdit+='<span>编辑</span>';
+				strEdit+='</li>';
+				strEdit+='</ul>';
+				strEdit+='<ul class="btnSetHeader btnZindex">';
+				strEdit+='<li style="position: relative; left: 660px; top: 94px;">';
+				strEdit+='<button type="button" id = "btnEidtTitle">编辑</button>';
+				strEdit+='<span>编辑</span>';
+				strEdit+='</li>';
+				strEdit+='</ul>';
+				strEdit+='</div>';
+				strEdit+='<div  id="headBigText" class="headBigText"><select class="tc_select2 "><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option></select></div><div id="headSizeText"  class="headSizeText"><select class="tc_select2 "><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option></select></div>';
+				$("#fiTestPaperType").append($(strEdit));
+			}else{
+				if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+					if(this.fiTestType == 1){
+						var headerHtmlStr = '<div><svg width="708.5" height="10" viewBox="0 0 1417 160"><defs></defs></svg></div>';
+					}else{
+						var headerHtmlStr = '<div><svg width="708.5" height="80" viewBox="0 0 1417 160"><defs></defs></svg></div>';
+					}
+				}else{
+					var headerHtmlStr = '<div><svg width="708.5" height="80" viewBox="0 0 1417 160"><defs></defs></svg></div>';
+				}
+				
+				var headerUIObj = $(headerHtmlStr);
+				pageContainerUIObj.append(headerUIObj);
+			}
+			
+			if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+				$("#headBigText").hide();
+				$("#headSizeText").hide();
+			}else{
+				$("#headBigText").show();
+				$("#headSizeText").show();
+			}
+//			var headerUIObj = $(headerHtmlStr);
+//			pageContainerUIObj.append(headerUIObj);
+			
+			
+			
+			
+			
+//			$("#page0").append('<div id ="fiTestPaperType" style="position: relative;"><div id="btnCob" class="headText"><select class="tc_select2 oqRdo"><option value="1">一</option><option value="2">二</option><option value="3">三</option><option value="4">四</option><option value="5">五</option><option value="6">六</option><option value="7">七</option><option value="8">八</option><option value="9">九</option></select><select class="tc_select2 oqRdo"><option value="1">一</option><option value="2">二</option><option value="3">三</option><option value="4">四</option><option value="5">五</option><option value="6">六</option><option value="7">七</option><option value="8">八</option><option value="9">九</option></select></div></div>');
+			
+			
+			$("#headerBigTitle").mouseover(function(){
+//				$("#headBigText").show();
+			})
+			
+			$("#headerSizeTitle").mouseover(function(){
+//				$("#headSizeText").show();
+			})
+			
+			$("#headBigText select").change(function(){
+				var fontBig =  $(this).val() + "px";
+				$("#headerBigTitle").css("font-size",fontBig);
+				var sealingLineObj = new Object();
+				sealingLineObj.answerSheetBigFont = $(this).val();
+				sealingLineObj.type = 5;
+				if($("#fiTestPaperType svg").data("id") == undefined){
+					sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+				}else{
+					sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+				}
+				answerSheetOperate.editUserInfo(sealingLineObj,0);// 1 表示不是改变字体
+			})
+			$("#headSizeText select").change(function(){
+				var fontSize =  $(this).val() + "px";
+				$("#headerSizeTitle").css("font-size",fontSize);
+				var sealingLineObj = new Object();
+				sealingLineObj.answerSheetSizeFont = $(this).val();
+				sealingLineObj.type = 6;
+				if($("#fiTestPaperType svg").data("id") == undefined){
+					sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+				}else{
+					sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+				}
+				answerSheetOperate.editUserInfo(sealingLineObj,0);// 1 表示不是改变字体
+			})
+			
+			
+			
+			
+			$("#btnEidtPermission").unbind('click').bind({
+				click:function(){
+					var id = $("#fiTestPaperType svg").data("id");
+					var data = answerSheetOperate.selectModelData(id);
+					var html = '<form id="form" class="form-horizontal"><div class="form-group row"><label class="col-sm-3 control-label">考号位数: </label><div class="col-sm-4"><input id="inputNum" type="number" min="4" max="12" class="form-control" value="'+data.fsTicketNumber+'"><span id="numtip" style="color: red;"></span></div></div><form>';
+					layer.open({
+					  	type: 1,
+					  	title: "编辑考号区",
+					  	skin: 'layui-layer-rim', //加上边框
+					  	area: ['600px', '240px'], //宽高
+					  	content: html,
+					  	btn: ["确定", "取消"]
+					  	,yes: function(index, layero){
+					  		//改
+					  		var permissionNum =  parseInt($("#inputNum").val());
+					  		if(permissionNum >= 8 && permissionNum <= 12){
+					  			var sealingLineObj = new Object();
+								sealingLineObj.ticketNumber = permissionNum;
+								sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+								sealingLineObj.type = 9;
+								answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+					  			layer.closeAll();
+					  		}else{
+					  			layer.alert('考号必须在8-12之间!', {
+								  icon: 0,
+								  skin: 'layer-ext-moon' 
+								})
+					  			return false;
+					  		}
+					  		
+					  		
+						},btn2: function(index, layero){
+						    //按钮【按钮二】的回调
+						}
+					});
+					//改
+//					if($("#pageListContainerUI").data("permissionNum") == undefined){
+//						$("#pageListContainerUI").data("permissionNum",8);
+//					}
+//					$("#inputNum").val($("#pageListContainerUI").data("permissionNum"));
+				}
+			})
+			
+			$("#btnEidtTitle").unbind('click').bind({
+				click:function(){
+					var id = $("#fiTestPaperType svg").data("id");
+					var data = answerSheetOperate.selectModelData(id);
+					editTitle(data,id);
+				}
+			})
+
+		
+//			setPermission();
+			
+			
+			
+			// 页面主体内容	
+			var listGroupUlObj = $('<ul class="list-group"></ul>');
+			pageContainerUIObj.append(listGroupUlObj);		
+			uiInfo.foNowPageListGroupUI = listGroupUlObj;
+			uiInfo.foNewNowAnswerPage = this;
+			
+			// 页脚
+			if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+				if(this.fiTestType == 1){
+					
+				}else{
+					var footerDivObj = $('<div style="position: absolute; bottom: 0px;"><svg width="748" height="80" viewBox="0 0 1500 160"></svg></div>');
+					pageContainerUIObj.append(footerDivObj);
+					
+					var svgHtmlStr =  '';
+					var svgHtmlStr1 =  '';
+					svgHtmlStr1 += '<defs></defs>';
+					svgHtmlStr1 += '<text x="665" y="68" style="font-size: 29px;">';
+					svgHtmlStr1 +=     '第' + (this.fiPageNum + 1) + '页';
+					svgHtmlStr1 += '</text>';
+				
+					footerDivObj.children('svg').append(svgHtmlStr1);
+					footerDivObj.html(footerDivObj.html());
+				}
+				
+			}else{
+				var footerDivObj = $('<div style="position: absolute; bottom: 0px;"><svg width="748" height="80" viewBox="0 0 1500 160"></svg></div>');
+				pageContainerUIObj.append(footerDivObj);
+				
+				var svgHtmlStr =  '';
+				var svgHtmlStr1 =  '';
+				svgHtmlStr1 += '<defs></defs>';
+				svgHtmlStr1 += '<text x="665" y="68" style="font-size: 29px;">';
+				svgHtmlStr1 +=     '第' + (this.fiPageNum + 1) + '页';
+				svgHtmlStr1 += '</text>';
+			
+				footerDivObj.children('svg').append(svgHtmlStr1);
+				footerDivObj.html(footerDivObj.html());
+			}
+			
+		}
+	}
+	
+	/**
+	 * 创建listGroup
+	 */
+	this.createPageContainer = function(){
+		if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+			if(this.fiTestType == 1){
+				$("#pageListContainerUI").css('width','1714px');
+				if(this.fiPageNum%2 == 0){
+					if(this.fiPageNum == 0 || this.fiPageNum == 1){
+						var pageContainerHtmlStr = '<div class="page 1111" id="page' + this.fiPageNum + '" style=" float:left;  text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"><div style="position: absolute;top: -25px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;top: -25px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div></div>';
+					}else{
+						var pageContainerHtmlStr = '<div class="page 222" id="page' + this.fiPageNum + '" style="margin-top: 50px; float:left;  text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"><div style="position: absolute;top: -25px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;top: -25px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div></div>';
+						if(GetQueryString("preview") == 1 && (this.fiPageNum + 2)%4 == 0 && this.fiSealingLine == 1){//预览A3
+							var pageContainerHtmlStr = '<div class="page 222" id="page' + this.fiPageNum + '" style="margin-top: 50px;margin-left: -90px; float:left;  text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"><div style="position: absolute;top: -25px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;top: -25px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div></div>';
+						}
+					}
+				}else{
+					if(this.fiPageNum == 0 || this.fiPageNum == 1){
+						var pageContainerHtmlStr = '<div class="page 3333" id="page' + this.fiPageNum + '" style="float:left;margin-left: 50px; text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"><div style="position: absolute;top: -25px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;top: -25px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div></div>';
+					}else{
+						var pageContainerHtmlStr = '<div class="page 3333" id="page' + this.fiPageNum + '" style="margin-top: 50px;float:left;margin-left: 50px; text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"><div style="position: absolute;top: -25px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;top: -25px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;right: -12px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div><div style="position: absolute;bottom: -24px;left: -13px;width: 25px;height: 19px;"><svg><rect x="0" y="0" width="25" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect></svg></div></div>';
+					}
+					
+					
+				}
+//				var pageContainerUIObj = new Object();
+//				pageContainerUIObj.obj = pageContainerHtmlSt;
+				var pageContainerUIObj = pageContainerHtmlStr;
+				return pageContainerUIObj;
+				
+			}else{
+				$("#pageListContainerUI").css('width','750px');
+				var pageContainerHtmlStr = '<div class="page" id="page' + this.fiPageNum + '" style="text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"></div>';
+				var pageContainerUIObj = pageContainerHtmlStr;
+				return pageContainerUIObj;
+			}
+			
+		}else{
+			$("#pageListContainerUI").css('width','750px');
+			var pageContainerHtmlStr = '<div class="page" id="page' + this.fiPageNum + '" style="text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"></div>';
+			var pageContainerUIObj = pageContainerHtmlStr;
+			return pageContainerUIObj;
+		}
+		
+		
+//		var pageContainerHtmlStr = '<div class="page" id="page' + this.fiPageNum + '" style="text-align: center; margin-bottom: 20px; width: ' + this.ffWidth + 'px; height: ' + this.ffHeight + 'px;"></div>';
+		
+	}
+	
+	/**
+	 * 通过uiInfo创建新的一页出来
+	 */
+	this.createOnePageByUIInfo = function(uiInfo){
+		uiInfo.fiNewNowPageOrd++;
+		var newAnswerPage = new CAnswerPage();
+		newAnswerPage.init(uiInfo.fiNewNowPageOrd, uiInfo.fiNewNowPageOrd + 1, 0, 0, uiInfo.foNowAnswerPage.ffWidth, uiInfo.foNowAnswerPage.ffHeight,this.fiTestType,uiInfo,this.fiSealingLine);
+		debugger
+		uiInfo.ffNowTopUI = 0;
+		if (0 == uiInfo.fiNewNowPageOrd){// 第一页，加上准考证等信息
+			if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+				if(this.fiTestType == 1){
+					if(this.fiSealingLine == 0){
+						uiInfo.ffNowModuleTopUI = 10 + 404;
+					}else{
+						uiInfo.ffNowModuleTopUI = 85 + 10;
+					}
+				}else{
+					uiInfo.ffNowModuleTopUI = 85 + 404;
+				}
+			}else{
+				if(this.fiTestType == 1){
+					if(this.fiSealingLine == 0){
+						uiInfo.ffNowModuleTopUI = 10 + 404;
+					}else{
+						uiInfo.ffNowModuleTopUI = 85 + 10;
+					}
+				}else{
+					uiInfo.ffNowModuleTopUI = 85 + 404;
+				}
+//				uiInfo.ffNowModuleTopUI = 85 + 404;
+			}
+			
+		}else{
+			if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+				if(this.fiTestType == 1){
+					uiInfo.ffNowModuleTopUI = 10;
+				}else{
+					uiInfo.ffNowModuleTopUI = 85;
+				}
+			}else{
+				uiInfo.ffNowModuleTopUI = 85;
+			}
+			
+		}
+				
+		uiInfo.faNewAnswerPageList.push(newAnswerPage);
+		
+		return newAnswerPage;
+	}
+	
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 * @param {Object} positionInfo
+	 */
+	this.layoutView =  function(uiInfo){	
+//		console.log(12112);
+//		console.log(this.foTopicModuleList);
+		
+		for(var i = 0; i < this.foTopicModuleList.length; i++){
+			var topicModule = this.foTopicModuleList[i];
+			uiInfo.ffNowTopUI = 0;
+			topicModule.layoutView(uiInfo);
+			uiInfo.foNewNowAnswerPage.foTopicModuleList.push(topicModule);
+		}
+		
+	}
+	
+	/**
+	 * 保存
+	 */
+	this.save = function(){
+		var foTopicModuleListArr = Array();
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			var topicModuleSave = this.foTopicModuleList[i].save();
+			foTopicModuleListArr.push(topicModuleSave);
+		}
+		
+		return foTopicModuleListArr;
+		
+	}
+	
+	
+	/*
+	 * 查看用每一个模块信息
+	 */
+	
+	this.selectModelData = function(data){
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data == this.foTopicModuleList[i].fsCode){
+				return  this.foTopicModuleList[i];
+			}
+		}
+	}
+	
+	
+	/*
+	 * 查看用每一个模块信息
+	 */
+	
+	this.addUploadModelData = function(data , type){
+		var uploadModelObj = new Object();
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data.code == this.foTopicModuleList[i].fsCode){
+				this.foTopicModuleList[i].addModelData(data);
+				uploadModelObj.foTopicModuleList = this.foTopicModuleList[i];
+				uploadModelObj.type = 1;
+				return uploadModelObj;
+			}
+		}
+	}
+	
+	
+	/*
+	 * 修改用每一个模块信息
+	 */
+	
+	this.editUploadModelData = function(data){
+		var uploadModelObj = new Object();
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data.fscode == this.foTopicModuleList[i].fsCode){
+				this.foTopicModuleList[i].editModelData(data);
+				uploadModelObj.foTopicModuleList = this.foTopicModuleList[i];
+				uploadModelObj.type = 1;
+				return uploadModelObj;
+			}
+		}
+	}
+	
+	
+
+	
+	/*
+	 * 删除上传图片
+	 */
+	
+	this.deleteUploadModelData = function(data){
+		var uploadModelObj = new Object();
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data.fscode == this.foTopicModuleList[i].fsCode){
+				this.foTopicModuleList[i].deleteModelData(data);
+				uploadModelObj.foTopicModuleList = this.foTopicModuleList[i];
+				uploadModelObj.type = 1;
+				return uploadModelObj;
+			}
+		}
+	}
+	
+	/*
+	 * 头部用户信息修改
+	 */
+	
+	this.editUserInfo = function(data){
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data.id == this.foTopicModuleList[i].fsCode){
+				this.foTopicModuleList[i].editUserInfo(data);
+			}
+		}
+		
+	}
+	
+	
+	
+	/*
+	 * 删除
+	 */
+	
+	this.delete = function(data){
+		for(var i = 0 ; i < this.foTopicModuleList.length ;i ++){
+			if(data.fiBigQid == this.foTopicModuleList[i].fiBigQid){
+				this.foTopicModuleList.splice(i,1);
+			}
+		}
+		
+	}
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load =  function(jsonData){
+		
+	}
+	
+	/**
+	 * 添加一个模块: 客观题、填空题、作文题-英、......
+	 */
+	this.addOneTopicModule = function(topicModule){
+		this.foTopicModuleList.push(topicModule);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

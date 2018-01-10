@@ -1,0 +1,61 @@
+/*
+ * 选做题-单个
+ */
+function CChooseDoItem(){
+	// 编码
+	this.fsCode = null;
+	
+	//  题号
+	this.fiTopicNum = 1;
+	
+	// 分数
+	this.ffScore = 2;
+	
+	// 每题的行数（即表示：多少条直线，不包含题号）
+	this.fiEachQuestionCountRows = 0;
+	
+	// 题号x坐标
+	this.ffTopicNumX = 39;
+	
+	
+	//一共有几题题目
+	this.ffQoChooseAllNum = 0;
+	
+	this.fiChooseDoNum = 1; 
+	//排序题号
+	
+	this.fiSort = 0;
+	
+	//小题id
+	this.fsId = "";
+	
+	//小题题目吧调好
+	
+	// 直线左右空格位置信息
+	this.ffLineX1 = 68;
+	this.ffLineX2 = 1338;
+	//上传图数组
+	this.faImgData = new Array();
+	/*
+	 * 初始化函数
+	 */
+	this.init =  function(code, sort, score, eachQuestionCountRows , qoChooseNum ,qoChooseAllNum ,id , qid ,num ,imgData){
+		this.fsCode = code;
+		this.fiSort = sort;
+		this.ffScore = score;
+		this.fiEachQuestionCountRows = eachQuestionCountRows;
+		this.ffQoChooseNum = qoChooseNum;
+		this.ffQoChooseAllNum = qoChooseAllNum;
+		this.fiTopicNum = qid;
+		this.fiChooseDoNum = num;
+		this.fsId = id;
+		if(imgData != undefined){
+			this.faImgData = imgData;
+		}
+//		if(imgData == null || imgData || undefined || imgData == ""){
+//			
+//		}else{
+//			
+//		}
+	}
+}

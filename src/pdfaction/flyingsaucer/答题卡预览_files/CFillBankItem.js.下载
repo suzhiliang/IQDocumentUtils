@@ -1,0 +1,91 @@
+/*
+ * 填空题-单个
+ */
+function CFillBankItem(){
+	this.fsCode = null;
+	
+	// 题号
+	this.fiTopicNum = 1;
+	
+	// 分数
+	this.ffScore = 2;
+	// 题目id
+	
+	this.fsId = "";
+	
+	this.fiQspaceNumList = new Array();
+	
+	this.fiQspaceNum = 0;
+	
+	// 小题目的类型
+	this.fiAnswerType = 1;
+	// 排序
+	this.ffSort = 0;
+	
+	// 题号文本位置信息
+	this.ffTextX = 39;
+	this.ffTextY = 141;
+	
+	// 空格位置信息
+	this.ffLineX1 = 122;
+	this.ffLineY1 = 149;
+	this.ffLineX2 = 344;
+	this.ffLineY2 = 149;
+		
+	/*
+	 * 初始化函数
+	 */
+	this.init =  function(code, sort, score, left, top, width, answerType, id, qid ,qSpaceNumList,qSpaceNum){
+		this.fsCode = code;
+		this.fsId = id;
+		this.fiTopicNum = qid;
+		this.ffSort = sort;
+		this.ffScore = score;
+		this.ffTextX = left;
+		this.ffTextY = top;
+		this.fiQspaceNumList = qSpaceNumList;
+		this.fiQspaceNum = qSpaceNum;
+		
+		var lblW = 80;
+		this.ffLineX1 = left + lblW;
+		this.ffLineY1 = top;
+		
+		this.ffLineX2 = this.ffLineX1 + (width - lblW);
+		this.ffLineY2 = top;
+	}
+	
+	
+	
+	
+	/**
+	 * 布局函数
+	 */
+	this.layoutView =  function(kouChuHeight){
+		// 处理题号
+//		var kouChuHeight = kouChuHeight - 60;
+		var sHtml = '';
+		if(this.fiQspaceNumList > 1){
+			if(this.fiQspaceNum > 1){
+				var num = "(" +this.fiQspaceNum +")" + "." 
+				sHtml += '<text x = "' + this.ffTextX + '" y = "' + (this.ffTextY - kouChuHeight) + '" style="font-size: 32px; font-family: 文泉驿微米黑;">' + num + '</text>';
+			}else{
+				var num = this.fiTopicNum +  "(" +this.fiQspaceNum +")" +"." 
+				sHtml += '<text x = "' + this.ffTextX + '" y = "' + (this.ffTextY - kouChuHeight) + '" style="font-size: 32px; font-family: 文泉驿微米黑;">' + num + '</text>';
+			}
+			
+		}else{
+			var num = this.fiTopicNum +"." 
+			sHtml += '<text x = "' + this.ffTextX + '" y = "' + (this.ffTextY - kouChuHeight) + '" style="font-size: 32px; font-family: 文泉驿微米黑;">' + num + '</text>';
+		}
+		
+		
+		// 处理空格 - 直线
+		sHtml += '<line x1="' + this.ffLineX1 + '" x2="' + this.ffLineX2 + '" y1="' + (this.ffLineY1 - kouChuHeight) + '" y2="' + (this.ffLineY2 - kouChuHeight) + '" stroke="#000000"' + '></line>';
+
+		return sHtml;
+	}
+	
+	this.changeWidth =  function(dxW){		
+		fflineX2 = fflineX2 + dxW;
+	}
+}

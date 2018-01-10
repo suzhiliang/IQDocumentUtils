@@ -1,0 +1,40 @@
+/*
+ * 题目模块基类
+ */
+function CTopicModuleBasis(){
+	// 左位置
+	this.left = 0;
+	
+	// 上位置
+	this.top = 0;
+	
+	// 长度
+	this.width = 0;
+	
+	// 高度
+	this.height = 0;
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView = function(answerSheet, uiInfo){
+		console.log("CTopicModuleBasis => layoutView");
+	}
+	
+	/**
+	 * 保存
+	 */
+	this.save = function(){
+		
+	}
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load = function(jsonData){
+		
+	}
+}

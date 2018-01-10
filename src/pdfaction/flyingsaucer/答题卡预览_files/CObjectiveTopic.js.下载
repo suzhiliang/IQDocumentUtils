@@ -1,0 +1,789 @@
+/*
+ * 客观题
+ */
+function CObjectiveTopic(){
+	// 基类方法
+	CTopicModuleBasis.call(this);
+	
+	// 大题号
+	this.fiBigQid = null;
+	
+	//题型的类型
+	this.fiType = 1;
+	
+	//客观题里面小题类型
+	this.objectiveTopic = 1;
+	
+	// 大标题
+	this.fsBigTitle = null;
+	
+	// 模块长度，这里面有些值暂时写死，回头要修改
+	this.ffWidth = 708.5;
+	
+	// 分数(该模块有多少分)
+	this.ffCountScore = 50;
+	
+	//试卷显示类型A3或者A4
+	this.fitestType = 0;
+	
+	// 分数(该模块有多少分)
+	this.fiSort = 1;
+	
+	// 题目矩阵信息
+	this.faTopicMatrix = null;
+	
+	// 单个数组保存数据
+	this.faObjectiveTopicItemList = new Array();
+	
+	// 单个数组排版数据
+	this.faObjectiveTopicItemSortList = new Array();
+		
+	// 矩阵总共有多少行
+	this.fiRowCount = 0;
+	
+	// 矩阵总共有多少列
+	this.fiColCount = 0;
+	
+	// svg id 数组
+	this.faSvgIdArray = null;
+	
+	//小标题
+	this.fsSizeTitle = "";
+	
+	
+	this.fiSealingLine = 0;
+	
+	//是否有附加题
+	this.fsAdditionalQuestions = 0;
+	
+	// 大标题高度
+	this.fiTitleHeight = 80;
+	
+	//组的数组
+	this.faGroupDataList = null;
+	
+	// 单元格的长度(相对viewBox)
+	this.fiCellW = 55;
+	
+	// 单元格的高度(相对viewBox)
+	this.fiCellH = 39;
+	
+	// 模块相对大页面左上定点y坐标
+	this.ffPageTopUI = 0;
+	
+	// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+	this.ffModuleHeightUI = 0;
+	
+	//是否加辅助黑块
+	this.fiModuleBlackBlock = 0;
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(data){
+		var tmpTopicArray = new Array();
+		
+		var objectTopicItems = data.objectTopicItems;
+		var groupDataList = data.attContent.group;
+		
+		
+		this.fiType = data.type;
+		this.fiBigQid = data.bigQid;
+		this.topicType = data.topicType;
+		this.fiId = data.id;
+		this.fsSizeTitle = data.sizeTitle;
+		this.fsBigTitle =  data.name;
+		this.fsAdditionalQuestions = data.isBonusQuestion;
+		if(this.fsAdditionalQuestions){
+			this.fiSort = 99;
+		}else{
+			this.fiSort = data.sort;
+		}
+//		this.fiSort = data.sort;
+		var countItmeSore = 0;
+//		var faGroupDataList = new Array();
+		// 组数据
+//		for(var i = 0; i < groupDataList.length; i++){
+//			var oneGroupData = groupDataList[i];
+//			
+//			var groupDataItem = new Object();
+//			// 从
+//			groupDataItem.startNum = oneGroupData.beginNum;
+//			// 到
+//			groupDataItem.endNum = oneGroupData.endNum;
+//			// 每空 多少分 
+//			groupDataItem.oneBlankScore = oneGroupData.score;
+//			// 每题多少个空
+//			groupDataItem.blankNum = oneGroupData.optionNum;
+//			//
+//			groupDataItem.sort = oneGroupData.sort;
+//			
+//			faGroupDataList.push(groupDataItem);
+//		}
+		
+		this.faGroupDataList = groupDataList;
+		
+		//每一道题的数组遍历
+		var itemDataList = objectTopicItems;
+		var objectiveTopicId = "";
+		for(var i = 0; i < itemDataList.length; i++){
+			var itemData = itemDataList[i];
+//			countItmeSore +=  parseInt(itemData.score);
+			
+			if(itemDataList.id == undefined){
+				objectiveTopicId = 1; //客观题的类型
+			}else{
+				objectiveTopicId = itemDataList.id; //客观题的类型
+			}
+			var objectiveTopicItem = new CObjectiveTopicItem();
+			var code = "code_" + itemData.sort + "_" + generateUUID();;
+			objectiveTopicItem.init(code, itemData.sort,parseInt(itemData.score), itemData.optionNum , itemData.answerType, itemData.id ,itemData.qid, data.topicType);
+			this.faObjectiveTopicItemList.push(objectiveTopicItem);
+		}
+		
+		var itemDataResidue =  itemDataList.length%5;
+		if(itemDataResidue == 0){
+			for(var i = 0; i < itemDataList.length; i++){
+				var itemData = itemDataList[i];
+				countItmeSore +=  parseInt(itemData.score);
+				
+				if(itemDataList.id == undefined){
+					objectiveTopicId = 1; //客观题的类型
+				}else{
+					objectiveTopicId = itemDataList.id; //客观题的类型
+				}
+				var objectiveTopicItem = new CObjectiveTopicItem();
+				var code = "code_" + itemData.sort + "_" + generateUUID();
+				objectiveTopicItem.init(code, itemData.sort,parseInt(itemData.score), itemData.optionNum , itemData.answerType, itemData.id ,itemData.qid, data.topicType);
+				this.faObjectiveTopicItemSortList.push(objectiveTopicItem);
+			}
+			this.fiModuleBlackBlock = 0;
+		}else{
+			var itemResidueData = itemDataList;
+//			if(itemDataResidue == 1){
+//				var itemDataObj = new Object();
+//				itemDataObj.optionNum = itemDataList[itemDataList.length - 1].optionNum;
+//				itemDataObj.sort = parseInt(itemDataList[itemDataList.length - 1].sort) + 1;
+//				itemDataObj.qid = "";
+//				itemDataObj.score = 0;
+//				itemDataObj.answerType = "";
+//				itemDataObj.id = "";
+//				itemDataObj.topicType = "";
+//				itemResidueData.push(itemDataObj);
+//			}else{
+//				for(var j = 0 ; j < 5 - itemDataResidue; j++){
+				for(var j = 0 ; j < 1; j++){
+					var itemDataObj = new Object();
+					itemDataObj.optionNum = itemDataList[itemDataList.length - 1].optionNum;
+					itemDataObj.sort = parseInt(itemDataList[itemDataList.length - 1].sort) + j + 1;
+					itemDataObj.qid = "";
+					itemDataObj.score = 0;
+					itemDataObj.answerType = "";
+					itemDataObj.id = "";
+					itemDataObj.topicType = "";
+					itemDataObj.endType = 1;
+					itemResidueData.push(itemDataObj);
+					this.fiModuleBlackBlock = 1;
+				}
+//			}
+			for(var i = 0; i < itemResidueData.length; i++){
+				var itemData = itemResidueData[i];
+				countItmeSore +=  parseInt(itemData.score);
+				
+				if(itemDataList.id == undefined){
+					objectiveTopicId = 1; //客观题的类型
+				}else{
+					objectiveTopicId = itemDataList.id; //客观题的类型
+				}
+				var objectiveTopicItem = new CObjectiveTopicItem();
+				var code = "code_" + itemData.sort + "_" + generateUUID();
+				objectiveTopicItem.init(code, itemData.sort,parseInt(itemData.score), itemData.optionNum , itemData.answerType, itemData.id ,itemData.qid, data.topicType,itemData.endType);
+				this.faObjectiveTopicItemSortList.push(objectiveTopicItem);
+			}
+		}
+		
+		
+		
+		this.ffCountScore = countItmeSore;
+				
+		// 模块总长度
+		var moduleWidth = this.ffWidth * 2;
+		
+		// 一行能容纳的最大单元格数量
+//		this.fiColCount = parseInt(moduleWidth / this.fiCellW);
+		var colMaxCount = parseInt(moduleWidth / this.fiCellW);
+		
+		// 一大列几题
+		var colItemNum = 5;
+		
+		// 矩阵下标
+		var iNow = 0;
+		var jNow = 0;
+		
+		var index = 0;
+		while(index < this.faObjectiveTopicItemSortList.length){
+			var colItemArray = new Array();   // 一个大列存的题目
+			
+			// 取出一个大列的题目
+			for (var i = index; i < (index + colItemNum); i++) {
+				if (i < this.faObjectiveTopicItemSortList.length){
+					var topicItem = this.faObjectiveTopicItemSortList[i];
+					colItemArray.push(topicItem);
+				}else{
+					break;
+				}
+			}
+			
+			// 判断剩下的位置够不够容纳这一大列
+			// 取出这一列最长的下标
+			var jValueMaxCol = jNow;
+			for (var i = 0; i < colItemArray.length; i++) {
+				var topicItem = colItemArray[i];
+				var tmpValue = jNow + topicItem.faSelValueArray.length;
+				if (tmpValue > jValueMaxCol){
+					jValueMaxCol = tmpValue;
+				}
+			}
+			
+			if (jValueMaxCol > (colMaxCount - 1)){// 需要换行
+				jValueMaxCol = jValueMaxCol - jNow;
+				
+				iNow = iNow + colItemNum + 1;
+				jNow = 0;
+			}
+			
+			// 赋值矩阵信息
+			for(var i = 0; i < colItemArray.length; i++){
+				var jItemValue = jNow;
+				var topicItem = colItemArray[i];
+				
+				// 题号
+				var topicNum = topicItem.fiTopicNum;
+				
+				// 矩阵单个元素 - 题号单元格
+				var matrixItemTopicNum = new Object();
+				matrixItemTopicNum.i = iNow + i;
+				matrixItemTopicNum.j = jItemValue;
+				matrixItemTopicNum.v = topicNum;
+				matrixItemTopicNum.x = matrixItemTopicNum.j * this.fiCellW;
+				matrixItemTopicNum.y = matrixItemTopicNum.i * this.fiCellH + this.fiTitleHeight;
+				matrixItemTopicNum.t = 0;
+				matrixItemTopicNum.topicNum = topicNum;
+				matrixItemTopicNum.endType = topicItem.fiEndType;
+				tmpTopicArray.push(matrixItemTopicNum);
+								
+				jItemValue++;
+				
+				// 矩阵单元格 - 答案单元格
+				var aSelValueArray = topicItem.faSelValueArray;
+				for(var j = 0; j < aSelValueArray.length; j++){
+					var matrixItemAnswer = new Object();
+					matrixItemAnswer.i = iNow + i;
+					matrixItemAnswer.j = jItemValue;
+					matrixItemAnswer.v = aSelValueArray[j];
+					matrixItemAnswer.x = matrixItemAnswer.j * this.fiCellW;
+					matrixItemAnswer.y = matrixItemAnswer.i * this.fiCellH + this.fiTitleHeight;
+					matrixItemAnswer.t = 1;
+					matrixItemAnswer.endType = topicItem.fiEndType;
+					matrixItemAnswer.topicNum = topicNum;
+					tmpTopicArray.push(matrixItemAnswer);
+					jItemValue++;  // 列下标累加
+					if (this.fiRowCount < matrixItemAnswer.i + 1){
+						this.fiRowCount = matrixItemAnswer.i + 1;
+					}
+					
+				}
+			}
+			
+			// 考虑到空白列，因此要加1
+			
+			jNow = jValueMaxCol + 1;
+			
+//			jNow = jValueMaxCol + 1;
+			
+			if (this.fiColCount < jNow){
+				this.fiColCount = jNow;
+			}
+			
+			
+			index = index + colItemArray.length;
+		}
+		
+		// 行顺序优先
+		for(var i = 0; i < tmpTopicArray.length; i++){
+			for (var j = i; j < tmpTopicArray.length; j++) {
+				var matrixItem1 = tmpTopicArray[i];
+				var matrixItem2 = tmpTopicArray[j];
+				if (matrixItem1.i > matrixItem2.j){
+					tmpTopicArray[j] = matrixItem1;
+					tmpTopicArray[i] = matrixItem2;
+				}
+			}
+		}
+		
+		// 每行的每列按j从小到到大排序
+		this.faTopicMatrix = new Array();
+		for (var i = 0; i < this.fiRowCount; i++) {
+			var rowArray = new Array();  // 具体一行
+			for (var j = 0; j < this.fiColCount + 1; j++) {
+				var bHas = false;
+				var matrixItem = null;
+				
+				for (var k = 0; k < tmpTopicArray.length; k++) {
+					matrixItem = tmpTopicArray[k];
+					if ((i == matrixItem.i) && (j == matrixItem.j)){
+						bHas = true;
+						break;
+					}
+				}
+				
+				if (!bHas){// 不存在，表示空格
+					matrixItem = new Object();
+					matrixItem.i = i;
+					matrixItem.j = j;
+					matrixItem.v = "";
+					matrixItem.x = matrixItem.j * this.fiCellW;
+					matrixItem.y = matrixItem.i * this.fiCellH + this.fiTitleHeight;
+					matrixItem.t = 2;
+				}else{					
+						matrixItem.i = i - parseInt((i+1)/6);
+				}
+				
+				rowArray.push(matrixItem);
+			}
+			
+			this.faTopicMatrix.push(rowArray);
+		}	
+	}
+
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView = function(uiInfo){
+		var kValue = 2;
+		
+		var moduleWidth = this.ffWidth * kValue;
+		this.fitestType = uiInfo.fitestType;
+		this.fiSealingLine = uiInfo.fiSealingLine;
+		
+		// 页脚高度
+//		var headerFooterHeight = 85 + 85;
+		if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+			if(uiInfo.fitestType == 1){
+				var headerFooterHeight = 10;
+			}else{
+				var headerFooterHeight = 85 + 85;
+			}
+		}else{
+			var headerFooterHeight = 85 + 85;
+		}
+		
+		var headerHeight = headerFooterHeight / 2;
+		
+		var svgUI = null;
+		var listGroupItemUI = null;
+		
+		// 先判断题号有没有超出
+		var newNowTopUI = uiInfo.ffNowModuleTopUI + this.fiTitleHeight / kValue;
+		if (newNowTopUI > uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2){// 不够位置排序, 创建新的一页出来
+			uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+		}
+		
+		// 创建 listGroupItem
+		var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+		listGroupItemUI = $(listGroupItemUIStr);
+		uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+		
+		this.faSvgIdArray = new Array();
+		var svgId = "ObjectiveTopic_" + this.faSvgIdArray.length + "_" + generateUUID();
+		this.faSvgIdArray.push(svgId);
+		
+		// SVG 高度
+	 	var viewBoxHeight = this.fiTitleHeight;
+		
+		// 加入标题
+		var titleUIStr = '<defs></defs>';
+		if(this.fsAdditionalQuestions){
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + "附加题："+ this.fsBigTitle;
+		}else{
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + this.fsBigTitle;
+		}
+		
+		titleUIStr += '<text x="0" y="50" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">' + bigTitle + "("+this.ffCountScore+"分)" + '</text>';
+		if(this.fsSizeTitle == undefined || this.fsSizeTitle == null || this.fsSizeTitle == ""){
+			var name = "";
+		}else{
+			var name = "("+this.fsSizeTitle+")";
+		}
+		titleUIStr += '<text x="480" y="50" style="font-size: 28px; font-family: 文泉驿微米黑; font-weight: bold;">'+name+'</text>';
+		var svgUINowHtmlStr = titleUIStr;
+		
+		// 当前元素布局后，相对当前模块位置
+		uiInfo.ffNowTopUI = uiInfo.ffNowTopUI + this.fiTitleHeight / kValue;
+		
+		// 整个模块相对大页面左上顶点坐标
+		this.ffPageTopUI = (uiInfo.faNewAnswerPageList.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI + this.fiTitleHeight / kValue;
+		
+		var pageNum = 0;
+		var kouChuHeight = 0;  // 相对于 viewBox外面坐标系
+		for (var i = 0; i < this.faTopicMatrix.length; i++) {
+			var rowItemArray = this.faTopicMatrix[i];		// 具体一行
+			var aTopicMatrix = rowItemArray[0];
+			var newNowTopUI = (aTopicMatrix.y + this.fiCellH) / kValue - kouChuHeight; 
+			
+			var newPageAbsTopUI = uiInfo.ffNowModuleTopUI + newNowTopUI;
+			
+			if (newPageAbsTopUI > (uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2)){// 不够位置排序, 创建新的一页出来
+				if ("" != svgUINowHtmlStr){// 当前已经有内容，直接添加进去
+					pageNum ++ ;
+					var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+//					var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight +78;
+//					var svgHeight = viewBoxHeight / kValue + 36;
+					var svgHeight = viewBoxHeight / kValue;
+					
+					var svgStr = '';
+					if(pageNum > 1){
+						svgStr += '<ul class="btnSetting btnZindex" style="top: -20px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+					}else{
+						svgStr += '<ul class="btnSetting btnZindex" style="top: 37px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+					}
+					
+					svgStr += '<li style="margin-right: 10px;">';
+					svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+					svgStr += '<span>修改</span></li>';
+					svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+					listGroupItemUI.children("div").append(svgStr);
+					
+					var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+					svgUI = $(svgUIStr);
+//					svgUI.html(svgUINowHtmlStr);
+					svgUI[0].innerHTML = svgUINowHtmlStr;
+					listGroupItemUI.children("div").append(svgUI);
+
+					svgUINowHtmlStr = "";
+				}
+
+				svgId = "ObjectiveTopic_" + this.faSvgIdArray.length + "_" + generateUUID();
+				this.faSvgIdArray.push(svgId);
+	 							
+				kouChuHeight = kouChuHeight + uiInfo.ffNowTopUI;
+				viewBoxHeight = 0;
+				newNowTopUI = (aTopicMatrix.y + this.fiCellH) / kValue - kouChuHeight - uiInfo.ffNowModuleTopUI;
+				
+				uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+				
+				var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+				listGroupItemUI = $(listGroupItemUIStr);
+				uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+				
+				
+				
+//				var getPositionInfo = this.getPositionInfo();
+//				var startTop = getPositionInfo.startTop;
+//				var svgAuxiliary = "";
+//				
+//				for(var j = 0 ; j < this.faTopicMatrix.length ; j++){
+//					var topicMatrixItme = this.faTopicMatrix[j];
+//					for(var k = 0 ; k < topicMatrixItme.length; k++){
+//						if(topicMatrixItme[k].i == i && topicMatrixItme[k].j == 1 ){
+//							svgAuxiliarY = topicMatrixItme[k].y;
+//							svgAuxiliary += '<rect x="12" y="'+svgAuxiliarY+'" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+//							break;
+//						}
+//					}
+//				}
+//				var viewBoxSvg = "0" + " " + "0" + " " + 60 + " " + svgHeight*2;
+//				var svgAuxiliaryStr = '<svg  width="30" height="'+svgHeight+'" viewBox="'+viewBoxSvg+'">';
+//				$_svgAuxiliaryStr = $(svgAuxiliaryStr);
+//				$_svgAuxiliaryStr.html(svgAuxiliary);
+//				var top = (startTop + 35 - 1171*(uiInfo.fiNewNowPageOrd))   + "px";
+//				var divStr = $('<div style="position: absolute; top:'+top+' ;left: -36px;"></div>');
+//				divStr.append($_svgAuxiliaryStr)
+//				svgUI.parent().parent().parent().parent().append(divStr);
+				
+				
+			}
+			
+			for (var j = 0; j < rowItemArray.length; j++) {// 每列排布上去
+				var aTopicMatrix = rowItemArray[j];
+				
+				uiInfo.ffNowTopUI = newNowTopUI;
+				var viewBoxHeightNew = newNowTopUI * kValue;
+				
+				if (viewBoxHeight < viewBoxHeightNew){
+					viewBoxHeight = viewBoxHeightNew;
+				}
+				
+				var cellLeftStep = (this.fiCellW - 31) / 2;
+				var cellTopStep = (this.fiCellH - 19) / 2;
+				var aTopicItemUIStr = "";
+				var nowTopUI = aTopicMatrix.y - kouChuHeight * kValue;
+				if(aTopicMatrix.t == 0){
+					if(aTopicMatrix.endType == 1){
+						aTopicItemUIStr += '<rect x="' + (aTopicMatrix.x + cellLeftStep) + '" y="' + (nowTopUI + cellTopStep) +'" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+					}else{
+						aTopicItemUIStr += '<text x="' + (aTopicMatrix.x + cellLeftStep + 31) + '" y="' + (nowTopUI + cellTopStep + 19) +'" style="font-size: 32px; font-family: 文泉驿微米黑; text-anchor: end;">' + aTopicMatrix.v + '</text>';
+					}
+					
+				}else if (aTopicMatrix.t == 1){// A, B, C, D, ...
+					var imgUrl = "../images/" + aTopicMatrix.v +".svg";
+					if(aTopicMatrix.endType == 1){
+						aTopicItemUIStr += '<rect x="' + (aTopicMatrix.x + cellLeftStep) + '" y="' + (nowTopUI + cellTopStep) + '" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+//						aTopicItemUIStr += '<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="' + imgUrl + '" preserveAspectRatio="none" x="' + (aTopicMatrix.x + cellLeftStep) + '" y="' + (nowTopUI + cellTopStep) + '" width="31" height="19"></image>';
+					}else{
+			 			aTopicItemUIStr += '<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="' + imgUrl + '" preserveAspectRatio="none" x="' + (aTopicMatrix.x + cellLeftStep) + '" y="' + (nowTopUI + cellTopStep) + '" width="31" height="19"></image>';
+					}
+					
+				}
+				
+				svgUINowHtmlStr = svgUINowHtmlStr + aTopicItemUIStr;
+			}
+		}
+		
+//		var faTopicMatrixData = this.faTopicMatrix[this.faTopicMatrix.length - 1]
+//		for(var i = 0 ;i < faTopicMatrixData.length - 1 ; i++){
+//			var  topicData = faTopicMatrixData[i];
+//			var cellLeftStep = (this.fiCellW - 31) / 2;
+//			var cellTopStep = (this.fiCellH - 19) / 2 + this.fiCellH;
+//			var nowTopUI = topicData.y - kouChuHeight * kValue;
+//			svgUINowHtmlStr += '<rect x="' + (topicData.x + cellLeftStep) + '" y="' + (nowTopUI + cellTopStep) + '" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+//		}
+		
+		if ("" != svgUINowHtmlStr){
+			var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+			var svgHeight = viewBoxHeight / kValue;
+			var svgStr = '';
+			svgStr += '<ul class="btnSetting btnZindex " style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+			svgStr += '<li style="margin-right: 10px;">';
+			svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+			svgStr += '<span>修改</span></li>';
+			svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+			listGroupItemUI.children("div").append(svgStr);
+			var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+			svgUI = $(svgUIStr);
+			svgUI.html(svgUINowHtmlStr);
+			listGroupItemUI.children("div").append(svgUI);
+//			var getPositionInfo = this.getPositionInfo;
+//			var divStr = '<div style="position: absolute; top: 530px;left: -18px;">dd</div>';
+//			svgUI.parent().parent().parent().parent().append($(divStr));
+			svgUINowHtmlStr = "";
+		}
+			
+		uiInfo.ffNowModuleTopUI = uiInfo.ffNowModuleTopUI + viewBoxHeight / kValue + 5;
+		
+		// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+		if(this.fitestType == 0){
+			uiInfo.ffPageHeight = 1174;
+		}else{
+			uiInfo.ffPageHeight = 1086;
+		}
+		var tmpValue = (uiInfo.foNowPageListGroupUI.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI;
+		uiInfo.ffModuleHeightUI = tmpValue - this.ffPageTopUI;
+		
+		
+//		var getPositionInfo = this.getPositionInfo();
+//		var startTop = getPositionInfo.startTop;
+//		var svgAuxiliary = "";
+//		
+//		for(var i = 0 ; i < this.faTopicMatrix.length ; i++){
+//			var topicMatrixItme = this.faTopicMatrix[i];
+//			for(var j = 0 ; j < topicMatrixItme.length; j++){
+//				if(topicMatrixItme[j].i == i && topicMatrixItme[j].j == 1 ){
+//					svgAuxiliarY = topicMatrixItme[j].y;
+//					svgAuxiliary += '<rect x="12" y="'+svgAuxiliarY+'" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+//					break;
+//				}
+//			}
+//		}
+//		var viewBoxSvg = "0" + " " + "0" + " " + 60 + " " + svgHeight*2;
+//		var svgAuxiliaryStr = '<svg  width="30" height="'+svgHeight+'" viewBox="'+viewBoxSvg+'">';
+//		$_svgAuxiliaryStr = $(svgAuxiliaryStr);
+//		$_svgAuxiliaryStr.html(svgAuxiliary);
+//		var top = (startTop + 35 - 1171* (uiInfo.fiNewNowPageOrd)) + "px";
+//		var divStr = $('<div style="position: absolute; top:'+top+' ;left: -36px;"></div>');
+//		divStr.append($_svgAuxiliaryStr)
+//		svgUI.parent().parent().parent().parent().append(divStr);
+		
+	},
+
+	/**
+	 * 计算位置信息
+	 */
+	this.calculatePositionInfo =  function(answerSheet, pageHeight, rowMaxWidth){
+		var nowLeft = 0, nowTop = 0;
+		
+		for (var i = 0; fillBankItemList.length; i++) {
+			var fillItem = fillBankItemList[i];
+			if ((nowLeft + fillItem.width) > rowMaxWidth){// 超出一行，要换行
+				nowLeft = 0;
+				fillItem.left = nowLeft;
+			}else{
+				fillItem.left = nowLeft;
+				nowLeft =  nowLeft + fillItem.width;
+			}
+			
+		}	
+	}
+	
+			/*
+	 * 修改上传数据
+	 */
+	
+	this.addModelData = function(data){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].imgData ==  modelData.code){
+//				modelDataObj.imgStyle = modelData.imgStyle;
+//				modelDataObj.url = modelData.url;
+//				this.faCAnswerItemList[i].imgData.push(modelDataObj);
+//			}
+//		}
+	}
+	
+	
+	/*
+	 * 修改上传数据
+	 */
+	
+	this.editModelData = function(modelData){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].fsCode ==  modelData.itmeId){
+//				var imgData =  this.faCAnswerItemList[i].faImgData;
+//				for(var j = 0; j < imgData.length ; j ++){
+//					if(imgData[j].id == modelData.id){
+//						this.faCAnswerItemList[i].faImgData[j].imgStyle = modelData.imgStyle;
+//					}
+//					
+//				}
+//			}
+//		}
+	},
+	
+	
+	/**
+	 * 保存
+	 */
+	this.save  =  function(){
+		var topic = new Object();
+		topic.sort = this.fiSort;
+		topic.type = 0;
+		topic.topicType = this.topicType;
+		topic.id = this.fiId;
+		topic.bigQid = this.fiBigQid;
+		topic.name = this.fsBigTitle;
+		topic.sort = this.fiSort;
+		topic.sizeTitle = this.fsSizeTitle;
+		topic.isBonusQuestion = this.fsAdditionalQuestions;
+		var objectTopicItemsArr = new Array();
+		
+		for(var i = 0; i < this.faObjectiveTopicItemList.length ; i ++){
+			var objectiveTopicItem = this.faObjectiveTopicItemList[i];
+			var objectTopicItemsObj = new Object();
+			objectTopicItemsObj.id = objectiveTopicItem.fiId;
+			objectTopicItemsObj.answerType = objectiveTopicItem.fiAnswerType;
+			objectTopicItemsObj.qid = objectiveTopicItem.fiTopicNum;
+			objectTopicItemsObj.code = objectiveTopicItem.fsCode;
+			objectTopicItemsObj.score = objectiveTopicItem.ffScore;
+			objectTopicItemsObj.sort = i;
+			objectTopicItemsObj.optionNum = objectiveTopicItem.faSelValueArray.length;
+			var objectiveTopicItemArr = new Array();
+			
+			for(var j = 0; j < this.faTopicMatrix.length; j++){
+				var faTopicMatrixList =  this.faTopicMatrix[j];
+				for(var k = 0; k < faTopicMatrixList.length; k++){
+					if(objectiveTopicItem.fiTopicNum == faTopicMatrixList[k].topicNum){
+						var objectiveTopicItemObj = new Object();
+						objectiveTopicItemObj.optionValue = faTopicMatrixList[k].v;
+						objectiveTopicItemObj.i = faTopicMatrixList[k].i;
+						objectiveTopicItemObj.j = faTopicMatrixList[k].j;
+						objectiveTopicItemObj.x = faTopicMatrixList[k].x;
+						objectiveTopicItemObj.y = faTopicMatrixList[k].y;
+						objectiveTopicItemArr.push(objectiveTopicItemObj);
+					}
+					
+				}
+				
+			}
+			objectTopicItemsObj.optionInfo = objectiveTopicItemArr;
+			objectTopicItemsArr.push(objectTopicItemsObj);
+		}
+		topic.objectTopicItems = objectTopicItemsArr;
+		var attContent = new Object();
+		attContent.group = this.faGroupDataList;
+		attContent.positionInfo = this.getPositionInfo();
+		topic.attContent = attContent;
+		return topic;
+	},
+	
+	/**
+	 * 获取位置信息
+	 */
+	this.getPositionInfo = function(){
+		var addLeft = 22;
+		debugger
+		var kValue = 2;
+		
+		// 位置信息
+		var positionInfo = new Object();
+		positionInfo.startLeft = addLeft;
+		if(this.fitestType == 1){
+			if(this.fiSealingLine == 0){
+				positionInfo.startTop = this.ffPageTopUI + 14; 
+			}else{
+				positionInfo.startTop = this.ffPageTopUI + 2; 
+			}
+			
+		}else{
+			positionInfo.startTop = this.ffPageTopUI + 70; 
+		}
+		
+		positionInfo.cellW = this.fiCellW / kValue;
+		positionInfo.cellH = this.fiCellH / kValue;
+		positionInfo.cellSpaceX = ((this.fiCellW - 31) / 2) / kValue;
+		positionInfo.cellSpaceX = ((this.fiCellH - 19) / 2) / kValue;
+		
+		
+		if(this.fiModuleBlackBlock == 1){
+			positionInfo.rowCount = this.fiRowCount - 1;
+		}else{
+			positionInfo.rowCount = this.fiRowCount;
+		}
+		
+		positionInfo.colCount = this.fiColCount;
+		
+		return positionInfo;
+		
+	},
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load = function(jsonData){
+		
+	},
+	
+	/**
+	 * 更新 行距
+	 */
+	this.changeRowSpace =  function(dxRowValue){
+		this.rowSpaceValue = this.rowSpaceValue + dxRowValue;
+	},
+	
+	/**
+	 * 添加单项
+	 */
+	this.addFillBlankItem =  function(fillBankItem){
+		this.fillBankItemList.push(fillBankItem);
+	},
+	
+	/*
+	 * 删除单项
+	 */
+	this.deleteFillBlankItem = function(fillBankItem){
+		
+	}
+}

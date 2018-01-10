@@ -1,0 +1,588 @@
+function letterConversion (n, topicType){
+	var letterArr = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P']; 
+	var judgeArr = ['T','F'];
+	var letterConversionArr = new Array();
+	for(var i = 0 ; i < n; i ++){
+		if(topicType == 2){//判断题
+			letterConversionArr.push(judgeArr[i]);
+		}else{
+			letterConversionArr.push(letterArr[i]);
+		}
+	}
+	return letterConversionArr;
+}
+
+/*
+ * 产生唯一识别码
+ */
+function generateUUID() {
+	var d = new Date().getTime();
+	
+	var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = (d + Math.random()*16)%16 | 0;
+		d = Math.floor(d/16);
+		return (c == 'x' ? r : (r&0x3|0x8)).toString(16);
+	});
+	
+	return uuid;
+}
+
+/*
+ * 生成答题卡学生学号
+ * 
+ */
+
+function  getAnswerCardNumber (){
+	var str ='';
+	str+='<div style="position: relative;">';
+	str+='<div>';
+	str+='<ul class="btnSetHeader btnZindex">';
+	str+='<li style="position: relative; left: 660px; top: 130px;">';
+	str+='<button type="button" id = "btnEidtPermission">编辑</button>';
+	str+='<span>编辑</span>';
+	str+='</li>';
+	str+='</ul>';
+	str+='<ul class="btnSetHeader btnZindex">';
+	str+='<li style="position: relative; left: 660px; top: 94px;">';
+	str+='<button type="button" id = "btnEidtTitle">编辑</button>';
+	str+='<span>编辑</span>';
+	str+='</li>';
+	str+='</ul>';
+	str+='</div>';
+	str+='<svg width="708.5" height="393.5" viewBox="0 0 1417 787" id ="svgHeader"  xmlns="http://www.w3.org/2000/svg" >';
+
+	str+='</svg>';
+	
+	if($("#pageListContainerUI").data("answerSheetName") == undefined || $("#pageListContainerUI").data("answerSheetName") == "" || $("#pageListContainerUI").data("answerSheetName") == null){
+		str+='<textarea class="headerTitle" placeholder="请输入答题卡标题" style="text-align: center; position: absolute; resize: none; left: 19px; top: 0px; height: 78px; width: 708px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2;"></textarea>';
+	}else{
+		str+='<textarea class="headerTitle"  style="text-align: center; position: absolute; resize: none; left: 19px; top: 0px; height: 78px; width: 708px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2;">'+$("#pageListContainerUI").data("answerSheetName")+'</textarea>';
+	}
+	
+	str+='</div>';
+	
+	return str;
+	
+	
+}
+
+
+//function canvas(){
+////	var contentList = document.getElementById('pageListContainerUI');
+//	var dataUrl;
+//	html2canvas($("#pageListContainerUI"), {
+//	    onrendered: function(canvas) {
+//	    	//添加属性
+//	//	        	canvas.setAttribute('id','thecanvas');
+//			canvas.id = "mycanvas"; 
+//			//读取属性值
+//			// var value= canvas.getAttribute('id');
+//			
+//			 // 生成base64图片数据
+//	       	var urlData = canvas.toDataURL('image/png');  //指定格式，也可不带参数
+//	       	dataUrl = convertBase64UrlToBlob(urlData);
+//	       	
+//	    }
+//	});
+//	debugger
+//	return dataUrl;
+//}
+
+//将以base64的图片url数据转换为Blob
+function convertBase64UrlToBlob(urlData){
+  //去掉url的头，并转换为byte
+  var bytes=window.atob(urlData.split(',')[1]);    
+  //处理异常,将ascii码小于0的转换为大于0
+  var ab = new ArrayBuffer(bytes.length);
+  var ia = new Uint8Array(ab);
+  for (var i = 0; i < bytes.length; i++) {
+    ia[i] = bytes.charCodeAt(i);
+  }
+  return new Blob( [ab] , {type : 'image/png'});
+}
+
+
+//获取答题卡内容
+function getAnswerSheetContent(){
+	var saveUrl = "/IQCloudMarking/markingController/saveOrUpdateAnswerSheet";
+	var param  = new Object();
+	var Oparam = new Object();
+	Oparam.imgData = urlData;
+	Oparam.answerSheetContent = answerSheetContent;
+	param.jsonBody = Oparam;
+	$.ajax({  
+		url: saveUrl,
+		type: 'POST',
+		dataType:'json',
+		contentType : "application/json; charset=utf-8",
+		data:JSON.stringify(param),
+		success: function(data) {
+			
+	  	},
+	  	error: function(xhr, textStatus, errorThrown) {
+	  	}
+  	});
+}
+
+//右侧答题卡布局，基本信息选中
+
+$("#layoutinfo input[name=column]").unbind('click').bind({//选中几栏
+	click:function(){
+		var type = $(this).data("type");
+		switch (type){
+			case 1:
+				$(".column2").removeClass('column2_active');
+				$(".column3").removeClass('column3_active');
+				$(".columnon1").addClass('columnon1_active');
+				break;
+			case 2:
+				$(".column3").removeClass('column3_active');
+				$(".columnon1").removeClass('columnon1_active');
+				$(".column2").addClass('column2_active');
+				break;
+			case 3:
+				$(".columnon1").removeClass('columnon1_active');
+				$(".column2").removeClass('column2_active');
+				$(".column3").addClass('column3_active');
+				break;
+		}
+	}
+});
+
+function GetQueryString(name)
+{
+    var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    var r = window.location.search.substr(1).match(reg);
+    if(r!=null)return  unescape(r[2]); return null;
+}
+//$("#existab").unbind('click').bind({//存在AB卷
+//	click:function (){
+//		if($(this).is(':checked')){//选中存在AB卷
+
+	
+var domSvgFun = {
+	
+	svgFun:function(id , width , height , viewbox){
+		var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+		
+      	svg.setAttribute(null,'height',height);
+      	svg.setAttribute(null,'width',width);
+      	svg.setAttribute('viewbox', viewbox);
+      	document.getElementById(id).appendChild(svg);
+	},
+	
+	rectFun:function( id, style , x , y , width , height , stroke ,typeName){
+		var svgRect = document.createElementNS('http://www.w3.org/2000/svg',rect);
+		
+      	svgRect.setAttributeNS(null,'height',height);
+      	svgRect.setAttributeNS(null,'width',width);
+      	svgRect.setAttributeNS(null,'x',x);
+      	svgRect.setAttributeNS(null,'y',y);
+      	svgRect.setAttributeNS(null, 'stroke', stroke);
+      	svgRect.setAttributeNS(null, 'visibility', 'visible');
+      	svgRect.setAttribute('style', style);
+      	document.getElementById(id).appendChild(svgRect);
+	},
+	
+	textFun:function( id, style , x , y , width , height  ,name){
+		var svgText = document.createElementNS('http://www.w3.org/2000/svg','text');
+		
+      	svgText.setAttributeNS(null,'height',height);
+      	svgText.setAttributeNS(null,'width',width);
+      	svgText.setAttributeNS(null,'x',x);
+      	svgText.setAttributeNS(null,'y',y);
+      	svgText.setAttributeNS(null, 'visibility', 'visible');
+      	svgText.setAttribute('style', style);
+      	document.getElementById(id).appendChild(svgText).text(function(name) { //添加文字描述
+      		return name;
+      	});
+	},
+	
+	svgChilFun:function( id, typeName , style , x1 , x2 , y1 , y2 , width , height , stroke , lineWidth){
+		var svgLine = document.createElementNS('http://www.w3.org/2000/svg',typeName);
+		
+      	svgLine.setAttributeNS(null,'height',height);
+      	svgLine.setAttributeNS(null,'width',width);
+      	svgLine.setAttributeNS(null,'x1',x1);
+      	svgLine.setAttributeNS(null,'x2',x2);
+      	svgLine.setAttributeNS(null,'y1',y1);
+      	svgLine.setAttributeNS(null,'y2',y2);
+      	svgLine.setAttributeNS(null, 'stroke', stroke);
+      	svgLine.setAttributeNS(null, 'lineWidth', lineWidth);
+      	svgLine.setAttributeNS(null, 'visibility', 'visible');
+      	svgLine.setAttribute('style', style);
+      	svgimg.setAttribute('style', style);
+      	document.getElementById(id).appendChild(svgLine);
+	},
+	makeSVG : function (tag, attrs) {
+        var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
+        for (var k in attrs)
+            el.setAttribute(k, attrs[k]);
+        return el;
+   },
+	imageFun:function( id, url, preserveAspectRatio, style , x , y , width , height ){
+		var svgimg = document.createElementNS('http://www.w3.org/2000/svg','image');
+      	svgimg.setAttributeNS(null,'height',height);
+      	svgimg.setAttributeNS(null,'width',width);
+      	svgimg.setAttributeNS('http://www.w3.org/1999/xlink','href', url);
+      	svgRect.setAttributeNS(null,'x',x);
+      	svgimg.setAttributeNS(null,'y',y);
+      	svgimg.setAttributeNS(null, 'stroke', stroke);
+      	svgimg.setAttributeNS(null, 'visibility', 'visible');
+      	svgimg.setAttribute('style', style);
+      	document.getElementById(id).appendChild(svgimg);
+	}
+}
+
+function existabPaper(){//存在AB卷
+	document.getElementsByClassName('headerTitle')[0].style.width = 538 + 'px';
+	document.getElementsByClassName('headerTitle')[0].style.left = 189 + 'px';
+	
+	var str = '';
+	str += '<rect x="0" y="0" width="299" height="157" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str += '<text x="15" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷</text>';
+	str += '<text x="15" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">类型</text>';
+	str += '<text x="118" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷A</text>';
+	str += '<text x="118" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷B</text>';
+	str += '<line x1="102" x2="102" y1="0" y2="157" stroke="#000000"></line>';
+	str += '<rect x="232" y="37" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str += '<rect x="232" y="100" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	return str;
+//	var html = $('#svgHeader').html() + str;
+//	console.log(html);
+////	$('#svgHeader').append(str);
+//	$('#svgHeader').html(str);//重写svg
+}
+			
+//		}else{
+//			document.getElementsByClassName('headerTitle')[0].style.left = 19 + 'px';
+//			document.getElementsByClassName('headerTitle')[0].style.width = 708 + 'px';
+//			setPermission();
+//		}
+//		
+//	}
+//});
+
+
+
+var totalImageNum = 0;//需要截图的页面总数
+var imgContentList = [];//需要截图的页面内容
+var cutnum = 0;//循环次数
+var imgDatas = [];//图片数组
+function screenshot(layIndex, rtnSealingLine, layout){//截图保存
+   	$("#btnEidtTitle").parent().hide();
+   	$("#btnEidtPermission").parent().hide();
+   	var svg = $("#pageListContainerUI").find('svg');
+   	var svgImg = svg.find('image');
+	var type = false;
+	var  time = 0;
+	if(svgImg.length > 0){//有矢量图
+		svg.each(function(i, v){
+	//		var images = document.querySelectorAll('svg image')
+	//		if(images){
+	//			$(this).attr('width',$(this).width()*2);
+	//			$(this).attr('height',$(this).height()*2);
+	//		}
+			
+			var mySvg = $(this),
+			iImgScale = 3 || 1;
+	//							
+			svgAsDataUri(mySvg, iImgScale, function(uri) {
+	//								svgImg.setAttribute("src",uri);
+			});
+			if(svg.length - 1 == i){
+				type = true;
+			}
+		});
+		time = svg.length /20 * 4000; 
+	}else{
+		type = true;
+	}
+	
+	setTimeout(function () { 
+     	if(type){
+     		var contentList;
+     		if(layout == 2){//A3
+     			contentList = $(".download");
+     		}else{//A4
+     			if(rtnSealingLine == 1){//A4有密封线
+     				contentList = $(".fourpage");
+     			}else{
+     				contentList = $(".page");
+     			}
+     			
+     		}
+	        
+	        for(var i = 0; i < contentList.length; i++){
+	            var shareContent = contentList[i];
+	            if(layout == 2){//A3
+	            	var width = shareContent.offsetWidth + 100;  // 获取(原生）dom 宽度
+	            }else{
+	            	if(rtnSealingLine == 1){//A4有密封线
+	            		var width = shareContent.offsetWidth + 150;  // 获取(原生）dom 宽度
+	            	}else{
+	            		var width = shareContent.offsetWidth + 20;  // 获取(原生）dom 宽度
+	            	}
+	            	
+	            }
+	            var height = shareContent.offsetHeight; // 获取(原生）dom 高
+            	var offsetTop = shareContent.offsetTop + $(document).scrollTop() + 80;  //元素距离顶部的偏移量
+	            var canvas = document.createElement('canvas');  //创建canvas 对象
+	            var context = canvas.getContext('2d');
+	            canvas.width = width * 4;   //这里 由于绘制的dom 为固定宽度，居中，所以没有偏移
+	            canvas.height = (height + offsetTop) * 4;  // 注意高度问题，由于顶部有个距离所以要加上顶部的距离，解决图像高度偏移问题
+	            context.scale(4, 4);
+				html2canvas(shareContent, {
+			 		useCORS: true,
+//	                allowTaint:true,//允许加载跨域的图片
+	                tainttest:true, //检测每张图片都已经加载完成
+	                background:"#ffffff",
+	                timeout:0,
+	                scale:4, // 添加的scale 参数
+	                canvas:canvas, //自定义 canvas
+	                logging: false, //日志开关，发布的时候记得改成false
+	                width:width, //dom 原始宽度
+	                height:height,//dom 原始高度
+			      	onrendered: function(canvas, index) {
+			      		console.log(index);
+			        	var base64Image = canvas.toDataURL('image/png');
+//			        	console.log(base64Image);
+			        	$("#btnEidtTitle").parent().show();
+	   					$("#btnEidtPermission").parent().show();
+						cutnum++ ;
+						var divisorNum = 6;
+						var curImgNum = totalImageNum;
+						if(layout == 2){//A3
+							curImgNum = Math.ceil(totalImageNum / 2);
+							divisorNum = 3;
+						}
+						
+						imgDatas[index] = base64Image;
+						
+						if(cutnum % divisorNum == 0 && cutnum != curImgNum){
+							var startNum = cutnum;
+							var endNum = totalImageNum;
+							if(layout == 2){//A3
+								startNum = cutnum * 2;
+								if(cutnum*2 + 6 < totalImageNum){
+									endNum = cutnum*2 + 6;
+								}else{
+									endNum = totalImageNum;
+								}
+							}else{
+								if(cutnum + 6 < totalImageNum){
+									endNum = cutnum + 6;
+								}else{
+									endNum = totalImageNum;
+								}
+							}
+							
+							repaintHtml(startNum, endNum,rtnSealingLine, layout,layIndex);//截图重新绘制页面
+						}
+						if(curImgNum == cutnum){//全部截图完
+							var param = new Object();
+						   	var param1 = new Object();
+						   	param1.answerSheetId = $("#pageListContainerUI").data("answerSheetId");
+						   	param1.imgData = imgDatas;
+						   	param.jsonBody = param1;
+						   	
+						   	$.ajax({  
+								url: '/IQCloudMarking/markingController/saveImageByBase64Data',
+								type: 'POST',
+								dataType:'json',
+								contentType : "application/json; charset=utf-8",
+								data:JSON.stringify(param),
+								success: function(data) {
+									jsonBody = data.jsonBody;
+									rtnCode = jsonBody.rtnCode;
+									if(rtnCode == 0){
+										resultObject = jsonBody.resultObject;
+										exportAnswerSheet(resultObject,layIndex);
+									}
+							  	},
+							  	error: function(xhr, textStatus, errorThrown) {
+							  	}
+						  	});
+	
+						}
+			      	}
+				});
+			}
+	        
+		}
+    }, time);
+}
+
+//生成PDF
+function exportAnswerSheet(imgpath,index){
+	var param = new Object();
+	var param1 = new Object();
+	if(GetQueryString("layout") != undefined){//无关联
+		param1.layout = parseInt(GetQueryString("layout"));
+		param1.imagePath = imgpath;
+	}else{//有关联
+		param1.answerSheetId = GetQueryString("answerSheetId");
+	}
+	
+	param.jsonBody = param1;
+	
+	$.ajax({  
+		url: '/IQCloudMarking/markingController/exportAnswerSheet',
+		type: 'POST',	
+		dataType:'json',
+		contentType : "application/json; charset=utf-8",
+		data:JSON.stringify(param),
+		success: function(data) {
+			jsonBody = data.jsonBody;
+			rtnCode = jsonBody.rtnCode;
+			if(rtnCode == 0){
+				resultObject = jsonBody.resultObject;
+				window.location.href = '/IQCloudMarking/markingController/download?parameter=' + resultObject + '&&fileName=' + fileName;
+				updateDownLoadState(index);
+			}
+	  	},
+	  	error: function(xhr, textStatus, errorThrown) {
+	  	}
+  	});
+}
+
+//修改下载状态
+function updateDownLoadState(index){
+	debugger;
+	var param = new Object();
+	var param1 = new Object();
+	param1.answerSheetId = GetQueryString("answerSheetId");
+	param.jsonBody = param1;
+	
+	$.ajax({  
+		url: '/IQCloudMarking/markingController/updateDownLoadState',
+		type: 'POST',
+		dataType:'json',
+		contentType : "application/json; charset=utf-8",
+		data:JSON.stringify(param),
+		success: function(data) {
+			jsonBody = data.jsonBody;
+			rtnCode = jsonBody.rtnCode;
+			if(rtnCode == 0){
+				opener.location.reload(); //刷新父窗口 
+//				layer.close(index);
+				setTimeout(function(){
+					window.opener=null;
+					window.open('','_self');
+					window.close();
+				}, 10000);
+			}
+	  	},
+	  	error: function(xhr, textStatus, errorThrown) {
+	  	}
+  	});
+  	
+}
+
+function uploadIeClick(code ,itmeId ,sort ,type){//上传
+	$('#imgUploadFile').fileupload({
+        url: "/IQCloudMarking/fileLoadController/uploadAnswerSheetContentImage",
+        dataType: 'json',
+        //timeout:1800000,
+		send: function (e, data) {
+	    
+		},
+		done: function (e, data) {//设置文件上传完毕事件的回调函数
+			jsonBody = data._response.result.jsonBody;
+			rtnCode = jsonBody.rtnCode;
+			Ddata = jsonBody.resultObject;
+			var imgData = new Object();
+			imgData.code = code;
+			imgData.url = Ddata;
+			imgData.imgStyle = "position: absolute;top:37px;left:134px;width:200px;height:200px;";
+			imgData.itmeId = itmeId;
+			var ModelData = answerSheetOperate.addUploadModelData(imgData ,type);
+			if(rtnCode==0){
+				if(type == 1){
+					for(var i = 0; i < ModelData.faCAnswerItemList.length; i++){
+						if(ModelData.faCAnswerItemList[i].fiSort == sort){
+							var itemSort = ModelData.faCAnswerItemList[i].faImgData.length;
+	//						this.faCAnswerItemList[i].faImgData.length
+							var id = ModelData.faCAnswerItemList[i].faImgData[ModelData.faCAnswerItemList[i].faImgData.length-1].id;
+							svgStr = '<div class="imgResize resize-item item'+itemSort+'" data-fsId = "'+ModelData.fsId+'" data-fsCode="'+ModelData.fsCode+'" data-id="'+id+'" id="upLoad_'+id+'"  style="position: absolute;top:37px;left:134px;width:200px;height:200px;">';
+							svgStr += '<span class="resize-remove"><img src="../images/imgDel.png"></span>';
+							svgStr += '<img src="'+Ddata+'" class="imgMain" style="width: 100%;height:100%;">';
+							svgStr += '</div>';
+							$("#editor_"+itmeId).append($(svgStr));
+							break;
+						}
+					}
+				}else if(type == 2){
+					for(var i = 0; i < ModelData.faChooseDoItemList.length; i++){
+						if(ModelData.faChooseDoItemList[i].fiSort == sort){
+							var itemSort = ModelData.faChooseDoItemList[i].faImgData.length;
+	//						this.faCAnswerItemList[i].faImgData.length
+							var id = ModelData.faChooseDoItemList[i].faImgData[ModelData.faChooseDoItemList[i].faImgData.length-1].id;
+							svgStr = '<div class="imgResize resize-item item'+itemSort+'" data-fsId = "'+ModelData.fsId+'" data-fsCode="'+ModelData.fsCode+'" data-id="'+id+'" id="upLoad_'+id+'"  style="position: absolute;top:37px;left:134px;width:200px;height:200px;">';
+							svgStr += '<span class="resize-remove"><img src="../images/imgDel.png"></span>';
+							svgStr += '<img src="'+Ddata+'" class="imgMain" style="width: 100%;height:100%;">';
+							svgStr += '</div>';
+							$("#editor_"+itmeId).append($(svgStr));
+							break;
+						}
+					}
+				}
+				
+			}
+			new ZResize();
+			//删除上传的图片
+			$(".editor .resize-remove").unbind('click').bind({
+				click:function(event){
+					var e = event.widows || event;
+					e.stopPropagation();
+	                var imgObj = new Object();
+	                imgObj.imgStyle = $(this).parent().attr('style');
+	                imgObj.fsid = $(this).parent().data('fsid');
+	                imgObj.fscode = $(this).parent().data('fscode');
+	                imgObj.id = $(this).parent().data('id');
+	                imgObj.fAnswercode = $(this).parent().data('answercode');
+	                imgObj.fSort = $(this).parent().parent().data('sort');
+	                imgObj.itmeId = $(this).parent().parent().data('id');
+	                $(this).parent().remove();
+					var deleteUploadModelData = answerSheetOperate.deleteUploadModelData(imgObj);
+				}
+			})
+        },  
+       progressall: function (e, data) {//设置上传进度事件的回调函数
+            var progress = parseInt(data.loaded / data.total * 100, 10);  
+            $('#progress1 .bar').css('width',  progress + '%'); 
+			 
+        } , 
+	    fail:function(e,data){
+			$("#progress1").css("display","none");
+			alert("上传失败请重试！");
+		},
+        autoUpload: true,
+        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+        maxFileSize:  1024*1024*40, // 5000000, // 5 MB
+        //executionTimeout:360s,
+        // Enable image resizing, except for Android and Opera,
+        // which actually support image resizing, but fail to
+        // send Blob objects via XHR requests:
+        disableImageResize: /Android(?!.*Chrome)|Opera/
+            .test(window.navigator.userAgent),
+        previewMaxWidth: 100,
+		limitMultiFileUploads:10,
+		//singleFileUploads: false,
+        previewMaxHeight: 100,
+        previewCrop: true
+    });
+}
+
+
+//图片的修改
+function edidImg (data){
+//	edidImg.imgStyle = el.attr('style');
+//  edidImg.itmeId = el.data('fsid');
+//  edidImg.fscode = el.data('fscode');
+//  edidImg.id = el.data('id');
+//  edidImg.fAnswercode = el.parent().data('answercode');
+//  edidImg.fSort = el.parent().data('parent');
+//  edidImg.itmeId = el.parent().data('id');
+    var editUploadModelData = answerSheetOperate.editUploadModelData(data);
+}

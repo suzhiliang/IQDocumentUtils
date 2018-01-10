@@ -1,0 +1,769 @@
+/*
+ * 答题卡业务逻辑
+ */
+
+/*
+ * 答题卡重新排布
+ */
+
+var answerSheetOperate = {
+	/***
+	 * 添加页面
+	 * @param {Object} isFirstPage： 是否是第一页
+	 * @param {Object} pageNum: 页码
+	 */
+	addOnePage: function(isFirstPage, pageNum , data){
+		var oPage = new CAnswerPage();
+		if(data.testType == 1){
+			oPage.init(pageNum, pageNum + 1, 0, 0, 785, 1086 ,data.testType,null,data.sealingLine);
+//			oPage.init(pageNum, pageNum + 1, 0, 0, 785, 1086 ,data.testType);
+		}else{
+			oPage.init(pageNum, pageNum + 1, 0, 0, 755, 1171 ,data.testType,null,data.sealingLine);
+//			oPage.init(pageNum, pageNum + 1, 0, 0, 750, 1171 ,data.testType);
+		}
+//		oPage.init(pageNum, pageNum + 1, 0, 0, 750, 1171);
+		gAnswerSheet.addOnePage(oPage);
+		// 当前页
+		gAnswerSheet.foCurrentPage = oPage;
+		
+		answerSheetOperate.addUserInfo(data);
+		
+		this.layoutView();
+	},
+	
+	/*
+	 * 显示 - 重绘
+	 */
+	layoutView: function(){
+		
+		var uiInfo = new CUiInfo();
+		uiInfo.foPageListContainerUI = $("#pageListContainerUI");
+		uiInfo.foPageListContainerUI.empty();
+		
+//		answerSheetOperate.sortModule();
+		gAnswerSheet.layoutView(uiInfo);
+
+	},
+	
+	
+	/*
+	 * 模块排序
+	 */
+	sortModule: function(){
+		gAnswerSheet.sortModule();
+	},
+	
+	/*
+	 * 处理模块排序
+	 */
+	sortModuleProcess: function(){
+		gAnswerSheet.sortModuleProcess();
+	},
+	
+	
+	
+	
+	/*
+	 * 处理用户信息模块
+	 */
+	addUserInfo:function(data){
+		var userInfo = new CUserInfo();
+		userInfo.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(userInfo);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+	},
+	
+	
+	/*
+	 * 添加客观题
+	 */
+	addObjectTopic: function(data){
+		var objectTopic = new CObjectiveTopic();
+		objectTopic.init(data);
+		
+		gAnswerSheet.getLastPage().addOneTopicModule(objectTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+	},
+	
+	/* 
+	 *添加填空题
+	 */
+	addFillBack: function(data){
+		var fillBackTopic = new CFillBlank();
+		fillBackTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(fillBackTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+	},
+	
+	/*
+	 * 添加解答题
+	 */
+	
+	
+	addAnswerQuestions: function(data){
+		var answerQuestionsTopic = new CAnswer();
+		answerQuestionsTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(answerQuestionsTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+	},
+	
+	/*
+	 * 添加选做题
+	 */
+	chooseTheTitle: function(data){
+		var CChooseDoTopic = new CChooseDo();
+		CChooseDoTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(CChooseDoTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+
+	},
+	
+	/*
+	 * 添加作文（英语）
+	 */
+	englishWriting: function(data){
+		var englishWritingTopic = new CCompositionEnglish();
+		englishWritingTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(englishWritingTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+
+	},
+	
+	/*
+	 * 添加作文（语文）
+	 */
+	languageWriting: function(data){
+		var languageWritingTopic = new CCompositionChinese();
+		languageWritingTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(languageWritingTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+
+	},
+	
+	/*
+	 * 添加非作答区
+	 */
+	nonresponsiveZone: function(data){
+		var nonresponsiveZoneTopic = new CNonresponsiveZone();
+		nonresponsiveZoneTopic.init(data);
+		gAnswerSheet.getLastPage().addOneTopicModule(nonresponsiveZoneTopic);
+		answerSheetOperate.sortModule();
+		answerSheetOperate.layoutView();
+
+//		var uiInfo = new CUiInfo();
+//		// 初始化 uiInfo....
+//		uiInfo.uiDiv = $(".list-group");
+//		nonresponsiveZoneTopic.layoutView(uiInfo);
+//		answerSheetOperate.layoutView();
+	},
+	
+	
+	answerPageListDelete:function(data){
+		gAnswerSheet.delete(data);
+	},
+	
+	
+	/*
+	 * 查看上传模块数据
+	 * 
+	 */
+	
+//	selectModelData:function(){
+//		
+//	}
+	
+	/*
+	 * 修改用户模块信息
+	 * 
+	 */
+	editUserInfo:function(data,fontType){
+		gAnswerSheet.editUserInfo(data , fontType );
+	},
+	
+	/*
+	 * 查看没模块数据
+	 */
+	selectModelData:function(data){
+		var selectModelData = gAnswerSheet.selectModelData(data);
+		return selectModelData;
+	},
+	
+	/*
+	 * 查看上传模块数据
+	 */
+	addUploadModelData:function(data ,type){
+		var selectUploadModelData = gAnswerSheet.addUploadModelData(data ,type);
+		return selectUploadModelData;
+	},
+	
+	/*
+	 * 查看上传模块数据
+	 */
+	editUploadModelData:function(data){
+		var selectUploadModelData = gAnswerSheet.editUploadModelData(data);
+		return selectUploadModelData;
+	},
+	
+	
+	deleteUploadModelData:function(data){
+		var deleteUploadModelData = gAnswerSheet.deleteUploadModelData(data);
+		return deleteUploadModelData;
+	},
+	
+	/*
+	 * 更改填空题单个长度
+	 */
+	changeFillBankItemWidth: function(code, dxW){
+		// 从答题卡中找出填空题单个对象
+		// .... gAnswerSheet.foCurrentPage。。。
+		var fillBankItem = null;
+		var topicModuleList = gAnswerSheet.foCurrentPage.oTopicModuleList;
+		for (var i = 0; i < topicModuleList.length; i++) {
+			var topicModuleItem = topicModuleList[i];
+			if (topicModuleItem instanceof CFillBlank){
+				var fillBankItemList = topicModuleItem.fillBankItemList;
+				for (var j = 0; j < fillBankItemList.length; j++) {
+					var item = fillBankItemList[j];
+					if (item.code == code){
+						fillBankItem = item;
+						break;
+					}
+				}
+			}
+			
+			if (null != fillBankItem){
+				break;
+			}
+		}
+		
+	
+		fillBankItem.changeWidth(dxW);
+		// 重新计算位置
+		gAnswerSheet.calculatePositionInfo();
+		
+		// 重新渲染...
+		var uiInfo = new CUiInfo();
+		// 初始化 uiInfo....
+		uiInfo.uiDiv = $("#id");
+		gAnswerSheet.layoutView(uiInfo);
+		
+	},
+	answerSheetSave:function(type){
+		var uiInfo = new CUiInfo();
+		if(type == 1){//预览
+			var url = '/IQCloudMarking/markingController/saveAnswerSheetToRedis';
+		}else{
+			var url = "/IQCloudMarking/markingController/saveOrUpdateAnswerSheet";
+		}
+		
+		gAnswerSheet.save(url, type);
+	},
+	answerSheetLoad:function(){
+		if(GetQueryString("preview") == 1 && GetQueryString("previewType") != 2){//预览
+			var saveUrl = "/IQCloudMarking/markingController/getAnswerSheetFromRedis";
+		}else{
+			var saveUrl = "/IQCloudMarking/markingController/getAnswerSheetContent";
+		}
+		var param  = new Object();
+		var Oparam = new Object();
+		qoNum = 1;
+		if(GetQueryString("download") == 1){
+			$("#contl").css("overflow","hidden");
+			var index = layer.load(2, {
+			  shade: [0.5,'#a7a7a7'] //0.1透明度的白色背景
+			});
+		}
+		
+		Oparam.answerSheetId = GetQueryString("answerSheetId");
+		param.jsonBody = Oparam;
+		$.ajax({  
+			url: saveUrl,
+			type: 'POST',
+			dataType:'json',
+			contentType : "application/json; charset=utf-8",
+			data:JSON.stringify(param),
+			success: function(data) {
+				var dData = data.jsonBody.resultObject;
+				var rtnCode = data.jsonBody.rtnCode;
+				if(rtnCode == 0){
+					
+					
+					
+					$("#btnEidtTitle").unbind('click').bind({
+						click:function(){
+							editTitle();
+						}
+					})
+					$("#save-button").unbind('click').bind({
+						click:function(){
+							setTimeout(function(){
+								answerSheetOperate.answerSheetSave();
+							}, 3000);
+						}
+					})
+					
+					$("#preview-button").unbind('click').bind({//点击预览
+						click:function(){
+							setTimeout(function(){
+								newwindow = window.open();
+								answerSheetOperate.answerSheetSave(1);
+							}, 1000);
+						}
+					})
+					
+					$("#pageListContainerUI").data("answerSheetId",dData.answerSheetId);
+					subjectNum = [];
+					var abType = dData.abType;
+					var rtnSealingLine = "";//密封线
+					var layout = "";//栏数（A3，A4）
+					
+					if(abType == 0){
+						$('#pageListContainerUI').data("adType",abType);
+					}else{
+						$('#pageListContainerUI').data("adType",abType);
+					}
+					if(dData.answerSheetJsonList != undefined){
+						fileName = dData.answerSheetName + '.pdf';
+						rtnSealingLine = dData.answerSheetJsonList[0].sealingLine;//密封线
+						layout = dData.answerSheetJsonList[0].testType + 1;//密封线
+						
+						for(var i = 0 ;i < dData.answerSheetJsonList.length; i++){
+							var answerSheetJsonIems = dData.answerSheetJsonList[i];
+							switch(answerSheetJsonIems.type){
+								case 0://客观题
+									answerSheetOperate.addObjectTopic(answerSheetJsonIems);
+									var itemNum = new Object();
+									objectTopicItems = answerSheetJsonIems.objectTopicItems;
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];
+									for(var j = 0; j < objectTopicItems.length; j++){
+										qitemInputVal.push(parseInt(objectTopicItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									break;
+								case 1://填空题
+									answerSheetOperate.addFillBack(answerSheetJsonIems);
+									var itemNum = new Object();
+									fillBlankItems = answerSheetJsonIems.fillBlankItems;
+									
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];
+									for(var j = 0; j < fillBlankItems.length; j++){
+										qitemInputVal.push(parseInt(fillBlankItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									
+									break;
+								case 2://选做题
+									answerSheetOperate.chooseTheTitle(answerSheetJsonIems);
+									var itemNum = new Object();
+									chooseDoItems = answerSheetJsonIems.chooseDoItems;
+									
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];
+									for(var j = 0; j < chooseDoItems.length; j++){
+										qitemInputVal.push(parseInt(chooseDoItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									
+									break;
+								case 3://作文题（英）
+									answerSheetOperate.englishWriting(answerSheetJsonIems);
+									var itemNum = new Object();
+									compositionEnglishItems = answerSheetJsonIems.compositionEnglishItems;
+									
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];
+									for(var j = 0; j < compositionEnglishItems.length; j++){
+										qitemInputVal.push(parseInt(compositionEnglishItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									break;
+								case 4://作文题（语）
+									answerSheetOperate.languageWriting(answerSheetJsonIems);
+									var itemNum = new Object();
+									compositionChineseItems = answerSheetJsonIems.compositionChineseItems;
+									
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];
+									for(var j = 0; j < compositionChineseItems.length; j++){
+										qitemInputVal.push(parseInt(compositionChineseItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									
+									break;
+								case 5://非作答区
+									answerSheetOperate.nonresponsiveZone(answerSheetJsonIems);
+									break;
+								case 6://解答题
+									answerSheetOperate.addAnswerQuestions(answerSheetJsonIems);
+									var itemNum = new Object();
+									answerItems = answerSheetJsonIems.answerItems;
+									
+									itemNum.qNum = answerSheetJsonIems.bigQid;//大题题号
+									qitemInputVal = [];//小题号
+									for(var j = 0; j < answerItems.length; j++){
+										qitemInputVal.push(parseInt(answerItems[j].qid));
+									}
+									qitemInputVal.sort(function(a,b){
+							            return b-a;
+									});
+									if(qoNum < qitemInputVal[0] + 1){
+										qoNum = qitemInputVal[0] + 1;
+									}
+									itemNum.qitemInputVal = qitemInputVal;
+									subjectNum.push(itemNum);
+									break;
+								case 7://用户信息
+								
+									
+									answerSheetJsonIems.papersFormatType = 0;
+									answerSheetJsonIems.refillFill = 1;
+									if(answerSheetJsonIems.refillFill == 1){
+										$("#refillFill").attr("checked", "true");
+									}else{
+										$("#refillFill").removeAttr("checked");
+									}
+									
+									if(answerSheetJsonIems.precautions == 1){
+										$("#precautions").attr("checked", "true");
+									}else{
+										$("#precautions").removeAttr("checked");
+									}
+									
+									if(answerSheetJsonIems.testPaperType != 0){//AB卷
+										$("#existab").attr("checked", "true");
+									}else{
+										$("#existab").removeAttr("checked");
+									}
+									
+									if(answerSheetJsonIems.barCode == 1){
+										$("#barCode").attr("checked", "true");
+									}else{
+										$("#barCode").removeAttr("checked");
+									}
+									var radios = $('input:radio[name="column"]');
+									if(answerSheetJsonIems.sealingLine == 1){
+										$("#sealingLine").attr("checked", "true");
+										$("#refillFill").parent().parent().hide();
+									}else{
+										$("#sealingLine").removeAttr("checked");
+										$("#refillFill").parent().parent().show();
+									}
+									if(answerSheetJsonIems.testType == 1){
+										$(".columnitem").find('span').removeClass('columnon1_active');
+										$(".columnitem").find('span').eq(1).removeClass('column2_active');
+										$("#selectitem").find('span').removeClass('on');
+										$("#selectitem").find('span').eq(1).addClass('on');
+										$(".columnitem").find('span').eq(1).addClass('column2_active');
+			//							$(this).prop( "checked", true );  
+										radios.eq(0).attr("checked", false);
+			            				radios.eq(1).attr("checked", true);
+			            				$("#sealingLine").parent().show();
+									}else{
+										$(".columnitem").find('span').removeClass('columnon1_active');
+										$(".columnitem").find('span').removeClass('column2_active');
+										$("#selectitem").find('span').removeClass('on');
+										$("#selectitem").find('span').eq(0).addClass('on');
+										$(".columnitem").find('span').eq(0).addClass('columnon1_active');
+										radios.eq(0).attr("checked", true);
+			            				radios.eq(1).attr("checked", false);
+										$("#sealingLine").parent().hide();
+									}
+									
+//									userInfoObj.answerSheetSizeFont = 20;
+//									userInfoObj.answerSheetBigFont = 26;
+//									userInfoObj.answerSheetBigName = dData.answerSheetName;
+//									userInfoObj.answerSheetId = dData.answerSheetId;
+//									userInfoObj.answerSheetSizeName = "";
+									answerSheetJsonIems.answerSheetBigName = dData.answerSheetName;
+									answerSheetOperate.addOnePage(1, 0 , answerSheetJsonIems);
+									
+									$("#headBigText select").find('option:contains("'+answerSheetJsonIems.answerSheetBigFont+'")').attr("selected",true);
+									$("#headSizeText select").find('option:contains("'+answerSheetJsonIems.answerSheetSizeFont+'")').attr("selected",true);
+									
+									break;
+								case 8://注意事项
+	//								setPermission();
+									break;
+							}
+						}
+						
+//						$("#pageListContainerUI").data("answerSheetName",dData.answerSheetName);
+//						$(".headerTitle").text(dData.answerSheetName);
+						
+					}else{
+						var userInfoObj = new Object();
+						userInfoObj.testType = 1;
+						userInfoObj.papersTitleList = [1,2,3];
+						userInfoObj.ticketNumber = 8;
+						userInfoObj.column = 1;
+						userInfoObj.sealingLine = 0;
+						userInfoObj.answerSheetSizeFont = 20;
+						userInfoObj.answerSheetBigFont = 26;
+						userInfoObj.answerSheetBigName = dData.answerSheetName;
+						userInfoObj.answerSheetId = dData.answerSheetId;
+						userInfoObj.answerSheetSizeName = "";
+						userInfoObj.precautions = 0;
+						userInfoObj.barCode = 0;
+						userInfoObj.testPaperType = dData.abType;
+						if(userInfoObj.testPaperType != 0){//AB卷
+							$("#existab").attr("checked", "true");
+						}else{
+							$("#existab").removeAttr("checked");
+						}
+						var radios = $('input:radio[name="column"]');
+						if(userInfoObj.testType == 1){
+							$(".columnitem").find('span').removeClass('columnon1_active');
+							$("#selectitem").find('span').removeClass('on');
+							$("#selectitem").find('span').eq(1).addClass('on');
+							$(".columnitem").find('span').eq(1).addClass('columnon1_active');
+//							$(this).prop( "checked", true );  
+							radios.eq(0).attr("checked", false);
+            				radios.eq(1).attr("checked", true);
+            				$("#sealingLine").parent().show();
+						}else{
+							$(".columnitem").find('span').removeClass('columnon1_active');
+							$("#selectitem").find('span').removeClass('on');
+							$("#selectitem").find('span').eq(0).addClass('on');
+							$(".columnitem").find('span').eq(0).addClass('columnon1_active');
+							radios.eq(0).attr("checked", true);
+            				radios.eq(1).attr("checked", false);
+            				$("#sealingLine").parent().hide();
+							
+						}
+						if(userInfoObj.sealingLine == 1){
+							$("#sealingLine").attr("checked", "true");
+							$("#refillFill").parent().parent().hide();
+						}else{
+							$("#sealingLine").removeAttr("checked");
+							$("#refillFill").parent().parent().show();
+						}
+						userInfoObj.papersFormatType = 0;
+						userInfoObj.refillFill = 1;
+						if(userInfoObj.refillFill == 1){
+							$("#refillFill").attr("checked", "true");
+						}else{
+							$("#refillFill").removeAttr("checked");
+						}
+						userInfoObj.precautions = 1;
+						if(userInfoObj.precautions == 1){
+							$("#precautions").attr("checked", "true");
+						}else{
+							$("#precautions").removeAttr("checked");
+						}
+						userInfoObj.barCode = 0;
+						if(userInfoObj.barCode == 1){
+							$("#barCode").attr("checked", "true");
+						}else{
+							$("#barCode").removeAttr("checked");
+						}
+						
+						answerSheetOperate.addOnePage(1, 0 , userInfoObj);
+//						answerSheetBigName
+//						answerSheetSizeName
+						$("#headBigText select").find('option:contains("'+userInfoObj.answerSheetBigFont+'")').attr("selected",true);
+						$("#headSizeText select").find('option:contains("'+userInfoObj.answerSheetSizeFont+'")').attr("selected",true);
+					}
+//					setPermission();
+					
+					if(GetQueryString("download") == 1 || GetQueryString("preview") == 1){
+						$(".headerTitle").prop('disabled',true);
+						$(".headerTitle").css({'border':'none','background-color':'#ffffff'});
+						$(".btnZindex").remove();
+						$(".headBigText").remove();
+						$(".headSizeText").remove();
+						$(".sealingLineSvg").css('height',1086);
+						$(".sealingLineSvg svg").css('top',0);
+						imgContentList = $(".page");
+						totalImageNum = imgContentList.length;
+						var startNum = 0;
+						var endNum = totalImageNum;
+						
+						if(GetQueryString("preview") == 1){//预览
+							$(".headerTitle").prop('disabled',true);
+							$(".headerTitle").css({'border':'none','background-color':'#ffffff'});
+							$(".btnZindex").remove();
+							repaintHtml(startNum, endNum,rtnSealingLine, layout);//截图重新绘制页面
+						}
+						
+						if(GetQueryString("download") == 1){
+							if(endNum > 6){
+								endNum = 6;
+								repaintHtml(startNum, endNum,rtnSealingLine, layout,index);//截图重新绘制页面
+							}else if(layout == 1 && rtnSealingLine != 1){//A4没有密封线，页数小于6
+								screenshot(index, rtnSealingLine, layout);//截图
+							}else if(layout == 2){
+								repaintHtml(startNum, endNum,rtnSealingLine, layout,index);//截图重新绘制页面
+							}
+							
+						}
+					}
+				}
+		  	},
+		  	error: function(xhr, textStatus, errorThrown) {
+		  	}
+	  	});
+	}
+}
+
+function repaintHtml(startNum, endNum,rtnSealingLine, layout,index){//重新绘制页面
+	$("#pageListContainerUI").empty();
+	var downStr = "";
+	for(var k = startNum; k < endNum; k++){//A3截图
+		var dnum = k + 1;
+		if(layout == 2){//A3答题卡
+			if(dnum % 2 != 0){
+				if(rtnSealingLine == 1){//A3有密封线
+					if(k%4 == 0){
+						downStr += '<div class="download" style="width:1714px; height:1221px;padding: 50px 25px 25px 0;background:#FFFFFF">';
+						downStr += '<div class="page" id="page' + k + '" style=" float:left;margin-left: 150px;text-align: center; margin-bottom: 20px; width: 755px; height: 1086px;">';
+					}else{
+						downStr += '<div class="download" style="width:1714px; height:1221px;padding:50px 25px 25px 25px;background:#FFFFFF">';
+						downStr += '<div class="page" id="page' + k + '" style=" float:left;  text-align: center; margin-bottom: 20px; width: 755px; height: 1086px;">';
+					}
+					
+				}else{
+					downStr += '<div class="download" style="width:1714px; height:1221px;padding:50px 47px 25px 47px;background:#FFFFFF">';
+					downStr += '<div class="page" id="page' + k + '" style=" float:left;  text-align: center; margin-bottom: 20px; width: 755px; height: 1086px;">';
+				}
+			}else{
+				if(rtnSealingLine == 1){//A3有密封线
+					downStr += '<div class="page" id="page' + k + '" style="float:left;margin-left: 29px; text-align: center; margin-bottom: 20px; width: 755px; height: 1086px;">';
+				}else{
+					downStr += '<div class="page" id="page' + k + '" style="float:left;margin-left: 110px; text-align: center; margin-bottom: 20px; width: 755px; height: 1086px;">';
+				}
+			}
+			downStr += imgContentList[k].innerHTML;
+			if(dnum % 2 != 0){
+				if((k+2)%4 == 0 && k == totalImageNum - 1 && rtnSealingLine == 1){//右边密封线
+					downStr += '<div id="fiSealingLineDiv' + k + '"  style="position: absolute;z-index: 1;background: white;top: 0px;right: -900px;height: 1086px;">';
+					downStr +='<svg width="110" height="992" viewBox="0 0 173 1984" style="position: relative;">';
+					downStr +='<defs></defs>';
+					downStr +='<line x1="30" x2="30" y1="0" y2="23" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="55" y2="78" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="110" y2="133" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="165" y2="188" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="220" y2="244" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="275" y2="299" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="330" y2="354" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="385" y2="409" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="440" y2="464" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="496" y2="519" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="551" y2="574" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="606" y2="629" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="661" y2="685" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="716" y2="740" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="771" y2="795" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="826" y2="850" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="881" y2="905" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="937" y2="960" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="992" y2="1015" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1047" y2="1070" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1102" y2="1125" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1157" y2="1181" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1212" y2="1236" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1267" y2="1291" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1322" y2="1346" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1377" y2="1401" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1433" y2="1456" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1488" y2="1511" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1543" y2="1566" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1598" y2="1622" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1653" y2="1677" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1708" y2="1732" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1763" y2="1787" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1818" y2="1842" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1874" y2="1897" stroke="#000000" step="3" space="4" style=""></line>';
+					downStr +='<line x1="30" x2="30" y1="1929" y2="1952" stroke="#000000" step="3" space="4" style=""></line>';
+					
+					downStr +='<text x="20" y="153" transform="matrix(0,1,-1,0,170,110)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">密</text>';
+					downStr +='<text x="20" y="401" transform="matrix(0,1,-1,0,418,350)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">封</text>';
+					downStr +='<text x="20" y="649" transform="matrix(0,1,-1,0,665,598)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">线</text>';
+					downStr +='<text x="20" y="897" transform="matrix(0,1,-1,0,913,854)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">内</text>';
+					downStr +='<text x="20" y="1145" transform="matrix(0,1,-1,0,1161,1102)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">请</text>';
+					downStr +='<text x="20" y="1393" transform="matrix(0,1,-1,0,1409,1320)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">勿</text>';
+					downStr +='<text x="20" y="1641" transform="matrix(0,1,-1,0,1657,1560)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">作</text>';
+					downStr +='<text x="20" y="1889" transform="matrix(0,1,-1,0,1905,1790)" step="3" space="4" secretname="答作勿请内线封密" secreth="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">答</text>';
+					downStr += '</svg></div>';	
+				}
+				
+				downStr += '</div>';
+				if(k == totalImageNum - 1){
+					downStr += '<div id="fiPageNum_' + Math.round(dnum/2) + '" style="width: 1000px;height: 30px;margin-top: 10px;margin-left: 806px;float: left;">第' + Math.round(dnum/2) + '页</div>';
+					downStr += '</div>';
+				}
+			}else{
+				downStr += '</div>';
+				downStr += '<div id="fiPageNum_' + Math.round(dnum/2) + '" style="width: 1000px;height: 30px;margin-top: 10px;margin-left: 806px;float: left;">第' + Math.round(dnum/2) + '页</div>';
+				downStr += '</div>';
+			}
+		}else{//A4
+			if(rtnSealingLine == 1){//A4有密封线
+				if(k%2 == 0){
+					downStr += '<div class="fourpage" style="width:902px;height:1173px;margin-bottom:20px;background: #ffffff;">';
+					downStr += '<div class="page" id="page' + k + '" style="text-align: center;margin-left: 150px; margin-bottom: 20px; width: 750px; height: 1171px;">';
+				}else{
+					downStr += '<div class="fourpage" style="width:810px;">';
+					downStr += '<div class="page" id="page' + k + '" style="text-align: center; margin-bottom: 20px; width: 750px; height: 1171px;">';
+				}
+			}else{//大于6页时截图需要重新绘制
+				downStr += '<div class="fourpage" style="width:750px;height:1173px;margin-bottom:20px;background: #ffffff;">';
+				downStr += '<div class="page" id="page' + k + '" style="text-align: center; margin-bottom: 20px; width: 750px; height: 1171px;">';
+			}
+			
+			downStr += imgContentList[k].innerHTML;
+			
+			downStr += '</div></div>';
+		}
+		
+	}
+	
+	$("#pageListContainerUI").append(downStr);
+	if(GetQueryString("download") == 1){
+		screenshot(index, rtnSealingLine, layout);//截图
+	}
+}

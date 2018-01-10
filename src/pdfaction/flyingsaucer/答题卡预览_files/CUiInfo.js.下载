@@ -1,0 +1,70 @@
+/*
+ * UI类型
+ */
+function CUiInfo(){
+	// 页面链表容器UI
+	this.foPageListContainerUI = null;
+	
+	// 当前页的ListGroupUI对象
+	this.foNowPageListGroupUI = null;
+		
+	// 当前上
+	this.ffNowTopUI = 0;
+	
+	// 当前大模块上
+	this.ffNowModuleTopUI = 0;
+		
+	// 当前页面对象链表
+	this.faNowPageList = null;
+	
+	// 当前页对象
+	this.foNowAnswerPage = null;
+	
+	// 排列过程中生成的新的页面链表
+	this.faNewAnswerPageList = new Array();
+	
+	// 排列过程中生成的当前页面对象
+	this.foNewNowAnswerPage = null;
+	
+	// 当前页面序号(从0开始)，页码一般就这个值加1
+	this.fiNewNowPageOrd = 0;
+	
+	// 页面高度
+	this.ffPageHeight = 1171; 
+
+	//试卷展示类型
+	this.fitestType = 0;
+	
+	// 当前元素页面绝对坐标：left
+	this.absolutePageLeft = 0;
+	
+	// 当前元素页面绝对坐标：top
+	this.absolutePageTop = 0;
+	
+	// 当前页面页码
+	this.nowPageNum = 0;
+	
+	
+	
+	this.uiDiv = null;
+	
+	//解答题 
+	this.answerQuestionsLineY = 199;
+	this.answerQuestionsSvgRectHeight = 0;
+	
+	//作文（英）题 
+	this.CCompositionEnglishLineY = 199;
+	this.CCompositionEngSvgRectHeight = 0;
+	
+	//作文（语文）题 
+	this.CCompositionChineseLineY = 0;
+	this.CCompositionChineseSvgRectHeight = 0;
+	this.CCompositionChineseSvgRectHeight2 = 0;
+	//非作答区
+	this.CNonresponsiveZoneLineY = 0;
+	this.CNonresponsiveZoneSvgRectHeight = 0;
+	//选做题 
+	this.CAnswerItemLineY = 199;
+	this.CAnswerItemSvgRectHeight = 0;
+	
+}

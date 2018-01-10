@@ -1,0 +1,82 @@
+/*
+ * 作文题（英语）-单个
+ */
+function CCompositionChineseItem(){
+	this.code = null;
+	
+	//  题号
+	this.topicNum = 1;
+	
+	this.topicNumX = 39;
+	this.topicNumY = 104;
+	
+	// 分数
+	this.score = 2;
+
+	// 白框画头部线
+	this.ffToplineY1 = 196;
+	this.ffToplineY2 = 196;
+	this.ffToplineX1 = 14;
+	this.ffToplineX2 = 1403;
+	// 白框画底部线
+	this.ffButlineX1 = 14;
+	this.ffButlineX2 = 1403;
+	this.ffButlineY1 = 211;
+	this.ffButlineY2 = 211;
+	//语文填写框
+	this.ffClineX1 = 77;
+	this.ffClineX2 = 77;
+	this.ffClineY1 = 56;
+	this.ffClineY2 = 119;
+	
+//	compositionEnglishItem.init(code, clineY1, clineY2 , toplineY1 , butlineY1, this.score, this.leastWords this.wordCount ,i);
+	
+	/*
+	 * 初始化函数code, this.smallQid , lineY , this.score, this.rows ,i
+	 */
+	this.init =  function(code, topicNum, clineY1, clineY2 , toplineY1 , butlineY1, score, leastWords, wordCount ,i){
+		this.code = code;
+		this.topicNum = topicNum;
+		this.ffToplineY1 = toplineY1;
+		this.ffToplineY2 = toplineY1;
+		this.ffButlineY1 = butlineY1;
+		this.ffButlineY2 = butlineY1;
+		this.ffClineY1 = clineY1;
+		this.ffClineY2 = clineY2;
+		
+	}
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 * @param {Object} state //是否是最后一个
+	 */
+	this.layoutView =  function(kouChuHeight , n){
+		// 处理题号
+		var sHtml = '';
+//		if(n == 2){
+//			sHtml += '<line x1="'+this.ffToplineX1+'" x2="'+this.ffToplineX2+'" y1="'+this.ffToplineY1+'" y2="'+this.ffToplineY2+'" stroke="#000000" lineWidth="0.3"></line>';
+//		}else{
+			sHtml += '<line x1="'+this.ffToplineX1+'" x2="'+this.ffToplineX2+'" y1="'+ (this.ffToplineY1  - kouChuHeight ) +'" y2="'+ (this.ffToplineY2 - kouChuHeight) +'" stroke="#000000" lineWidth="0.3"></line>';
+			sHtml += '<line x1="'+this.ffButlineX1+'" x2="'+this.ffButlineX2+'" y1="'+ (this.ffButlineY1 - kouChuHeight) +'" y2="'+ (this.ffButlineY2 - kouChuHeight) +'" stroke="#000000" lineWidth="0.3"></line>';
+//		}
+		
+		for(var i = 0 ; i < 21 ; i++){
+			var clineX1 = this.ffClineX1 + 63 * i;
+			sHtml += '<line x1="'+clineX1+'" x2="'+clineX1+'" y1="'+(this.ffClineY1 - kouChuHeight)+'" y2="'+ (this.ffClineY2 - kouChuHeight ) +'" stroke="#000000" lineWidth="0.3"></line>';			
+		}
+
+		return sHtml;
+		
+	}
+	
+	this.changeWidth =  function(dxW){
+//		var nowWidth = lineX2 - lineX1;
+//		var newWidth = nowWidth + dxW;
+		
+//		lineX2 = lineX1 + newWidth;
+		
+		lineX2 = lineX2 + dxW;
+	}
+}

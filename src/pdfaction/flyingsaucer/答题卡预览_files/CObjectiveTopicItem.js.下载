@@ -1,0 +1,47 @@
+/*
+ * 客观题
+ */
+function CObjectiveTopicItem(){
+	
+	this.fsCode = null;
+	
+	//  题号
+	this.fiTopicNum = 1;
+	
+	// 客观题小的类型
+	this.fiAnswerType = 1;
+	
+	// 题目id
+	this.fsId = "";
+	
+	// 题目排序
+	
+	this.ffScore = "";
+	
+	//客观题结束标志
+	this.fiEndType = 1;
+	
+	// 分数
+	this.ffScore = 0;
+	
+	this.fiOptionNum = 0;
+
+	// 选项数组
+	this.faSelValueArray = ['A', 'B', 'C', 'D'];
+	
+	/*
+	 * 初始化函数
+	 */
+	this.init =  function(code, sort, score, optionsNum ,answerType, id, qid, topicType,endType){
+		this.fsCode = code;
+//		this.fiTopicNum = topicNum;
+		this.fiTopicNum = qid;
+		this.ffScore = score;
+		this.fiSort = sort;
+		this.fiAnswerType = answerType;
+		this.fsId = id;
+		this.fiOptionNum = optionsNum;
+		this.fiEndType = endType;
+		this.faSelValueArray = letterConversion(optionsNum, topicType);
+	}
+}

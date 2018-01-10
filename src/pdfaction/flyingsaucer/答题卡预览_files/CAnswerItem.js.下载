@@ -1,0 +1,53 @@
+/*
+ * 解答题-单个
+ */
+function CAnswerItem(){
+	// 编码
+	this.fsCode = null;
+	
+	//  题号
+	this.fiTopicNum = 1;
+	
+	//  题号
+	this.fsId = 1;
+	
+	//小题目的类型
+	this.fiAnswerType = 1;
+	
+	// 分数
+	this.ffScore = 2;
+	
+	// 分数
+	this.fiSort = 2;
+	
+	// 每题的行数（即表示：多少条直线，不包含题号）
+	this.fiEachQuestionCountRows = 0;
+	
+	// 题号x坐标
+	this.ffTopicNumX = 39;
+	
+	// 直线左右空格位置信息
+	this.ffLineX1 = 68;
+	this.ffLineX2 = 1338;
+	
+	//上传图数组
+	this.faImgData = new Array();
+	
+	/*
+	 * 初始化函数
+	 */
+	this.init =  function(code, sort, score, eachQuestionCountRows, answerType, id, qid , imgData){
+		this.fsCode = code;
+		this.fiTopicNum = qid;
+		this.fsId = id;
+		this.fiAnswerType = answerType;
+		this.fiSort = sort;
+		this.ffScore = score;
+		this.fiEachQuestionCountRows = eachQuestionCountRows;
+		if(imgData != undefined){
+			this.faImgData = imgData;
+		}
+		
+		
+	}
+}

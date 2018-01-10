@@ -1,0 +1,1048 @@
+/*
+ * 用户信息
+ */
+function CUserInfo(){
+	// 基类方法
+	CTopicModuleBasis.call(this);
+	
+	//答题卡名字
+	this.fsName = "";
+	
+	this.fsId = "";
+	
+	//题型的类型
+	this.fiType = 7;
+	
+	//准考证号
+	this.fsTicketNumber = "";
+	
+	//准考证号名字长度
+	this.fiPermissionNumberNameWidth = 97;
+	
+	//准考证号名字框的高度
+	this.fiPermissionNumberNameHeight = 40;
+	
+	//栏目
+	this.fiColumn = "";
+	
+	//AB卷高度
+	this.ffTestTypeHeight = 80;
+	
+	//准考证号 填写出的高度
+	this.ffPermissionNumberFillingHeight = 36;
+	
+	
+	//AB卷高度和准考证号外宽的空白高度
+	this.ffTestTypeBlankHeight = 14;
+	
+	//准考证号外宽的高度
+	this.ffPermissionNumberOuterHeight = 240;
+	
+	//答题卡头部距离外面边线空白距离
+	this.ffHeadBlank = 21;
+	
+	//准考证开始的X位置
+	this.fsTicketNumberBeginX = 498;
+	//准考证开始的Y位置
+	this.fsTicketNumberBeginY = 295;
+	//准考证结束的X位置
+	this.fsTicketNumberEndX = 450;
+	//准考证结束的Y位置
+	this.fsTicketNumberEndY = 736;
+	
+	//页面svg的宽度
+	this.ffWidth = 708.5;
+	
+	//页面真实的宽度宽度
+	this.ffModoleWidth = 750;
+	
+	//密封线
+	this.fiSealingLine = "";
+	
+	//试卷标题
+	this.faPapersTitleList = new Array();
+	
+	//标题高度
+	this.faPapersTitleListHeight = 36;
+	
+	//试卷标题之间空白
+	this.faPapersTitleBlankWidth = 20;
+	
+	//试卷标题之间空白
+	this.faPapersTitleNameBlankWidth = 20;
+	
+	//试卷标题名字和线之间距离
+	this.faPapersTitleNameSpaceWidth = 39;
+	
+	//试卷标题线的宽度
+	this.faPapersTitleNameLineWidth = 90.5;
+	
+	
+	//试卷标题没有密封线，有注意事项的情况名字宽度
+	this.fsPapersTitleFormatTypeNameWidth = 52;
+	
+	//试卷标题没有密封线，有注意事项的情况宽度,直线的长度
+	this.fsPapersTitleFormatTypeLineWidth = 90.5;
+	
+	//试卷标题没有密封线，有注意事项的情况宽度,名字宽度和直线的长度距离
+	this.fsPapersTitleFormatTypeNameLineWidth = 39;
+	
+	//试卷标题没有密封线，有注意事项的情况宽度,名字宽度和直线的长度距离
+//	this.fsPapersTitleFormatTypeSpaceLineWidth = 39;
+	
+	//试卷标题没有密封线，有注意事项的情况宽度,名字宽度和直线的长度空白距离
+	this.fsPapersTitleFormatTypeSpaceLineWidth = 20;
+	
+	//试卷格式类型
+	this.fiPapersFormatType = "";
+	
+	//注意事项与缺考标记状态
+	this.fiPrecautions = "";
+	
+	//考号填涂区
+	this.fiRefillFill = "";
+	
+	//条形码
+	this.fiBarCode = "";
+	
+	//条形码的外的宽度
+	this.fiBarCodeOuterWidth = 248;
+	
+	//条形码的外的高度
+	this.fiBarCodeOuterHeight = 239;
+	
+	//条形码的内的宽度
+	this.fiBarCodeInsideWidth = 236;
+	//条形码的外的高度
+	this.fiBarCodeInsideHeight = 141.5;
+	
+	//考生号的名称长度
+	this.fiTicketNumberNameWidth = 142;
+	
+	//考生号的名称高度初始化(考号填涂区)
+	this.fiTicketNumberNameHeight = 142;
+	
+	//考生号的名称高度初始化(条形码)
+	this.ffTicketNumberNameHeight = 110.5;
+	
+	//考生号的名称长度空白一点blank
+	this.fiTicketNumberNameBlankWidth = 3;
+	
+	//考生号的名称间距
+	this.fiTicketNumberSpaceWidth = 31;
+	
+	//考号填涂区的每个号的宽度
+	this.fsSomeTicketNumberWidth = 30;
+	
+	//准考证的每个格的大小
+	this.TicketNumberLatticeWidth = 29;
+	
+	//准考证的每个格的图片初始化高度(没注意事项与缺考标记)
+	this.ffnoTicketNumberLatticeImgHeight = 176;
+	
+	//准考证的每个格的图片初始化高度(注意事项与缺考标记)
+	this.ffTicketNumberLatticeImgHeight = 207.5;
+	
+	//准考证的每个格的大小
+	this.TicketNumberLatticeImgSpaceHeight = 15.5;
+	
+
+	
+	//准考证的每个格的大小中的图片
+	this.TicketNumberLatticeImgWidth = 17;
+	
+	//准考证的每个格的大小中的图片
+	this.TicketNumberLatticeImgSpaceWidth = 6.5;
+	
+	//存在AB卷
+	this.fiTestPaperType = "";
+	
+	//小标题的字体大小
+	this.fiAnswerSheetSizeFont = 18;
+	
+	//大标题的字体大小
+	this.fiAnswerSheetBigFont = 26;
+	
+	//大标题的名字
+	this.fsAnswerSheetBigName = "";
+	
+	//小标标题的名字
+	this.fsAnswerSheetSizeName = "";
+	
+	this.fsCode = "";
+	
+	//试卷展示类型，A4或者A3
+	this.fitestType = "";
+	
+	//试卷展示类型，A4或者A3多的高度
+	this.fitestTypeHeight = 63;
+	
+	//试卷展示类型，A4或者A3多的高度
+	this.fitestTypeWidth = 15;
+	
+	//每一个页面的高度
+	this.ffModuleHeight  = 1171;
+	//每一个页面的宽度
+	this.ffModuleWidth  = 750;
+	
+	// svg id 数组
+	this.faSvgIdArray = [];
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(data){
+		var UserInfoData = data;
+		if(UserInfoData.id == undefined){
+			UserInfoData.id = "";
+		}
+		this.fsId = UserInfoData.id;
+		this.fitestType = UserInfoData.testType;
+		this.fsName = UserInfoData.answerSheetName;
+		this.faPapersTitleList = UserInfoData.papersTitleList;
+		this.fsTicketNumber = UserInfoData.ticketNumber;
+		this.fiColumn = UserInfoData.column;
+		this.fiSealingLine = UserInfoData.sealingLine;
+		this.fiPapersFormatType = UserInfoData.papersFormatType;
+		this.fiPrecautions = UserInfoData.precautions;
+		this.fiBarCode = UserInfoData.barCode;
+		this.fiTestPaperType = UserInfoData.testPaperType;
+		this.fiRefillFill = UserInfoData.refillFill;
+		this.fiAnswerSheetBigFont = parseInt(UserInfoData.answerSheetBigFont);
+		this.fiAnswerSheetSizeFont = parseInt(UserInfoData.answerSheetSizeFont);
+		this.fsAnswerSheetBigName = UserInfoData.answerSheetBigName;
+		this.fsAnswerSheetSizeName = UserInfoData.answerSheetSizeName;
+		if(this.fitestType == 0){
+			//每一个页面的高度
+			this.ffModuleHeight  = 1171;
+			//每一个页面的宽度
+			this.ffModuleWidth  = 750;
+		}else{
+			//每一个页面的高度
+			this.ffModuleHeight  = 1086;
+			//每一个页面的宽度
+			this.ffModuleWidth  = 750;
+		}
+		
+		this.fsCode = "UserItem_" + UserInfoData.sort + "_" + generateUUID();
+	}
+	
+	/**
+	 * 初始化函数
+	 */
+	this.editUserInfo = function(data){
+		var type = data.type;
+		switch(type){
+			case 0:
+			//试卷展示类型，A4或者A3
+			this.fitestType = data.testType;
+			if(this.fitestType == 0){
+				this.fiSealingLine = 0;
+			}
+			break;
+			case 1:
+			//密封线
+			this.fiSealingLine = data.sealingLine;
+			break;
+			case 2:
+			//考号填涂区
+			this.fiRefillFill = data.refillFill;
+			//条形码
+			this.fiBarCode = data.barCode;
+			break;
+			case 3:
+			//注意事项与缺考标记状态
+			this.fiPrecautions = data.precautions;
+			break;
+			case 4:
+			//存在AB卷
+			this.fiTestPaperType = data.testPaperType;
+			break;
+			case 5:
+			//大标题的字体大小
+			this.fiAnswerSheetBigFont = parseInt(data.answerSheetBigFont);
+			break;
+			case 6:
+			//小标题的字体大小
+			this.fiAnswerSheetSizeFont = parseInt(data.answerSheetSizeFont);
+			break;
+			case 7:
+			//大标题的名字
+			this.fsAnswerSheetBigName = data.answerSheetBigName;
+			break;
+			case 8:
+			//小标标题的名字
+			this.fsAnswerSheetSizeName = data.answerSheetSizeName;
+			break;
+			case 9:
+			//准考证号
+			this.fsTicketNumber = data.ticketNumber;
+			break;
+			case 10:
+			//试卷标题
+			this.faPapersTitleList = data.papersTitleList;
+			break;
+			
+		}
+
+	}
+	
+	
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView =  function(uiInfo){
+		uiInfo.fitestType = this.fitestType;
+		uiInfo.fiSealingLine = this.fiSealingLine;
+		if(this.fiSealingLine == 1){
+			
+			var preview = GetQueryString('preview');//预览
+			var download = GetQueryString('download');//下载
+			
+			var $_fiSealingLineDiv = '<div id="fiSealingLineDiv"  style="position: absolute; z-index: 1; border: 1px solid rgb(187, 187, 187); background: white; top: 0px; left: -98px; height: 1169px;"></div>';
+			var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			var style = "position: relative; top: 20px;";
+			var viewBox = "0 0 173 2100";
+			svg.setAttributeNS(null, "width", 86.5);
+		    svg.setAttributeNS(null, "height", 1050);
+		    svg.setAttributeNS(null, "viewBox", viewBox);
+		    svg.setAttribute('style', style);
+		    svg.setAttribute('data-id', this.fsCode);
+		    svg.setAttribute('id', this.fsCode);
+		    
+		    if(preview == 1 || download == 1){
+				$_fiSealingLineDiv = '<div class="sealingLineSvg" id="fiSealingLineDiv"  style="position: absolute; z-index: 1; background: white; top: 0px; left: -150px; height: 1169px;"></div>';
+				svg.setAttributeNS(null, "width", 130);
+		    }
+		    
+		    $("#page0").append($_fiSealingLineDiv);
+			$("#btnEidtTitle").hide();
+			$("#btnEidtPermission").hide();
+		    
+			$("#fiSealingLineDiv").append(svg);
+			var fiSealingLineHtml = '';
+			var fiSealingLine = '';
+			fiSealingLine +='<defs></defs>';
+//			fiSealingLine +='<text x="55" y="1930" transform="matrix(0,-1,1,0,-1800,2030)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">姓名：</text>';
+//			fiSealingLine +='<line x1="141" x2="141" y1="1876" y2="1561" stroke="#000000"></line>';
+//			fiSealingLine +='<text x="55" y="1465" transform="matrix(0,-1,1,0,-1340,1580)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">班级：</text>';
+//			fiSealingLine +='<line x1="141" x2="141" y1="1112" y2="1427" stroke="#000000"></line>';
+			
+//			fiSealingLine +='<text x="15" y="1465" transform="matrix(0,-1,1,0,-1398,1505)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">姓名</text>';
+//			fiSealingLine +='<rect x="86" y="1238" width="62" height="251" stroke="#000000" style="fill-opacity: 0;"></rect>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="1301" y2="1301" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="1364" y2="1364" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="1427" y2="1427" stroke="#000000"></line>';
+
+//			fiSealingLine +='<text x="7" y="1042" transform="matrix(0,-1,1,0,-983,1074)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">考号</text>';
+//			fiSealingLine +='<rect x="86" y="500" width="62" height="566" stroke="#000000" style="fill-opacity: 0;"></rect>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="563" y2="563" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="626" y2="626" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="689" y2="689" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="752" y2="752" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="815" y2="815" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="878" y2="878" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="941" y2="941" stroke="#000000"></line>';
+//			fiSealingLine +='<line x1="86" x2="149" y1="1004" y2="1004" stroke="#000000"></line>';
+//			fiSealingLine +='<rect x="7" y="96" width="157" height="314" stroke="#000000" rx="20" ry="20" style="fill-opacity: 0;"></rect>';
+//			fiSealingLine +='<text x="0" y="267" transform="matrix(0,-1,1,0,-181.5,331.5)" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold;">贴条形码区</text>';
+//			fiSealingLine +='<text x="31" y="263" transform="matrix(0,-1,1,0,-132,376)" style="font-size: 25px; font-family: 文泉驿微米黑; font-weight: bold;">（勿贴出方框）</text>';
+			
+			fiSealingLine +='<text x="55" y="2040" transform="matrix(0,-1,1,0,-1910,2140)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">姓名：</text>';
+			fiSealingLine +='<line x1="141" x2="141" y1="1986" y2="1671" stroke="#000000"></line>';
+			fiSealingLine +='<text x="55" y="1575" transform="matrix(0,-1,1,0,-1450,1690)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">班级：</text>';
+			fiSealingLine +='<line x1="141" x2="141" y1="1222" y2="1537" stroke="#000000"></line>';
+			
+			fiSealingLine +='<text x="55" y="1142" transform="matrix(0,-1,1,0,-1015,1230)" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">考号:</text>';
+			fiSealingLine +='<line x1="138" x2="138" y1="702.5" y2="1090" stroke="#000000" style="fill-opacity: 0;"></line>';
+			
+			
+			fiSealingLine +='<rect x="7" y="196" width="157" height="314" stroke="#000000" rx="20" ry="20" style="fill-opacity: 0;"></rect>';
+			fiSealingLine +='<text x="0" y="367" transform="matrix(0,-1,1,0,-281.5,431.5)" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold;">贴条形码区</text>';
+			fiSealingLine +='<text x="31" y="363" transform="matrix(0,-1,1,0,-232,476)" style="font-size: 25px; font-family: 文泉驿微米黑; font-weight: bold;">（勿贴出方框）</text>';
+			
+			
+			fiSealingLine +='<line x1="196" x2="196" y1="0" y2="23" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="55" y2="78" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="110" y2="133" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="165" y2="188" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="220" y2="244" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="275" y2="299" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="330" y2="354" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="385" y2="409" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="440" y2="464" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="496" y2="519" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="551" y2="574" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="606" y2="629" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="661" y2="685" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="716" y2="740" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="771" y2="795" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="826" y2="850" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="881" y2="905" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="937" y2="960" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="992" y2="1015" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1047" y2="1070" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1102" y2="1125" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1157" y2="1181" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1212" y2="1236" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1267" y2="1291" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1322" y2="1346" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1377" y2="1401" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1433" y2="1456" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1488" y2="1511" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1543" y2="1566" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1598" y2="1622" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1653" y2="1677" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1708" y2="1732" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1763" y2="1787" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1818" y2="1842" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1874" y2="1897" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1929" y2="1952" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="1984" y2="2007" stroke="#000000" step="3" space="4" style=""></line>';
+			fiSealingLine +='<line x1="196" x2="196" y1="2039" y2="2062" stroke="#000000" step="3" space="4" style=""></line>';
+			
+			fiSealingLine +='<text x="182" y="153" transform="matrix(0,-1,1,0,55,338)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">答</text>';
+			fiSealingLine +='<text x="182" y="401" transform="matrix(0,-1,1,0,-193,586)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">作</text>';
+			fiSealingLine +='<text x="182" y="649" transform="matrix(0,-1,1,0,-441,834)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">勿</text>';
+			fiSealingLine +='<text x="182" y="897" transform="matrix(0,-1,1,0,-689,1082)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">请</text>';
+			fiSealingLine +='<text x="182" y="1145" transform="matrix(0,-1,1,0,-937,1330)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">内</text>';
+			fiSealingLine +='<text x="182" y="1393" transform="matrix(0,-1,1,0,-1185,1578)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">线</text>';
+			fiSealingLine +='<text x="182" y="1641" transform="matrix(0,-1,1,0,-1433,1826)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">封</text>';
+			fiSealingLine +='<text x="182" y="1889" transform="matrix(0,-1,1,0,-1681,2074)" step="3" space="4" secretName="答作勿请内线封密" secretH="252" style="font-size: 29px; font-family: 文泉驿微米黑; font-weight: bold; stroke-width: 3;">密</text>';
+			
+			//准考证开始的X位置
+			this.fsTicketNumberBeginX = -122;
+			//准考证开始的Y位置
+			this.fsTicketNumberBeginY = 99;
+			//准考证结束的X位置
+			this.fsTicketNumberEndX = -45;
+			//准考证结束的Y位置
+			this.fsTicketNumberEndY = 257;
+			
+			$("#fiSealingLineDiv").children('svg').html(fiSealingLine);
+			var fiTestPaperTypeHtml = '';
+			//判断是否是AB卷
+			if(this.fiTestPaperType != 0){//判断是否是AB卷
+				var fiTestPaperTypeSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+				var viewBox = "0 0 1417 157";
+				fiTestPaperTypeSvg.setAttributeNS(null, "width", 708.5);
+			    fiTestPaperTypeSvg.setAttributeNS(null, "height", 78.5);
+			    fiTestPaperTypeSvg.setAttributeNS(null, "viewBox", viewBox);
+			    fiTestPaperTypeSvg.setAttribute('data-id', this.fsCode);
+		    	fiTestPaperTypeSvg.setAttribute('id', this.fsCode);
+				$("#fiTestPaperType").append(fiTestPaperTypeSvg);
+				fiTestPaperTypeHtml += '<rect x="0" y="0" width="299" height="157" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				fiTestPaperTypeHtml += '<text x="15" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷</text>';
+				fiTestPaperTypeHtml += '<text x="15" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">类型</text>';
+				fiTestPaperTypeHtml += '<text x="118" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷A</text>';
+				fiTestPaperTypeHtml += '<text x="118" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷B</text>';
+				fiTestPaperTypeHtml += '<line x1="102" x2="102" y1="0" y2="157" stroke="#000000"></line>';
+				fiTestPaperTypeHtml += '<rect x="-63" y="37" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+				fiTestPaperTypeHtml += '<rect x="-63" y="100" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+				fiTestPaperTypeHtml += '<rect x="232" y="37" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				fiTestPaperTypeHtml += '<rect x="232" y="100" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				if(this.fsAnswerSheetSizeName == ""){
+					if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}else{
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}
+				}else{
+					textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+				}
+
+				textareaHtml += '<textarea id="headerBigTitle" class="headerTitle" placeholder="请输入答题卡大标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 0px;height: 44px;width: 540px;line-height: 30px;font-size: 39px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetBigName+'</textarea>';
+//				'<textarea class="headerTitle" placeholder="请输入答题卡标题" style="text-align: center; position: absolute; resize: none; left: 187px; top: 0px; height: 78px; width: 539px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2; font-family: FangSong_GB2312;">test5</textarea>';
+				
+				$("#fiTestPaperType").append(textareaHtml);
+				$("#fiTestPaperType").children('svg').html(fiTestPaperTypeHtml);
+			}else{
+				if(this.fsAnswerSheetSizeName == ""){
+					if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle"  style="text-align: center;resize: none;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}else{
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;resize: none;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}
+				}else{
+					textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;resize: none;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';				
+				}
+
+				textareaHtml += '<textarea id="headerBigTitle" class="headerTitle" placeholder="请输入答题卡大标题" style="text-align: center;resize: none;height: 44px;width: 708px;line-height: 30px;font-size: 39px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetBigName+'</textarea>';
+//				'<textarea class="headerTitle" placeholder="请输入答题卡标题" style="text-align: center; position: absolute; resize: none; left: 19px; top: 0px; height: 78px; width: 708px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2;">作文测试</textarea>'
+				$("#fiTestPaperType").append(textareaHtml);
+			}
+			var fontBig = this.fiAnswerSheetBigFont + "px";
+			var fontSize = this.fiAnswerSheetSizeFont + "px";
+			$("#headerBigTitle").css("font-size",fontBig);
+			$("#headerSizeTitle").css("font-size",fontSize);
+			$(".btnSetHeader").hide();
+		}else{
+			
+			var fiTestPaperTypeSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			var viewBox = "0 0 1417 799";
+			fiTestPaperTypeSvg.setAttributeNS(null, "width", 708.5);
+		    fiTestPaperTypeSvg.setAttributeNS(null, "height", 399.5);
+		    fiTestPaperTypeSvg.setAttributeNS(null, "viewBox", viewBox);
+		    fiTestPaperTypeSvg.setAttribute('data-id', this.fsCode);
+		    fiTestPaperTypeSvg.setAttribute('id', this.fsCode);
+			$("#fiTestPaperType").append(fiTestPaperTypeSvg);
+			if(this.fiBarCode == 1){//判断是否有条形码
+				if(this.fiPrecautions == 1){
+					var fiPrecautionsWidth = this.ffWidth - this.fiBarCodeOuterWidth;
+					var str = '';
+					this.fsPapersTitleFormatTypeSpaceLineWidth = 20;
+					var textX = 0;
+					var lineX = 78;
+					var lineX2 = 259;
+					for(var i = 0 ; i < this.faPapersTitleList.length ; i ++){
+						var name = "";
+						switch(parseInt(this.faPapersTitleList[i])){
+							case 1:
+							name = "学校:";
+							break;
+							case 2:
+							name = "姓名:";
+							break;
+							case 3:
+							name = "班级:";
+							break;
+							case 4:
+							name = "考场:";
+							break;
+							case 5:
+							name = "座号:";
+							break;
+						}
+						if(i == 0){
+							str +='<text x="'+textX+'" y="221" style="font-size: 33px; font-family: 文泉驿微米黑;">'+name+'</text>';
+							str +='<line x1="'+lineX+'" x2="'+lineX2+'" y1="228" y2="228" stroke="#000000"></line>';
+							lineX2 = lineX2;
+						}else{
+							var strtextX = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2;
+							var strlineX1 = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2 + this.fsPapersTitleFormatTypeNameLineWidth*2;
+							var strlineX2 = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2 + this.fsPapersTitleFormatTypeNameLineWidth*2 + this.fsPapersTitleFormatTypeLineWidth*2;
+							str +='<text x="'+strtextX+'" y="221" style="font-size: 33px; font-family: 文泉驿微米黑;">'+name+'</text>';
+							str +='<line x1="'+strlineX1+'" x2="'+strlineX2+'" y1="228" y2="228" stroke="#000000"></line>';
+							lineX2 = strlineX2;
+						}
+					}
+					str +='<text x="0" y="'+this.fiTicketNumberNameHeight*2+'" style="font-size: 33px; font-family: 文泉驿微米黑;">考生号:</text>';
+					var fiTicketNumberX = "";
+					for(var i = 0 ; i < this.fsTicketNumber ; i ++){
+						if(i == 0){
+							fiTicketNumberX = this.fiTicketNumberNameWidth + this.fiTicketNumberNameBlankWidth*2;
+							str +='<rect x="'+fiTicketNumberX+'" y="251" width="31" height="47" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						}else{
+							fiTicketNumberX = fiTicketNumberX + this.fiTicketNumberSpaceWidth*2;
+							str +='<rect x="'+fiTicketNumberX+'" y="251" width="31" height="47" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						}
+					}
+					
+					str += '<rect x="0" y="314" width="'+fiPrecautionsWidth*2+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="370" y="370" style="font-size: 33px; font-family: 文泉驿微米黑;">注  意  事  项</text>';
+					str += '<rect x="0" y="393" width="921" height="299" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="15" y="454" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  1.　答题前请将姓名、班级、考场、座号和准考证号填写清楚</text>';
+					str += '<text x="15" y="501" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  2.　客观题答题,必须使用2B铅笔填涂,修改时用橡皮擦干净</text>';
+					str += '<text x="15" y="549" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  3.　主观题必须使用黑色签字笔书写</text>';
+					str += '<text x="15" y="596" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  4.　必须在题号对应的答题区域内作答,超出答题区域书写无效</text>';
+					str += '<text x="15" y="644" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  5.　保持答卷清洁完整</text>';
+					str += '<rect x="0" y="692" width="921" height="100" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="11" y="753" style="font-size: 33px; font-family: 文泉驿微米黑;">正确填涂</text>';
+					str += '<rect x="232" y="732" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+					str += '<text x="342" y="753" style="font-size: 33px; font-family: 文泉驿微米黑;">缺考标记</text>';
+					str += '<rect x="618" y="734" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					
+					str += '<rect x="'+fiPrecautionsWidth*2+'" y="314" width="'+this.fiBarCodeOuterWidth*2+'" height="'+this.fiBarCodeOuterHeight*2+'" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<rect x="933" y="412" width="'+this.fiBarCodeInsideWidth*2+'" height="'+this.fiBarCodeInsideHeight*2+'" stroke="#000000" rx="20" ry="20" style="fill-opacity: 0; stroke-dasharray: 10, 10;"></rect>';
+					str += '<text x="1072" y="572" style="font-size: 38px; font-family: 文泉驿微米黑;">贴条形码区</text>';
+
+					if(this.fitestType == 1){//A3
+						//准考证开始的X位置
+						this.fsTicketNumberBeginX = 490;
+						//准考证开始的Y位置
+						this.fsTicketNumberBeginY = 225;
+						//准考证结束的X位置
+						this.fsTicketNumberEndX = 728;
+						//准考证结束的Y位置
+						this.fsTicketNumberEndY = 368;
+					}else{
+						//准考证开始的X位置
+						this.fsTicketNumberBeginX = 487;
+						//准考证开始的Y位置
+						this.fsTicketNumberBeginY = 293;
+						//准考证结束的X位置
+						this.fsTicketNumberEndX = 724;
+						//准考证结束的Y位置
+						this.fsTicketNumberEndY = 434;
+					}
+					
+				}else{
+					var fiPrecautionsWidth = this.ffWidth - this.fiBarCodeOuterWidth;
+					str +='<text x="0" y="221" style="font-size: 33px; font-family: 文泉驿微米黑;">考生号:</text>';
+//					str +='<text x="0" y="'+this.fiTicketNumberNameWidth*2+'" style="font-size: 33px; font-family: 文泉驿微米黑;">考生号:</text>';
+					var fiTicketNumberX = "";
+					for(var i = 0 ; i < this.fsTicketNumber ; i ++){
+						if(i == 0){
+							fiTicketNumberX = this.fiTicketNumberNameWidth + this.fiTicketNumberNameBlankWidth*2;
+							str +='<rect x="'+fiTicketNumberX+'" y="188" width="31" height="47" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						}else{
+							fiTicketNumberX = fiTicketNumberX + this.fiTicketNumberSpaceWidth*2;
+							str +='<rect x="'+fiTicketNumberX+'" y="188" width="31" height="47" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						}
+					}
+//					var fsTicketNumberWidth = this.fsTicketNumber * this.TicketNumberLatticeWidth;
+//					var rectWidth = this.ffWidth - fsTicketNumberWidth;
+					str += '<rect x="0" y="251" width="'+fiPrecautionsWidth*2+'" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="99" y="582" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+					str += '<line x1="201" x2="796" y1="588" y2="588" stroke="#000000"></line>';
+					str += '<text x="99" y="665" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+					str += '<line x1="201" x2="796" y1="672" y2="672" stroke="#000000"></line>';
+					str += '<text x="99" y="332" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+					str += '<line x1="201" x2="796" y1="339" y2="339" stroke="#000000"></line>';
+					str += '<text x="99" y="416" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+					str += '<line x1="201" x2="796" y1="422" y2="422" stroke="#000000"></line>';
+					str += '<text x="99" y="499" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+					str += '<line x1="201" x2="796" y1="505" y2="505" stroke="#000000"></line>';
+					
+					str += '<rect x="'+fiPrecautionsWidth*2+'" y="251" width="'+this.fiBarCodeOuterWidth*2+'" height="'+this.fiBarCodeOuterHeight*2+'" stroke="#000000" stroke-width="2" style="fill-opacity: 0;"></rect>';
+					str += '<rect x="933" y="349" width="'+this.fiBarCodeInsideWidth*2+'" height="'+this.fiBarCodeInsideHeight*2+'" stroke="#000000" rx="20" ry="20" style="fill-opacity: 0; stroke-dasharray: 10, 10;"></rect>';
+					str += '<text x="1072" y="509" style="font-size: 38px; font-family: 文泉驿微米黑;">贴条形码区</text>';
+					
+					if(this.fitestType == 1){
+						//准考证开始的X位置
+						this.fsTicketNumberBeginX = 488;
+						//准考证开始的Y位置
+						this.fsTicketNumberBeginY = 197;
+						//准考证结束的X位置
+						this.fsTicketNumberEndX = 740;
+						//准考证结束的Y位置
+						this.fsTicketNumberEndY = 341;
+					}else{
+						//准考证开始的X位置
+						this.fsTicketNumberBeginX = 488;
+						//准考证开始的Y位置
+						this.fsTicketNumberBeginY = 293;
+						//准考证结束的X位置
+						this.fsTicketNumberEndX = 725;
+						//准考证结束的Y位置
+						this.fsTicketNumberEndY = 404;
+					}
+					
+					
+				}
+				
+			}else{
+				if(this.fiPrecautions == 0){
+					var fsTicketNumberWidth = this.fsTicketNumber * this.TicketNumberLatticeWidth;
+					var rectWidth = this.ffWidth - fsTicketNumberWidth;
+					str += '<rect x="0" y="188" width="'+rectWidth*2+'" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					switch(this.fsTicketNumber){
+						case 8 :
+//						str += '<rect x="0" y="188" width="956" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						str += '<text x="95" y="519" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+						str += '<line x1="198" x2="772" y1="525" y2="525" stroke="#000000"></line>';
+						str += '<text x="95" y="602" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+						str += '<line x1="198" x2="772" y1="609" y2="609" stroke="#000000"></line>';
+						str += '<text x="95" y="269" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+						str += '<line x1="198" x2="772" y1="276" y2="276" stroke="#000000"></line>';
+						str += '<text x="95" y="353" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+						str += '<line x1="198" x2="772" y1="359" y2="359" stroke="#000000"></line>';
+						str += '<text x="95" y="436" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+						str += '<line x1="198" x2="772" y1="442" y2="442" stroke="#000000"></line>';
+						break;
+						case 9 :
+//						str += '<rect x="0" y="188" width="901" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						str += '<text x="90" y="519" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+						str += '<line x1="192" x2="733" y1="525" y2="525" stroke="#000000"></line>';
+						str += '<text x="90" y="602" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+						str += '<line x1="192" x2="733" y1="609" y2="609" stroke="#000000"></line>';
+						str += '<text x="90" y="269" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+						str += '<line x1="192" x2="733" y1="276" y2="276" stroke="#000000"></line>';
+						str += '<text x="90" y="353" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+						str += '<line x1="192" x2="733" y1="359" y2="359" stroke="#000000"></line>';
+						str += '<text x="90" y="436" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+						str += '<line x1="192" x2="733" y1="442" y2="442" stroke="#000000"></line>';
+						break;
+						case 10 :
+//						str += '<rect x="0" y="188" width="846" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						str += '<text x="84" y="519" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+						str += '<line x1="187" x2="694" y1="525" y2="525" stroke="#000000"></line>';
+						str += '<text x="84" y="602" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+						str += '<line x1="187" x2="694" y1="609" y2="609" stroke="#000000"></line>';
+						str += '<text x="84" y="269" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+						str += '<line x1="187" x2="694" y1="276" y2="276" stroke="#000000"></line>';
+						str += '<text x="84" y="353" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+						str += '<line x1="187" x2="694" y1="359" y2="359" stroke="#000000"></line>';
+						str += '<text x="84" y="436" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+						str += '<line x1="187" x2="694" y1="442" y2="442" stroke="#000000"></line>';
+						break;
+						case 11 :
+//						str += '<rect x="0" y="188" width="791" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						str += '<text x="79" y="519" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+						str += '<line x1="181" x2="656" y1="525" y2="525" stroke="#000000"></line>';
+						str += '<text x="79" y="602" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+						str += '<line x1="181" x2="656" y1="609" y2="609" stroke="#000000"></line>';
+						str += '<text x="79" y="269" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+						str += '<line x1="181" x2="656" y1="276" y2="276" stroke="#000000"></line>';
+						str += '<text x="79" y="353" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+						str += '<line x1="181" x2="656" y1="359" y2="359" stroke="#000000"></line>';
+						str += '<text x="79" y="436" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+						str += '<line x1="181" x2="656" y1="442" y2="442" stroke="#000000"></line>';
+						break;
+						case 12 :
+//						str += '<rect x="0" y="188" width="736" height="478" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						str += '<text x="73" y="519" style="font-size: 33px; font-family: 文泉驿微米黑;">学校：</text>';
+						str += '<line x1="175" x2="617" y1="525" y2="525" stroke="#000000"></line>';
+						str += '<text x="73" y="602" style="font-size: 33px; font-family: 文泉驿微米黑;">班级：</text>';
+						str += '<line x1="175" x2="617" y1="609" y2="609" stroke="#000000"></line>';
+						str += '<text x="73" y="269" style="font-size: 33px; font-family: 文泉驿微米黑;">姓名：</text>';
+						str += '<line x1="175" x2="617" y1="276" y2="276" stroke="#000000"></line>';
+						str += '<text x="73" y="353" style="font-size: 33px; font-family: 文泉驿微米黑;">考场：</text>';
+						str += '<line x1="175" x2="617" y1="359" y2="359" stroke="#000000"></line>';
+						str += '<text x="73" y="436" style="font-size: 33px; font-family: 文泉驿微米黑;">座号：</text>';
+						str += '<line x1="175" x2="617" y1="442" y2="442" stroke="#000000"></line>';
+						break;
+						
+					}
+					//AB卷高度  + //AB卷高度和准考证号外宽的空白高度 
+					var rectY = this.ffTestTypeHeight + this.ffTestTypeBlankHeight;
+					var fsTicketNumberWidth = this.fsTicketNumber * this.TicketNumberLatticeWidth;
+					var rectWidth = this.ffWidth - fsTicketNumberWidth;
+					str += '<rect x="'+rectWidth*2+'" y="'+rectY*2+'" width="'+ fsTicketNumberWidth*2+'" height="478" stroke="#000000" stroke-width="2" style="fill-opacity: 0;"></rect>';
+					str += '<rect x="'+rectWidth*2+'" y="'+rectY*2+'" width="'+ fsTicketNumberWidth*2+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					
+					
+//					if(this.fitestType == 0){//判断是否A3或者A4 
+//						this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank;
+//						this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5;
+//						this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5;
+//						this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank;
+//					}else{
+//						if(this.fiSealingLine == 0){
+//							this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank;
+//							this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5 - this.fitestTypeHeight;
+//							this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5 - this.fitestTypeHeight;
+//							this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank;
+//						}else{
+//							this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank + this.fitestTypeWidth;
+//							this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5 - this.fitestTypeHeight;
+//							this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5 - this.fitestTypeHeight;
+//							this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank + this.fitestTypeWidth;
+//						}
+//					}
+					
+					
+					
+					this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank;
+					this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85  + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5 - this.fitestTypeHeight;
+					this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight  - 5 - this.fitestTypeHeight;
+					this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank;
+					
+//					this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank + this.fitestTypeWidth;
+//					this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight + this.fitestTypeHeight;
+//					this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.fitestTypeHeight;
+//					this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank + this.fitestTypeWidth;
+					
+					
+					
+					var  textWidth =  this.ffWidth*2 - (this.fsTicketNumber*29 + this.fiPermissionNumberNameHeight*2 );
+					str += '<text x="'+textWidth+'" y="244" style="font-size: 33px; font-family: 文泉驿微米黑;">准  考  证  号</text>';
+					var faPapersTitleX = this.ffWidth*2;
+					
+//					this.fsTicketNumberEndX = faPapersTitleX/2;
+					
+					for(var i = 0 ; i < this.fsTicketNumber ; i++){
+						var x = faPapersTitleX - i * this.TicketNumberLatticeWidth*2;
+						
+						this.ffnoTicketNumberLatticeImgHeight = 176;
+						//准考证的每个格的大小中的图片
+						this.TicketNumberLatticeImgSpaceWidth = 6.3;
+						if(i != 0){
+							str += '<line x1="'+x+'" x2="'+x+'" y1="267" y2="667" stroke="#000000"></line>';
+							for( var j = 0; j < 10 ; j ++ ){
+								var url = "/IQCloudMarking/resources/images/" + j +".svg";
+								var btnSvgX = x - this.TicketNumberLatticeImgWidth*2 - this.TicketNumberLatticeImgSpaceWidth*2;
+								var btnSvgY = this.ffnoTicketNumberLatticeImgHeight*2 + (this.TicketNumberLatticeImgSpaceHeight*2*j);
+								str +='<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="'+url+'" preserveAspectRatio="none" x="'+btnSvgX+'" y="'+ btnSvgY+'" width="31" height="19"></image>';
+							}
+							
+						}else{
+							for( var j = 0; j < 10 ; j ++ ){
+								var url = "/IQCloudMarking/resources/images/" + j +".svg";
+								var btnSvgX = x - this.TicketNumberLatticeImgWidth*2 - this.TicketNumberLatticeImgSpaceWidth*2;
+								var btnSvgY = this.ffnoTicketNumberLatticeImgHeight*2 + (this.TicketNumberLatticeImgSpaceHeight*2*j);
+								str +='<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="'+url+'" preserveAspectRatio="none" x="'+btnSvgX+'" y="'+btnSvgY +'" width="31" height="19"></image>';
+							}
+						}
+						
+					}
+					str += '<line x1="'+rectWidth*2+'" x2="'+this.ffWidth*2+'" y1="336" y2="336" stroke="#000000"></line>';
+				}else{
+					var fsTicketNumberWidth = this.fsTicketNumber * this.TicketNumberLatticeWidth;
+					var rectWidth = this.ffWidth - fsTicketNumberWidth;
+					str += '<rect x="0" y="251" width="'+rectWidth*2+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					var faPapersTitleWidth = 0;
+					
+					this.fsPapersTitleFormatTypeSpaceLineWidth = 20;
+					var textX = 0;
+					var lineX = 78;
+					var lineX2 = 259;
+					for(var i = 0 ; i < this.faPapersTitleList.length ; i ++){
+						var name = "";
+						switch(parseInt(this.faPapersTitleList[i])){
+							case 1:
+							name = "学校:";
+							break;
+							case 2:
+							name = "姓名:";
+							break;
+							case 3:
+							name = "班级:";
+							break;
+							case 4:
+							name = "考场:";
+							break;
+							case 5:
+							name = "座号:";
+							break;
+						}
+						if(i == 0){
+							str +='<text x="'+textX+'" y="221" style="font-size: 33px; font-family: 文泉驿微米黑;">'+name+'</text>';
+							str +='<line x1="'+lineX+'" x2="'+lineX2+'" y1="228" y2="228" stroke="#000000"></line>';
+							lineX2 = lineX2;
+						}else{
+							var strtextX = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2;
+							var strlineX1 = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2 + this.fsPapersTitleFormatTypeNameLineWidth*2;
+							var strlineX2 = lineX2 + this.fsPapersTitleFormatTypeSpaceLineWidth*2 + this.fsPapersTitleFormatTypeNameLineWidth*2 + this.fsPapersTitleFormatTypeLineWidth*2;
+							str +='<text x="'+strtextX+'" y="221" style="font-size: 33px; font-family: 文泉驿微米黑;">'+name+'</text>';
+							str +='<line x1="'+strlineX1+'" x2="'+strlineX2+'" y1="228" y2="228" stroke="#000000"></line>';
+							lineX2 = strlineX2;
+						}
+					}
+					
+					var fsTicketNumberWidth = this.fsTicketNumber * this.TicketNumberLatticeWidth;
+					var rectWidth = this.ffWidth - fsTicketNumberWidth;
+					str += '<text x="387" y="307" style="font-size: 33px; font-family: 文泉驿微米黑;">注  意  事  项</text>';
+					str += '<rect x="0" y="330" width="'+rectWidth*2+'" height="299" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="15" y="391" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  1.　答题前请将姓名、班级、考场、座号和准考证号填写清楚</text>';
+					str += '<text x="15" y="438" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  2.　客观题答题,必须使用2B铅笔填涂,修改时用橡皮擦干净</text>';
+					str += '<text x="15" y="486" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  3.　主观题必须使用黑色签字笔书写</text>';
+					str += '<text x="15" y="533" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  4.　必须在题号对应的答题区域内作答,超出答题区域书写无效</text>';
+					str += '<text x="15" y="581" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  5.　保持答卷清洁完整</text>';
+					str += '<rect x="0" y="629" width="'+rectWidth*2+'" height="100" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<text x="11" y="690" style="font-size: 33px; font-family: 文泉驿微米黑;">正确填涂</text>';
+					str += '<rect x="232" y="669" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+					str += '<text x="342" y="690" style="font-size: 33px; font-family: 文泉驿微米黑;">缺考标记</text>';
+					str += '<rect x="618" y="671" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					str += '<rect x="'+rectWidth*2+'" y="251" width="'+ fsTicketNumberWidth*2+'" height="478" stroke="#000000" stroke-width="2" style="fill-opacity: 0;"></rect>';
+					str += '<rect x="'+rectWidth*2+'" y="251" width="'+ fsTicketNumberWidth*2+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					
+//					//准考证号名字框的高度
+//					this.fiPermissionNumberNameHeight = 40;
+//					
+//					this.ffPermissionNumberFillingHeight = 36;
+//					
+//					this.faPapersTitleListHeight = 46;
+//					//栏目
+//					this.fiColumn = "";
+//					
+//					//AB卷高度
+//					this.ffTestTypeHeight = 80;
+//					
+//					//AB卷高度和准考证号外宽的空白高度
+//					this.ffTestTypeBlankHeight = 14;
+//					
+//					//准考证号外宽的高度
+//					this.ffPermissionNumberOuterHeight = 240;
+//					
+//					//答题卡头部距离外面边线空白距离
+//					this.ffHeadBlank = 21;
+//					
+//					//准考证开始的X位置
+//					this.fsTicketNumberBeginX = 498;
+//					//准考证开始的Y位置
+//					this.fsTicketNumberBeginY = 295;
+//					//准考证结束的X位置
+//					this.fsTicketNumberEndY = 450;
+//					//准考证结束的Y位置
+//					this.fsTicketNumberEndX = 736
+					if(this.fitestType == 0){//判断是否A3或者A4 
+						this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank;
+						this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5;
+						this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5;
+						this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank;
+					}else{
+						if(this.fiSealingLine == 0){
+							this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank;
+							this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5 - this.fitestTypeHeight;
+							this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5 - this.fitestTypeHeight;
+							this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank;
+						}else{
+							this.fsTicketNumberBeginX = rectWidth + this.ffHeadBlank + this.fitestTypeWidth;
+							this.fsTicketNumberBeginY = this.ffTestTypeHeight + 85 + this.faPapersTitleListHeight + this.ffTestTypeBlankHeight + this.ffPermissionNumberFillingHeight + this.fiPermissionNumberNameHeight - 5 - this.fitestTypeHeight;
+							this.fsTicketNumberEndY = this.ffTestTypeHeight + 85 + this.ffPermissionNumberOuterHeight + this.ffTestTypeBlankHeight + this.faPapersTitleListHeight - 5 - this.fitestTypeHeight;
+							this.fsTicketNumberEndX = this.ffWidth + this.ffHeadBlank + this.fitestTypeWidth;
+						}
+					}
+					
+				
+					
+
+					var  textWidth =  this.ffWidth*2 - (this.fsTicketNumber*29 + this.fiPermissionNumberNameHeight*2 );
+					str += '<text x="'+textWidth+'" y="307" style="font-size: 33px; font-family: 文泉驿微米黑;">准  考  证  号</text>';
+					var faPapersTitleX = this.ffWidth*2;
+					
+					
+					for(var i = 0 ; i < this.fsTicketNumber ; i++){
+						var x = faPapersTitleX - i * this.TicketNumberLatticeWidth*2;
+						this.ffnoTicketNumberLatticeImgHeight = 176;
+						//准考证的每个格的大小中的图片
+						this.TicketNumberLatticeImgSpaceWidth = 6.5;
+						if(i != 0){
+							str += '<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+							for( var j = 0; j < 10 ; j ++ ){
+								var url = "/IQCloudMarking/resources/images/" + j +".svg";
+								var btnSvgX = x - this.TicketNumberLatticeImgWidth*2 - this.TicketNumberLatticeImgSpaceWidth*2;
+								var btnSvgY = this.ffTicketNumberLatticeImgHeight   *2 + (this.TicketNumberLatticeImgSpaceHeight*2*j);
+								str +='<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="'+url+'" preserveAspectRatio="none" x="'+btnSvgX+'" y="'+ btnSvgY+'" width="31" height="19"></image>';
+							}
+							
+						}else{
+							for( var j = 0; j < 10 ; j ++ ){
+								var url = "/IQCloudMarking/resources/images/" + j +".svg";
+								var btnSvgX = x - this.TicketNumberLatticeImgWidth*2 - this.TicketNumberLatticeImgSpaceWidth*2;
+								var btnSvgY = this.ffTicketNumberLatticeImgHeight   *2 + (this.TicketNumberLatticeImgSpaceHeight*2*j);
+								str +='<image xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="'+url+'" preserveAspectRatio="none" x="'+btnSvgX+'" y="'+btnSvgY +'" width="31" height="19"></image>';
+							}
+						}
+						
+					}
+					str += '<line id="lineId" x1="'+rectWidth*2+'" x2="'+this.ffWidth*2+'" y1="399" y2="399" stroke="#000000"></line>';
+				}
+				
+				
+			}
+			
+			if(this.fiTestPaperType != 0){//判断是否是AB卷
+				str += '<rect x="0" y="0" width="299" height="157" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				str += '<text x="15" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷</text>';
+				str += '<text x="15" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">类型</text>';
+				str += '<text x="118" y="60" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷A</text>';
+				str += '<text x="118" y="123" style="font-size: 33px; font-family: 文泉驿微米黑;">试卷B</text>';
+				str += '<line x1="102" x2="102" y1="0" y2="157" stroke="#000000"></line>';
+				str += '<rect x="-63" y="37" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+				str += '<rect x="-63" y="100" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+				str += '<rect x="232" y="37" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				str += '<rect x="232" y="100" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+				
+
+				if(this.fsAnswerSheetSizeName == ""){
+					if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}else{
+						textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}
+				}else{
+					textareaHtml = '<textarea id="headerSizeTitle" class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 46px;height: 32px;width: 540px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+				}
+				textareaHtml += '<textarea  id="headerBigTitle" class="headerTitle" placeholder="请输入答题卡大标题" style="text-align: center;position: absolute;resize: none;left: 187px;top: 0px;height: 44px;width: 540px;line-height: 30px;font-size: 39px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetBigName+'</textarea>';
+				$("#fiTestPaperType").append(textareaHtml);
+//				$("#fiTestPaperType").append('<textarea class="headerTitle" placeholder="请输入答题卡标题" style="text-align: center; position: absolute; resize: none; left: 185px; top: 0px; height: 78px; width: 540px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2; font-family: FangSong_GB2312;">test5</textarea>');
+				$("#fiTestPaperType").children('svg').html(str);
+			}else{
+				if(this.fsAnswerSheetSizeName == ""){
+					if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+						textareaHtml = '<textarea id="headerSizeTitle"  class="headerTitle"  style="text-align: center;position: absolute;resize: none;left: 20px;top: 46px;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}else{
+						textareaHtml = '<textarea id="headerSizeTitle"  class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 20px;top: 46px;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+					}
+				}else{
+					textareaHtml = '<textarea id="headerSizeTitle"  class="headerTitle" placeholder="请输入答题卡小标题" style="text-align: center;position: absolute;resize: none;left: 20px;top: 46px;height: 32px;width: 708px;line-height: 16px;font-size: 23px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetSizeName+'</textarea>';
+				}
+
+				textareaHtml += '<textarea id="headerBigTitle" class="headerTitle" placeholder="请输入答题卡大标题" style="text-align: center;position: absolute;resize: none;left: 20px;top: 0px;height: 44px;width: 708px;line-height: 30px;font-size: 39px;border-style: dashed;word-break: break-all;z-index: 2;font-family: FangSong_GB2312;">'+this.fsAnswerSheetBigName+'</textarea>';
+//				$("#fiTestPaperType").append('<textarea class="headerTitle" placeholder="请输入答题卡标题" style="text-align: center; position: absolute; resize: none; left: 19px; top: 0px; height: 78px; width: 708px; line-height: 39px; font-size: 23px; border-style: dashed; word-break: break-all; z-index: 2;">作文测试</textarea>');
+				$("#fiTestPaperType").append(textareaHtml);
+				
+			}
+			
+//			$("#headBigText select").
+//			$("#headBigText headSizeText").
+//this.fiAnswerSheetBigFont = parseInt(UserInfoData.answerSheetBigFont);
+//		this.fiAnswerSheetSizeFont = parseInt(UserInfoData.answerSheetSizeFont);
+			$("#headBigText select option[value='"+this.fiAnswerSheetBigFont+"']").attr("selected", true);
+			$("#headSizeText select option[value='"+this.fiAnswerSheetSizeFont+"']").attr("selected", true);
+			var fontBig = this.fiAnswerSheetBigFont + "px";
+			var fontSize = this.fiAnswerSheetSizeFont + "px";
+			$("#headerBigTitle").css("font-size",fontBig);
+			$("#headerSizeTitle").css("font-size",fontSize);
+			$("#fiTestPaperType").children('svg').html(str);
+			
+		}
+		
+
+	}
+	
+	
+	//保存
+	
+	this.save = function(){
+		var topic = new Object();
+		topic.id = this.fsId;
+		topic.sort = 0;
+		topic.type = this.fiType;
+		topic.testType = this.fitestType;
+		topic.sealingLine = this.fiSealingLine;
+		topic.refillFill = this.fiRefillFill;
+		topic.barCode = this.fiBarCode;
+		topic.precautions = this.fiPrecautions;
+		topic.testPaperType = this.fiTestPaperType;
+		topic.answerSheetBigFont = parseInt(this.fiAnswerSheetBigFont);
+		topic.answerSheetSizeFont = parseInt(this.fiAnswerSheetSizeFont);
+		topic.answerSheetBigName = this.fsAnswerSheetBigName;
+		topic.answerSheetSizeName = this.fsAnswerSheetSizeName;
+		topic.ticketNumber = this.fsTicketNumber;
+		topic.papersTitleList = this.faPapersTitleList;
+		
+//		if(){}
+		topic.beginX = this.fsTicketNumberBeginX;
+		topic.beginY = this.fsTicketNumberBeginY;
+		topic.endX = this.fsTicketNumberEndX;
+		topic.endY = this.fsTicketNumberEndY;
+		
+//		topic.height = this.ffModuleHeight;
+//		topic.width = this.ffModuleWidth;
+		topic.column = this.fiColumn;
+		//每一个页面的高度
+//		this.ffModuleHeight  = 1171;
+//		//每一个页面的宽度
+//		this.ffModuleWidth  = 750;
+		var pageSize = new Object();
+		pageSize.height = this.ffModuleHeight;
+		pageSize.width = this.ffModuleWidth;
+		topic.pageSize = pageSize;
+		
+		if(this.fiTestPaperType != 0){
+			var positionObj = new Object();
+			if(this.fitestType == 0){//A4
+				positionObj.beginY = 86;
+				positionObj.beginX = 130;
+				positionObj.endY = 166;
+				positionObj.endX = 171;
+			}else{
+				positionObj.beginY = 20;
+				positionObj.beginX = 130;
+				positionObj.endY = 99;
+				positionObj.endX = 172;
+			}
+			
+			topic.position = positionObj;
+			
+		}
+
+		return topic;
+	}
+}

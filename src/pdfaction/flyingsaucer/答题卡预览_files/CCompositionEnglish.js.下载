@@ -1,0 +1,384 @@
+/*
+ * 作文题-英
+ */
+function CCompositionEnglish(){
+	
+	//基类方法
+	CTopicModuleBasis.call(this);
+	
+	// 大题号
+	this.fiBigQid = null;
+	
+	// 大标题
+	this.fsBigTitle = null;
+	
+	//模块排序值
+	this.fiSort = 0;
+	
+	//大标题id
+	this.fsId = "";
+	
+	//题型的类型
+	this.fiType = 5;
+	
+	// 长度
+	this.ffWidth = 708.5;
+	
+	// 大标题高度
+	this.fiTitleHeight = 80;
+	
+	// 小标题的高度
+	this.ffSubtitleHeight = 114;
+	
+	// 底部空白的高度
+	this.ffLinebottom = 70;
+	
+	//小标题
+	this.fsSizeTitle = "";
+	
+	// 作文几行
+	this.fiRows = 1;
+	
+	// 分数统计
+	this.ffCountScore = 0;
+	// 小标题id
+	this.smallQid = "";
+	
+	//是否有附加题
+	this.fsAdditionalQuestions = 0;
+	
+	// 一行高度
+	this.fiCompositionItemRowsHeight = 80;
+	
+	// 大标题高度
+	this.fiTitleHeight = 80;
+	
+	// 模块排序值
+	this.fiSort = 0;	
+	// 高度
+	this.ffHeight = 90;
+	
+	// svg的高度
+	this.ffSvgHeight = 100;
+	
+	// 行距
+	this.fiRowSpaceValue = 30;
+	
+	// 间距
+	this.fiColSpaceValue = 0;
+	
+	
+	// 倍数
+	this.fiKValue = 2;
+	
+	// svg id 数组
+	this.faSvgIdArray = null;
+	
+	this.fiSvgRowsHeigth = 35;
+	
+	
+	// 单个数组
+	this.faCCompositionEnglishList = new Array();
+	
+	// 模块相对大页面左上定点y坐标
+	this.ffPageTopUI = 0;
+	
+	// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+	this.ffModuleHeightUI = 0;
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(data){
+		var moduleWidth = this.ffWidth * this.fiKValue;
+		
+		this.fiType = data.type;
+		this.fiBigQid = data.bigQid;
+		this.fsId = data.id;
+		this.fsBigTitle =  data.name;
+		this.fsSizeTitle = data.sizeTitle;
+		//模块排序值
+		this.fsAdditionalQuestions = data.isBonusQuestion;
+		if(this.fsAdditionalQuestions){
+			this.fiSort = 99;
+		}else{
+			this.fiSort = data.sort;
+		}
+//		this.fiSort =  data.sort;
+
+		var compositionEnglishItemsData = data.compositionEnglishItems[0];//新加
+		this.smallQid = compositionEnglishItemsData.qid;
+		this.answerType = 0;//新加
+		this.ffCountScore = parseInt(compositionEnglishItemsData.score);
+		this.fiRows = compositionEnglishItemsData.lineNum;
+		this.sort = compositionEnglishItemsData.sort;//新加
+		
+		var code = "CompositionEnglishItem_" + data.bigQid + "_" + generateUUID();
+		
+		// lineY 的初始化高度
+		var lineY = 129;
+
+		var compositionEnglishItem = new CCompositionEnglishItem();
+		
+		compositionEnglishItem.init(code, this.sort  , this.ffCountScore, this.fiRows, compositionEnglishItemsData.answerType, compositionEnglishItemsData.qid ,compositionEnglishItemsData.id);
+		this.faCCompositionEnglishList.push(compositionEnglishItem);
+		
+	}
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView =  function(uiInfo){
+		var moduleWidth = this.ffWidth * this.fiKValue;
+		// 页脚高度
+//		var headerFooterHeight = 85 + 85;
+		if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+			if(uiInfo.fiTestType == 1){
+				var headerFooterHeight = 10;
+			}else{
+				var headerFooterHeight = 80 + 80;
+			}
+		}else{
+			var headerFooterHeight = 80 + 80;
+		}
+		
+		var svgUI = null;
+		var listGroupItemUI = null;
+		
+		// 先判断题号有没有超出
+		var newNowTopUI = uiInfo.ffNowModuleTopUI + this.fiTitleHeight / this.fiKValue;
+		if (newNowTopUI > (uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2) || ((uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2) - newNowTopUI < 79)){// 不够位置排序, 创建新的一页出来
+			uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+		}
+		
+		// 创建 listGroupItem
+		var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+		listGroupItemUI = $(listGroupItemUIStr);
+		uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+		
+		this.faSvgIdArray = new Array();
+		var svgId = "CompositionEnglish_" + this.faSvgIdArray.length + "_" + generateUUID();
+		this.faSvgIdArray.push(svgId);
+		
+		// SVG 高度
+	 	var viewBoxHeight = this.fiTitleHeight;
+		
+		// 加入标题
+		var titleUIStr = '<defs></defs>';
+		if(this.fsAdditionalQuestions){
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + "附加题："+ this.fsBigTitle;
+		}else{
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + this.fsBigTitle;
+		}
+		titleUIStr += '<text x="0" y="38" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">'+bigTitle+"("+this.ffCountScore+"分)" +'</text>';
+		if(this.fsSizeTitle == undefined || this.fsSizeTitle == null || this.fsSizeTitle == ""){
+			var name = "";
+		}else{
+			var name = "("+this.fsSizeTitle+")";
+		}
+		titleUIStr += '<text x="480" y="38" style="font-size: 28px; font-family: 文泉驿微米黑; font-weight: bold;">'+name+'</text>';
+		var svgUINowHtmlStr = titleUIStr;
+		var svgUINowHtmlRectAfter = "";
+		
+		// 当前元素布局后，相对当前页面高度新top位置
+		uiInfo.ffNowTopUI = uiInfo.ffNowTopUI + this.fiTitleHeight / this.fiKValue;
+		
+		// 整个模块相对大页面左上顶点坐标
+		this.ffPageTopUI = (uiInfo.faNewAnswerPageList.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI + this.fiTitleHeight / this.fiKValue;
+		
+		var kouChuHeight = 0;  // 相对于 viewBox外面坐标系
+		var kouChuTitleHeight = this.fiTitleHeight;
+		var rowNowIndex = 0;  // 统计行数
+		var pageNum = 0;
+		for (var i = 0; i < this.faCCompositionEnglishList.length; i++) {
+			var compositionEnglishItem = this.faCCompositionEnglishList[i];
+			for(var j = 0 ; j < parseInt(compositionEnglishItem.fiEachQuestionCountRows) + 1; j++){// 标题当成一行，因此多加“1”
+				rowNowIndex ++ ;
+				
+				var newNowTopUI = (this.fiCompositionItemRowsHeight * rowNowIndex + this.fiTitleHeight) / this.fiKValue - kouChuHeight;
+				var newPageAbsTopUI = uiInfo.ffNowModuleTopUI + newNowTopUI; 
+				
+				if ((newPageAbsTopUI + this.fiCompositionItemRowsHeight / this.fiKValue) > (uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2)){// 最后要留出一行, 不够位置排序, 创建新的一页出来
+					if ("" != svgUINowHtmlRectAfter){// 当前已经有内容，直接添加进去
+						pageNum ++ ;
+						viewBoxHeight = viewBoxHeight + this.fiCompositionItemRowsHeight;  // 尾巴要多留出一行
+						var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+						var svgHeight = viewBoxHeight / this.fiKValue;
+						var svgStr = '';
+						if(pageNum > 1){
+							svgStr += '<ul class="btnSetting btnZindex" style="top: -20px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+						}else{
+							svgStr += '<ul class="btnSetting btnZindex" style="top: -10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+						}
+						
+						svgStr += '<li style="margin-right: 10px;">';
+						svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+						svgStr += '<span>修改</span></li>';
+						svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+						listGroupItemUI.children("div").append(svgStr);
+						var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+						svgUI = $(svgUIStr);
+						
+						var rectHtmlStr = '<rect x="0" y="' + (kouChuTitleHeight - 10) + '" width="' + moduleWidth + '" height="'+ (viewBoxHeight - kouChuTitleHeight) + '" stroke="#000000" style="fill-opacity: 0;"></rect>';
+						kouChuTitleHeight = 0;
+							
+						svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+						
+						svgUI.html(svgUINowHtmlStr);
+						listGroupItemUI.children("div").append(svgUI);
+					}
+	
+					kouChuHeight = kouChuHeight + uiInfo.ffNowTopUI;
+					viewBoxHeight = 0;
+					
+					svgUINowHtmlStr = "";
+					svgUINowHtmlRectAfter = "";
+					
+					newNowTopUI = this.fiCompositionItemRowsHeight / this.fiKValue;
+					
+					// 创建一页出来
+					uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+					
+					var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+					listGroupItemUI = $(listGroupItemUIStr);
+					uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+				}
+				
+				// 具体一个个排列
+				uiInfo.ffNowTopUI = newNowTopUI;
+				var viewBoxHeightNew = newNowTopUI * this.fiKValue;
+				if (viewBoxHeight < viewBoxHeightNew){
+					viewBoxHeight = viewBoxHeightNew;
+				}
+				
+				var lineItemStr = ""; 
+				var yValue = newNowTopUI * this.fiKValue;
+				if (i == this.faCCompositionEnglishList.length){// 文本
+					var textTitleName =  compositionEnglishItem.fiTopicNum + "(" + compositionEnglishItem.ffScore + "分)";
+					lineItemStr += '<text x="' + compositionEnglishItem.ffTopicNumX + '" y="' + yValue + '" style="font-size: 32px; font-family: 文泉驿微米黑;">' + textTitleName + '</text>';
+					
+				}else{// 直线
+					lineItemStr += '<line x1="'+ compositionEnglishItem.ffLineX1 + '" x2="'+compositionEnglishItem.ffLineX2 + '" y1="' + yValue + '" y2="' + yValue+'" stroke="#000000" lineWidth="0.3"></line>';
+				}
+
+				svgUINowHtmlRectAfter = svgUINowHtmlRectAfter + lineItemStr;
+			}
+		}
+		
+		if ("" != svgUINowHtmlRectAfter){
+			viewBoxHeight = viewBoxHeight + this.fiCompositionItemRowsHeight;  // 尾巴要多留出一行
+			var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+			var svgHeight = viewBoxHeight / this.fiKValue;
+			var svgStr = '';
+			svgStr += '<ul class="btnSetting btnZindex" style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+			svgStr += '<li style="margin-right: 10px;">';
+			svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+			svgStr += '<span>修改</span></li>';
+			svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+			listGroupItemUI.children("div").append(svgStr);
+			var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+			svgUI = $(svgUIStr);
+			
+			// 矩形
+			var rectHtmlStr = '<rect x="0" y="' + kouChuTitleHeight + '" width="' + moduleWidth + '" height="'+ (viewBoxHeight - kouChuTitleHeight) + '" stroke="#000000" style="fill-opacity: 0;"></rect>';
+			svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+			svgUI.html(svgUINowHtmlStr);
+			listGroupItemUI.children("div").append(svgUI);
+		}
+		
+		uiInfo.ffNowModuleTopUI = uiInfo.ffNowModuleTopUI + viewBoxHeight / this.fiKValue + 5;
+		
+		// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+		console.log(this.fiPageNum);
+		var tmpValue = (uiInfo.fiNewNowPageOrd) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI;
+//		var tmpValue = (uiInfo.foNowPageListGroupUI.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI;
+		uiInfo.ffModuleHeightUI = tmpValue - this.ffPageTopUI;
+	},
+	
+	
+	/*
+	 * 修改上传数据
+	 */
+	
+	this.editModelData = function(modelData){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].fsCode ==  modelData.itmeId){
+//				var imgData =  this.faCAnswerItemList[i].faImgData;
+//				for(var j = 0; j < imgData.length ; j ++){
+//					if(imgData[j].id == modelData.id){
+//						this.faCAnswerItemList[i].faImgData[j].imgStyle = modelData.imgStyle;
+//					}
+//					
+//				}
+//			}
+//		}
+	},
+	
+		/*
+	 * 修改上传数据
+	 */
+	
+	this.addModelData = function(data){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].imgData ==  modelData.code){
+//				modelDataObj.imgStyle = modelData.imgStyle;
+//				modelDataObj.url = modelData.url;
+//				this.faCAnswerItemList[i].imgData.push(modelDataObj);
+//			}
+//		}
+	}
+	
+	
+	/**
+	 * 保存
+	 */
+	this.save =  function(){
+		var topic = new Object();
+		topic.type = this.fiType;
+		topic.id = this.fsId;
+		topic.bigQid = this.fiBigQid;
+		topic.name = this.fsBigTitle;
+		topic.sort = this.fiSort;
+		topic.sizeTitle = this.fsSizeTitle;
+		topic.isBonusQuestion = this.fsAdditionalQuestions;
+		var compositionEnglishItemsArr = new Array();
+		for(var i = 0 ; i < this.faCCompositionEnglishList.length ; i++){
+			var	compositionEnglishItems = this.faCCompositionEnglishList[i];
+			var compositionEnglishItemsObj = new Object();
+			compositionEnglishItemsObj.id = compositionEnglishItems.fsId;
+			compositionEnglishItemsObj.answerType = compositionEnglishItems.answerType;
+			compositionEnglishItemsObj.qid = compositionEnglishItems.fiTopicNum;
+			compositionEnglishItemsObj.lineNum = this.fiRows;
+			compositionEnglishItemsObj.score = compositionEnglishItems.ffScore;
+			compositionEnglishItemsObj.sort = i;
+			compositionEnglishItemsObj.attContent = {};
+			var attContentObj = new Object;
+			attContentObj.code = compositionEnglishItems.fsCode;
+			attContentObj.ffLineY1 = compositionEnglishItems.ffLineY1;
+			attContentObj.ffLineY2 = compositionEnglishItems.ffLineY2;
+			attContentObj.ffLineX1 = compositionEnglishItems.ffLineX1;
+			attContentObj.ffLineX2 = compositionEnglishItems.ffLineX2;
+			attContentObj.ffTopicNumX = compositionEnglishItems.ffTopicNumX;
+			attContentObj.lineNum = compositionEnglishItems.fiEachQuestionCountRows;
+			compositionEnglishItemsArr.push(compositionEnglishItemsObj);
+		}
+		topic.compositionEnglishItems = compositionEnglishItemsArr;
+		var attContent = new Object();
+		attContent.moduelTop = this.ffPageTopUI;
+		attContent.moduelHeight = this.ffModuleHeightUI;
+		topic.attContent = attContent;
+		return topic;
+	},
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load =  function(jsonData){
+		
+	}
+}

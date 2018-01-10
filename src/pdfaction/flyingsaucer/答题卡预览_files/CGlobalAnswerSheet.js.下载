@@ -1,0 +1,6 @@
+// 答题卡制作工具实体
+var gAnswerSheet = new CAnswerSheet();
+
+
+
+

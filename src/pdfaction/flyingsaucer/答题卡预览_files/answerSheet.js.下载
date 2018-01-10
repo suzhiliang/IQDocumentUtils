@@ -1,0 +1,2306 @@
+var subjectNum = [];//保存所有题号
+
+$(function(){
+	
+//	var userInfoObj = new Object();
+//	userInfoObj.
+	answerSheetOperate.answerSheetLoad();
+	
+	setAnswerSheet();
+	
+//	answerSheetOperate.addOnePage(1, 0);
+//	
+//	
+//	$("#btnEidtTitle").unbind('click').bind({
+//		click:function(){
+//			editTitle();
+//		}
+//	})
+//	$("#save-button").unbind('click').bind({
+//		click:function(){
+//			answerSheetOperate.answerSheetSave();
+//		}
+//	})
+//	
+//	$("#preview-button").unbind('click').bind({//点击预览
+//		click:function(){
+//			newwindow = window.open();
+//			answerSheetOperate.answerSheetSave(1);
+//		}
+//	})
+	
+//	answerSheetOperate.answerSheetLoad();
+	
+})
+
+function  verificationFun(){
+	$('.num').cbNum();
+}
+
+
+
+var qoNum = 1;
+var choiceItmeObj = new Object();
+var choiceItmeObj1 = new Object();
+
+//添加填空题
+
+var questionNum = 0;
+
+
+// 设置答题大操作
+function setAnswerSheet(){
+	
+	//A3或者A4
+	$("input[name=column]").unbind('click').bind({
+		click:function(){
+			var sealingLineObj = new Object();
+			var type = $(this).data('type');
+			if(type == 0){
+				$(".columnitem").find('span').removeClass('columnon1_active');
+				$(".columnitem").find('span').removeClass('column2_active');
+				$("#selectitem").find('span').removeClass('on');
+				$("#selectitem").find('span').eq(0).addClass('on');
+				$(".columnitem").find('span').eq(0).addClass('columnon1_active');
+				sealingLineObj.testType = 0;
+				sealingLineObj.type = 0;
+				if($("#sealingLine").is(":checked")){
+					$("#sealingLine").trigger('click');
+				}
+//				$("#sealingLine").removeAttr("checked");
+				$("#sealingLine").parent().hide();
+			}else{
+				$(".columnitem").find('span').removeClass('columnon1_active');
+				$(".columnitem").find('span').eq(1).removeClass('column2_active');
+				$("#selectitem").find('span').removeClass('on');
+				$("#selectitem").find('span').eq(1).addClass('on');
+				$(".columnitem").find('span').eq(1).addClass('column2_active');
+				sealingLineObj.testType = 1;
+				sealingLineObj.type = 0;
+				$("#sealingLine").parent().show();
+			}
+			if($("#fiTestPaperType svg").data("id") == undefined){
+				sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+			}else{
+				sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+			}
+			answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+		}
+	})
+	//A3或者A4
+	$("#selectitem span").unbind('click').bind({
+		click:function(){
+			var type = $(this).data('type');
+			if(type == 0){
+				$("#layoutinfo").find('label').eq(0).children('input').trigger('click');
+			}else{
+				$("#layoutinfo").find('label').eq(1).children('input').trigger('click');
+			}
+			
+		}
+	})
+	
+	//A3或者A4
+	$(".columnitem span").unbind('click').bind({
+		click:function(){
+			var type = $(this).data('type');
+			if(type == 0){
+				$("#layoutinfo").find('label').eq(0).children('input').trigger('click');
+			}else{
+				$("#layoutinfo").find('label').eq(1).children('input').trigger('click');
+			}
+			
+		}
+	})
+	
+	//密封线
+	$("#sealingLine").unbind('click').bind({
+		click:function(){
+			var sealingLineObj = new Object();
+			if($(this).is(":checked")){
+				sealingLineObj.sealingLine = 1;
+				sealingLineObj.type = 1;
+				$("#refillFill").parent().parent().hide();
+			}else{
+				sealingLineObj.sealingLine = 0;
+				sealingLineObj.type = 1;
+				$("#refillFill").parent().parent().show();
+			}
+			if($("#fiTestPaperType svg").data("id") == undefined){
+				sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+			}else{
+				sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+			}
+			
+			answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+		}
+	})
+	//考号填涂区和条形码
+	$("input[name = examType]").unbind('click').bind({
+		click:function(){
+			var type = $(this).data('type');
+			var sealingLineObj = new Object();
+			if(type == 0){//判断考号填涂区和条形码
+				sealingLineObj.refillFill = 1;
+				sealingLineObj.barCode = 0;
+				sealingLineObj.type = 2;
+			}else{
+				sealingLineObj.refillFill = 0;
+				sealingLineObj.barCode = 1;
+				sealingLineObj.type = 2;
+			}
+			if($("#fiTestPaperType svg").data("id") == undefined){
+				sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+			}else{
+				sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+			}
+			answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+		}
+	})
+	
+
+	//注意事项与缺考标记
+	$("#precautions").unbind('click').bind({
+		click:function(){
+			var sealingLineObj = new Object();
+			if($(this).is(":checked")){
+				sealingLineObj.precautions = 1;
+				sealingLineObj.type = 3;
+			}else{
+				sealingLineObj.precautions = 0;
+				sealingLineObj.type = 3;
+			}
+			if($("#fiTestPaperType svg").data("id") == undefined){
+				sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+			}else{
+				sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+			}
+			answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+		}
+	})
+	//是否存在AB卷
+	$("#testPaperType").unbind('click').bind({
+		click:function(){
+			var sealingLineObj = new Object();
+			if($(this).is(":checked")){
+				sealingLineObj.testPaperType = 1;
+				sealingLineObj.type = 4
+			}else{
+				sealingLineObj.testPaperType = 0;
+				sealingLineObj.type = 4;
+			}
+			if($("#fiTestPaperType svg").data("id") == undefined){
+				sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+			}else{
+				sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+			}
+			answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+		}
+	})
+	//A3和A4 切换
+//	$("#selectitem span").unbind('click').bind({
+//		click:function(){
+//			$("#selectitem").find('span').removeClass('on');
+//			$(this).addClass('on');
+//			$(".columnitem .columnimg").removeClass('columnon1_active');
+//			var type = $(this).data('type');
+//			$(".columnitem .columnimg").eq(type).addClass('columnon1_active');
+//			$(".columnitem .columnimg").eq(type).addClass('columnon1_active');
+//			
+//		}
+//	})
+	
+	
+}
+
+function editTitle(data,id){
+	var html = '';
+	html+='<div class="tc_content" style="width:600px">';
+ 	html+='<form id="form" class="form-horizontal">';
+	html+='<div class="form-group">';
+	html+='<ul class="list-inline ulbox">';
+	html+='<li><label class="sa_moption linehei"><input type="checkbox" id="siSchool studentInfo" name="siSchool" value="1"><i></i>学校</label></li>';
+	html+='<li><label class="sa_moption linehei"><input type="checkbox" id="siName studentInfo" name="siName" value="2"><i></i>姓名</label></li>';
+	html+='<li><label class="sa_moption linehei"><input type="checkbox" id="siClass studentInfo" name="siClass" value="3"><i></i>班级</label></li>';
+	html+='<li><label class="sa_moption linehei"><input type="checkbox" id="siRoom studentInfo" name="siRoom" value="4"><i></i>考场</label></li>';
+	html+='<li><label class="sa_moption linehei"><input type="checkbox" id="siSeat studentInfo" name="siSeat" value="5"><i></i>座号</label></li>';
+	html+='</ul>';
+	html+='</div>';
+	html+='<div class="form-group">';
+	html+='<span id="studentInfo" class="errmsg"></span>';
+	html+='</div>';
+	html+='</form>';
+	html+='</div>';
+	
+	layer.open({
+	  	type: 1,
+	  	title: "编辑试卷标题",
+	  	skin: 'layui-layer-rim', //加上边框
+	  	area: ['680px', '360px'], //宽高
+	  	content: html,
+	  	btn: ["确定", "取消"]
+	  	,yes: function(index, layero){
+	  		setTitle(id);
+	  		
+		},btn2: function(index, layero){
+		    //按钮【按钮二】的回调
+		}
+	});
+	//	改
+//	if($("#pageListContainerUI").data("titleTypeData") == undefined){
+//		var titleTypeData = [1,2,3];
+//		$("#pageListContainerUI").data("titleTypeData", titleTypeData);
+//	}
+	
+	var faPapersTitleList = data.faPapersTitleList;
+	
+	for(var i = 0 ; i < faPapersTitleList.length ; i ++){
+		$('.tc_content input[type="checkbox"]').each(function(){
+			if($(this).val() == faPapersTitleList[i]){
+				$(this).prop("checked",true);
+			}
+			
+		})
+	}
+}
+
+
+function setTitle(id){
+	var checkedArr = new Array();
+	var setTitleObj = new Object();
+	$('.tc_content input:checkbox:checked').each(function(){
+        checkedArr.push($(this).val());
+	})
+	if(checkedArr.length > 4){
+		layer.alert('编辑试卷标题最多填4个!', {
+		  icon: 0,
+		  skin: 'layer-ext-moon' 
+		})
+		return false;
+	}
+	
+	if(checkedArr.length > 0){
+		var sealingLineObj = new Object();
+		sealingLineObj.papersTitleList = checkedArr;
+		sealingLineObj.type = 10;
+		if($("#fiTestPaperType svg").data("id") == undefined){
+			sealingLineObj.id = $("#fiSealingLineDiv svg").data("id");
+		}else{
+			sealingLineObj.id = $("#fiTestPaperType svg").data("id");
+		}
+		answerSheetOperate.editUserInfo(sealingLineObj,1);// 1 表示不是改变字体
+	}else{
+		layer.alert('编辑试卷标题必须填写一个!', {
+		  icon: 0,
+		  skin: 'layer-ext-moon' 
+		})
+		return false;
+	}
+	layer.closeAll();
+//	setTitleObj.checkedArr = checkedArr;
+//	setTitleObj.type = 1;
+	
+}
+
+
+
+function setTitleFun() {
+	//改
+	if($("#pageListContainerUI").data("titleTypeData") == undefined){
+		var titleTypeData = [1,2,3];
+		$("#pageListContainerUI").data("titleTypeData", titleTypeData);
+	}
+	var setTitleTypeDataArr = $("#pageListContainerUI").data("titleTypeData");
+	var str = '';
+	var textX = 0;
+	var textY = 221;
+	var lineX1 = 78;
+	var lineX2 = 259;
+	var lineY1 = 228;
+	var lineY2 = 228;
+	for(var i = 0 ; i < setTitleTypeDataArr.length ; i++){
+		setTitleTextX = textX * i + 78 * i + 158 * i + 63 * i;
+		setTitlelineX1 =  158 * i + 63 * i +78 * i + lineX1;
+		setTitlelineX2 =  158 * i + 63 * i + 78 * i + lineX2;
+		var n = parseInt(setTitleTypeDataArr[i]);
+		switch(n){
+			case 1 :
+			var name = "学校：";
+			break;
+			case 2 :
+			var name = "姓名：";
+			break;
+			case 3 :
+			var name = "班级：";
+			break;
+			case 4 :
+			var name = "考场：";
+			break;
+			case 5 :
+			var name = "座号：";
+			break;
+		}
+		str += '<text x="'+setTitleTextX+'" y="'+textY+'" style="font-size: 33px; font-family: 文泉驿微米黑;">'+name+'</text>';
+		str += '<line x1="'+setTitlelineX1+'" x2="'+setTitlelineX2+'" y1="'+lineY1+'" y2="'+lineY1+'" stroke="#000000"></line>';
+	}
+	return str;
+}
+
+//设置准考证
+function setPermission(permissionNum , setTitleArrObj){
+	
+	$("#svgHeader").empty();
+	if($("#pageListContainerUI").data("permissionNum") == undefined){
+		$("#pageListContainerUI").data("permissionNum",8);
+	}
+	
+	var permissionNum = $("#pageListContainerUI").data("permissionNum");
+	var width = 956;
+	switch(permissionNum){
+		case 4:
+		var permissionWidth = 460;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 956;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1096;
+		permissionObj.permissionTextY = 307;
+		permissionFun(4 , width , permissionWidth , permissionObj , setTitleArrObj)	
+		break;
+		case 5:
+		var permissionWidth = 460;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 956;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1096;
+		permissionObj.permissionTextY = 307;
+		permissionFun(5 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 6:
+		var permissionWidth = 460;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 956;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1096;
+		permissionObj.permissionTextY = 307;
+		permissionFun(6 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 7:
+		var permissionWidth = 460;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 956;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1096;
+		permissionObj.permissionTextY = 307;
+		permissionFun(7 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 8:
+		var permissionWidth = 460;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 956;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1096;
+		permissionObj.permissionTextY = 307;
+		permissionFun(8 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 9:
+		var width = 901;
+		var permissionWidth = 515;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 901;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1068;
+		permissionObj.permissionTextY = 307;
+		permissionFun(9 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 10:
+		var width = 846;
+		var permissionWidth = 570;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 846;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1041;
+		permissionObj.permissionTextY = 307;
+		permissionFun(10 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 11:
+		var width = 791;
+		var permissionWidth = 625;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 791;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 1013;
+		permissionObj.permissionTextY = 307;
+		permissionFun(11 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+		case 12:
+		var width = 736;
+		var permissionWidth = 661;
+		var permissionObj = new Object();
+		permissionObj.permissionWidth = 460
+		permissionObj.permissionX = 736;
+		permissionObj.permissionY = 251;
+		permissionObj.permissionTextX = 976;
+		permissionObj.permissionTextY = 307;
+		permissionFun(12 , width , permissionWidth , permissionObj , setTitleArrObj);
+		break;
+	}
+//	for(var i = 0 ; i < permissionNum ; i++){
+//		
+//	}
+}
+
+
+//  设置准 考 证 号的外宽
+function permissionObjFun(num){
+	var str = '';
+	switch(num){
+		case 4:
+		for(var i = 0; i < num - 1 ; i++){
+			x = 1071 + i*116;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 5:
+		for(var i = 0; i < num - 1; i++){
+			x = 1048 + i*93;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 6:
+		for(var i = 0; i < num - 1 ; i++){
+			x = 1033 + i*77;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 7:
+		for(var i = 0; i < num - 1  ; i++){
+			x = 1022 + i*66;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 8:
+		for(var i = 0; i < num - 1  ; i++){
+			x = 1014 + i*57;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 9:
+		for(var i = 0; i < num - 1  ; i++){
+			x = 958 + i*57;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 10:
+		for(var i = 0; i < num - 1  ; i++){
+			x = 903 + i*57;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 11:
+		for(var i = 0; i < num - 1  ; i++){
+			x = 848 + i*57;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		break;
+		case 12:
+		for(var i = 0; i < num - 1; i++){
+			x = 791 + i*55;
+			str +='<line x1="'+x+'" x2="'+x+'" y1="330" y2="730" stroke="#000000"></line>';
+		}
+		
+		break;
+		
+	}
+	return str;
+}
+
+
+function  permissionFun(num , width , permissionWidth , permissionObj ){
+	var str ='';
+	str +='<defs></defs>';
+	str += setTitleFun();
+	str +='<rect x="0" y="251" width="'+width+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str +='<text x="387" y="307" style="font-size: 33px; font-family: 文泉驿微米黑;">注  意  事  项</text>';
+	str +='<rect x="0" y="330" width="'+width+'" height="299" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str +='<text x="15" y="391" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  1.　答题前请将姓名、班级、考场、座号和准考证号填写清楚。</text>';
+	str +='<text x="15" y="438" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  2.　客观题答题,必须使用2B铅笔填涂,修改时用橡皮擦干净。</text>';
+	str +='<text x="15" y="486" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  3.　主观题必须使用黑色签字笔书写。</text>';
+	str +='<text x="15" y="533" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  4.　必须在题号对应的答题区域内作答,超出答题区域书写无效。</text>';
+	str +='<text x="15" y="581" linePadding="1.9" style="font-size: 25px; font-family: 文泉驿微米黑;">  5.　保持答卷清洁完整。</text>';
+	str +='<rect x="0" y="629" width="'+width+'" height="100" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str +='<text x="11" y="690" style="font-size: 33px; font-family: 文泉驿微米黑;">正确填涂</text>';
+	str +='<rect x="232" y="669" width="31" height="19" stroke="#000000" fill="#000000" style="fill-opacity: 1;"></rect>';
+	str +='<text x="342" y="690" style="font-size: 33px; font-family: 文泉驿微米黑;">缺考标记</text>';
+	str +='<rect x="618" y="667" width="31" height="19" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	
+	str +='<rect x="'+permissionObj.permissionX+'" y="'+permissionObj.permissionY+'" width="'+permissionWidth+'" height="478" stroke="#000000" stroke-width="2"  style="fill-opacity: 0;"></rect>';
+	str +='<rect x="'+permissionObj.permissionX+'" y="'+permissionObj.permissionY+'" width="'+permissionWidth+'" height="78" stroke="#000000" style="fill-opacity: 0;"></rect>';
+	str +='<text x="'+permissionObj.permissionTextX+'" y="'+permissionObj.permissionTextY+'" style="font-size: 33px; font-family: 文泉驿微米黑;">准  考  证  号</text>';
+	str += permissionObjFun(num);
+
+	if(num == 12){
+		str +='<line x1="'+width+'" x2="1397" y1="399" y2="399" stroke="#000000"></line>';
+	}else{
+		str +='<line x1="'+width+'" x2="1417" y1="399" y2="399" stroke="#000000"></line>';
+	}
+	str += permissionBtnFun(num);
+	if($('#pageListContainerUI').data("adType") == undefined || $('#pageListContainerUI').data("adType") == "" || $('#pageListContainerUI').data("adType") == null){
+		
+	}else{
+		str += existabPaper();
+	}
+	
+	$("#svgHeader").append(str);
+	var $parent = $("#svgHeader").parent();
+//	$parent.html($parent.html());
+//	$("#svgHeader").html($("#svgHeader").html());
+//	$("#svgHeader").html($("#svgHeader").html());
+//	$("#svgHeader").html($("#svgHeader").html());
+	document.getElementById('svgHeader').innerHTML = str;
+//	$("#svgHeader").innerHTML = str;
+}
+
+
+
+
+function saveAuthority(){
+	
+	$("#blankList0").find('li').each(function(i, v) {
+		if($(this).children('input').val() == null || $(this).children('input').val() == "" || $(this).children('input').val() == undefined){
+			return false;
+		}
+    })
+	var str ='';
+	str += '<li class="list-group-item">';
+	str += '<div><ul class="btnSetting btnZindex" style="top: 39px; left: 633px; display: none;">';
+	str += '<li><ul class="settingLineHeight " data-omlineheightindex="0" style="left: -125px; display: none;">';
+	str += '<li><span class="describe"></span></li>';
+	str += '<li><span class="lessen">－</span></li>';
+	str += '<li><input type="text" readonly="" value="9" style="width: 30px; height: 20px;"></li>';
+	str += '<li><span class="addition">＋</span></li></ul></li>';
+	str += '<li style="margin-right: 10px;">';
+	str += '<button type="button" data-toggle="modal" data-target="#modal">编辑</button>';
+	str += '<span>编辑</span></li>';
+	str += '<li>';
+	str += '<button type="button">删除</button>';
+	str += '<span>删除</span>';
+	str += '</li>';	
+	str += '</ul>';
+	str += '<svg width="708.5" height="157" viewBox="0 0 1417 314">';
+	str += '<defs></defs>';
+	str += '<text x="0" y="38" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">一.填空题(25分)</text>';
+	str += '<rect x="0" y="70" width="1417" height="204" stroke="#000000" style="fill-opacity: 0;"></rect>';
+//	str += '<text x="39" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">1</text>';
+//	str += '<line x1="122" x2="344" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="383" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">2</text>';
+//	str += '<line x1="466" x2="688" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="728" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">3</text>';
+//	str += '<line x1="811" x2="1033" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="1072" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">4</text>';
+//	str += '<line x1="1155" x2="1377" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="39" y="212" style="font-size: 29px; font-family: 文泉驿微米黑;">5</text>';
+//	str += '<line x1="122" x2="344" y1="220" y2="220" stroke="#000000"></line>';
+	str += '</svg>';
+	str += '<div id="BFQ_BFQ_0_1_1_identity_editparent" data-groupparent="BFQ_BFQ_0_1_1_editparent" class="editparent " style="position: absolute; left: 80px; top: 51px; margin-left: -41px;">';
+	str += '<div class="span9 editControls" style="padding-top: 10px;">';
+	str += '<div class="btn-group wid">';
+	str += '<a class="btn bor-radius-left" data-role="bold" href="javascript:void(0);" title="将所选内容字体加粗">';
+	str += '<b>Bold</b></a>';
+	str += '<a class="btn" data-role="underline" href="javascript:void(0);" title="给所选文字内容添加下划线">';
+	str += '<b><u>U</u></b>';
+	str += '</a>';
+	str += '<a class="btn " data-role="strikeThrough" href="javascript:void(0);" title="在所选文字内容中间添加一条横线">';
+	str += '<b><strike>abc</strike></b>';
+	str += '</a>';
+	str += '<a class="btn btnhover" data-role="changeNumber" data-command="subtractNumber" href="javascript:void(0);" title="缩短填空区宽度 ">';
+	str += '<i class="glyphicon glyphicon-minus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="changeNumber" data-command="addNumber" href="javascript:void(0);" title="增加填空区宽度">';
+	str += '<i class="glyphicon glyphicon-plus"></i>';
+	str += '</a>';
+	str += '</div>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_1_1_identityeditor" class="editor span9" contenteditable="true" style="height: 23px; width: 111px; overflow: hidden; font-family: &quot;Times New Roman&quot;; margin-left: 41px; line-height: 23px; padding-top: 4px; padding-left: 0px;">';
+	str += '<p style=""><br></p>';
+	str += '</div>';
+	str += '<form enctype="multipart/form-data" method="post" class="editorImageForm" name="editorImageForm">';
+	str += '<input type="file" id="upload_image" name="image" accept="image/jpeg,image/jpg,image/png" style="display: none;">';
+				
+	str += '</form>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_2_2_identity_editparent" data-groupparent="BFQ_BFQ_0_2_2_editparent" class="editparent " style="position: absolute; left: 252px; top: 51px; margin-left: -41px;">';
+	str += '<div class="span9 editControls" style="padding-top: 10px;">';
+	str += '<div class="btn-group wid">';
+	str += '<a class="btn bor-radius-left" data-role="bold" href="javascript:void(0);" title="将所选内容字体加粗">';
+	str += '<b>Bold</b>';
+	str += '</a>';
+	str += '<a class="btn" data-role="underline" href="javascript:void(0);" title="给所选文字内容添加下划线">';
+	str += '<b><u>U</u></b>';
+	str += '</a>';
+	str += '<a class="btn " data-role="strikeThrough" href="javascript:void(0);" title="在所选文字内容中间添加一条横线">';
+	str += '<b><strike>abc</strike></b>';
+	str += '</a>';
+	str += '<a class="btn btnhover" data-role="changeNumber" data-command="subtractNumber" href="javascript:void(0);" title="缩短填空区宽度 ">';
+	str += '<i class="glyphicon glyphicon-minus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="changeNumber" data-command="addNumber" href="javascript:void(0);" title="增加填空区宽度">';
+	str += '<i class="glyphicon glyphicon-plus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="newLine" data-command="newLine" href="javascript:void(0);" title="换行">';
+	str += '<i class="glyphicon glyphicon-arrow-down"></i>';
+	str += '</a>';
+	str += '</div>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_2_2_identityeditor" class="editor span9" contenteditable="true" style="height: 23px; width: 111px; overflow: hidden; font-family: &quot;Times New Roman&quot;; margin-left: 41px; line-height: 23px; padding-top: 4px; padding-left: 0px;">';
+	str += '<p style=""><br></p>';
+	str += '</div>';
+	str += '<form enctype="multipart/form-data" method="post" class="editorImageForm" name="editorImageForm">';
+	str += '<input type="file" id="upload_image" name="image" accept="image/jpeg,image/jpg,image/png" style="display: none;">';
+	str += '</form>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_3_3_identity_editparent" data-groupparent="BFQ_BFQ_0_3_3_editparent" class="editparent " style="position: absolute; left: 425px; top: 51px; margin-left: -41px;">';
+	str += '<div class="span9 editControls" style="padding-top: 10px;">';
+	str += '<div class="btn-group wid">';
+	str += '<a class="btn bor-radius-left" data-role="bold" href="javascript:void(0);" title="将所选内容字体加粗">';
+	str += '<b>Bold</b>';
+	str += '</a>';
+	str += '<a class="btn" data-role="underline" href="javascript:void(0);" title="给所选文字内容添加下划线">';
+	str += '<b><u>U</u></b>';
+	str += '</a>';
+	str += '<a class="btn " data-role="strikeThrough" href="javascript:void(0);" title="在所选文字内容中间添加一条横线">';
+	str += '<b><strike>abc</strike></b>';
+	str += '</a>';
+	str += '<a class="btn btnhover" data-role="changeNumber" data-command="subtractNumber" href="javascript:void(0);" title="缩短填空区宽度 ">';
+	str += '<i class="glyphicon glyphicon-minus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="changeNumber" data-command="addNumber" href="javascript:void(0);" title="增加填空区宽度">';
+	str += '<i class="glyphicon glyphicon-plus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="newLine" data-command="newLine" href="javascript:void(0);" title="换行">';
+	str += '<i class="glyphicon glyphicon-arrow-down"></i>';
+	str += '</a>';
+	str += '</div>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_3_3_identityeditor" class="editor span9" contenteditable="true" style="height: 23px; width: 111px; overflow: hidden; font-family: &quot;Times New Roman&quot;; margin-left: 41px; line-height: 23px; padding-top: 4px; padding-left: 0px;">';
+	str += '<p style=""><br></p>';
+	str += '</div>';
+	str += '<form enctype="multipart/form-data" method="post" class="editorImageForm" name="editorImageForm">';
+	str += '<input type="file" id="upload_image" name="image" accept="image/jpeg,image/jpg,image/png" style="display: none;">';
+				
+	str += '</form>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_4_4_identity_editparent" data-groupparent="BFQ_BFQ_0_4_4_editparent" class="editparent " style="position: absolute; left: 597px; top: 51px; margin-left: -41px;">';
+	str += '<div class="span9 editControls" style="padding-top: 10px; position: relative; top: 60px;">';
+	str += '<div class="btn-group wid">';
+	str += '<a class="btn bor-radius-left" data-role="bold" href="javascript:void(0);" title="将所选内容字体加粗">';
+	str += '<b>Bold</b>';
+	str += '</a>';
+	str += '<a class="btn" data-role="underline" href="javascript:void(0);" title="给所选文字内容添加下划线">';
+	str += '<b><u>U</u></b>';
+	str += '</a>';
+	str += '<a class="btn " data-role="strikeThrough" href="javascript:void(0);" title="在所选文字内容中间添加一条横线">';
+	str += '<b><strike>abc</strike>';
+	str += '</b>';
+	str += '</a>';
+	str += '<a class="btn btnhover" data-role="changeNumber" data-command="subtractNumber" href="javascript:void(0);" title="缩短填空区宽度 ">';
+	str += '<i class="glyphicon glyphicon-minus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="changeNumber" data-command="addNumber" href="javascript:void(0);" title="增加填空区宽度">';
+	str += '<i class="glyphicon glyphicon-plus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="newLine" data-command="newLine" href="javascript:void(0);" title="换行">';
+	str += '<i class="glyphicon glyphicon-arrow-down"></i>';
+	str += '</ a>';
+	str += '</div>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_4_4_identityeditor" class="editor span9" contenteditable="true" style="height: 23px; width: 111px; overflow: hidden; font-family: &quot;Times New Roman&quot;; margin-left: 41px; line-height: 23px; padding-top: 4px; padding-left: 0px;">';
+	str += '<p style=""><br></p>';
+	str += '</div>';
+	str += '<form enctype="multipart/form-data" method="post" class="editorImageForm" name="editorImageForm">';
+	str += '<input type="file" id="upload_image" name="image" accept="image/jpeg,image/jpg,image/png" style="display: none;">';
+				
+	str += '</form>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_5_5_identity_editparent" data-groupparent="BFQ_BFQ_0_5_5_editparent" class="editparent " style="position: absolute; left: 80px; top: 86px; margin-left: -41px;">';
+	str += '<div class="span9 editControls" style="padding-top: 10px;">';
+	str += '<div class="btn-group wid">';
+	str += '<a class="btn bor-radius-left" data-role="bold" href="javascript:void(0);" title="将所选内容字体加粗">';
+	str += '<b>Bold</b>';
+	str += '</a>';
+	str += '<a class="btn" data-role="underline" href="javascript:void(0);" title="给所选文字内容添加下划线">';
+	str += '<b><u>U</u></b>';
+	str += '</a>';
+	str += '<a class="btn " data-role="strikeThrough" href="javascript:void(0);" title="在所选文字内容中间添加一条横线">';
+	str += '<b><strike>abc</strike></b>';
+	str += '</a>';
+	str += '<a class="btn btnhover" data-role="changeNumber" data-command="subtractNumber" href="javascript:void(0);" title="缩短填空区宽度 ">';
+	str += '<i class="glyphicon glyphicon-minus"></i>';
+	str += '</a>';
+	str += '<a class="btn bor-radius-right" data-role="changeNumber" data-command="addNumber" href="javascript:void(0);" title="增加填空区宽度">';
+	str += '<i class="glyphicon glyphicon-plus"></i>';
+	str += '</a>';
+	str += '</div>';
+	str += '</div>';
+	str += '<div id="BFQ_BFQ_0_5_5_identityeditor" class="editor span9" contenteditable="true" style="height: 23px; width: 111px; overflow: hidden; font-family: &quot;Times New Roman&quot;; margin-left: 41px; line-height: 23px; padding-top: 4px; padding-left: 0px;">';
+	str += '<p style=""><br></p>';
+	str += '</div>';
+	str += '<form enctype="multipart/form-data" method="post" class="editorImageForm" name="editorImageForm">';
+	str += '<input type="file" id="upload_image" name="image" accept="image/jpeg,image/jpg,image/png" style="display: none;">';
+				
+	str += '</form>';
+	str += '</div>';
+	str += '</div>';
+	str += '</li>';
+	$(".list-group").append($(str)); 
+}
+
+
+function beeline (m){
+	var str = '';
+	var tx = 39;
+	var ty = 141;
+	var tz = 344;
+	var lx1 = 122;
+	var ly1 = 149;
+	var lx2 = 344;
+	var ly3 = 149;
+	var lz = 0;
+//	str += '<text x="39" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">1</text>';
+//	str += '<line x1="122" x2="344" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="383" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">2</text>';
+//	str += '<line x1="466" x2="688" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="728" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">3</text>';
+//	str += '<line x1="811" x2="1033" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="1072" y="141" style="font-size: 29px; font-family: 文泉驿微米黑;">4</text>';
+//	str += '<line x1="1155" x2="1377" y1="149" y2="149" stroke="#000000"></line>';
+//	str += '<text x="39" y="212" style="font-size: 29px; font-family: 文泉驿微米黑;">5</text>';
+//	str += '<line x1="122" x2="344" y1="220" y2="220" stroke="#000000"></line>';
+	var num = parseInt(m.length / 4);
+	for(var i = 0; i < num+1 ; i++){
+		if(i < num){
+			for(var j = i*4; j<(i+1)*4; j++){
+				
+			}
+		}else{
+			for(var j = num*4; j < m.length; j++){
+				
+			}
+		}
+	}
+ 	for(var i = 0 ; i < num.length ; i++){
+ 		textX = 39 + i*tx;
+ 		textY = 
+ 		str += '<text x="'+textX+'" y="'+textY+'" style="font-size: 32px; font-family: 文泉驿微米黑;">1</text>';
+		str += '<line x1="122" x2="344" y1="149" y2="149" stroke="#000000"></line>';
+ 	}
+}
+
+function digitalConversion (n){
+	var digitalName = "";
+	switch (parseInt(n)){
+		case 1:
+		digitalName = "一";
+		return digitalName;
+		case 2:
+		digitalName = "二";
+		return digitalName;
+		case 3:
+		digitalName = "三";
+		return digitalName;
+		case 4:
+		digitalName = "四";
+		return digitalName;
+		case 5:
+		digitalName = "五";
+		return digitalName;
+		case 6:
+		digitalName = "六";
+		return digitalName;
+		case 7:
+		digitalName = "七";
+		return digitalName;
+		case 8:
+		digitalName = "八";
+		return digitalName;
+		case 9:
+		digitalName = "九";
+		return digitalName;
+		case 10:
+		digitalName = "十";
+		return digitalName;
+		case 11:
+		digitalName = "十一";
+		return digitalName;
+		case 12:
+		digitalName = "十二";
+		return digitalName;
+		case 13:
+		digitalName = "十三";
+		return digitalName;
+		case 14:
+		digitalName = "十四";
+		return digitalName;
+		case 15:
+		digitalName = "十五";
+		return digitalName;
+		case 16:
+		digitalName = "十六";
+		return digitalName;
+		case 17:
+		digitalName = "十七";
+		return digitalName;
+		case 18:
+		digitalName = "十八";
+		return digitalName;
+		case 19:
+		digitalName = "十九";
+		return digitalName;
+		case 20:
+		digitalName = "二十";
+		return digitalName;
+		case 21:
+		digitalName = "二十一";
+		return digitalName;
+		case 22:
+		digitalName = "二十二";
+		return digitalName;
+		case 23:
+		digitalName = "二十三";
+		return digitalName;
+		case 24:
+		digitalName = "二十四";
+		return digitalName;
+		case 25:
+		digitalName = "二十五";
+		return digitalName;
+	}
+}
+
+//填空题
+var FillBlank = {
+	addOneTopic:function(obj){
+		var str = '';
+		str+='<div>';
+		str+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 text1" value ="'+qoNum+'"> —— <input type="text" class="tc_text2 text2">';
+		str+='<label  class="tc_labl">每空：</label><input type="text" class="tc_text2 text5" value = "1">';
+		str+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 text4">';
+		str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+		str+='</div>';
+//		$("#singleChoiceLi").append($(str));
+		obj.parent().prev().append($(str));
+		
+		//调用删除题目
+		FillBlank.delOneTopic();
+		
+		
+		$("#singleChoiceLi input").blur(function(){
+			obj.parent().prev().children('div').removeClass('itemactive');
+			$(this).parent().addClass('itemactive');
+			
+			var text1,text2,text3,text4,text6,eptext;
+			itemInputVal = [];
+			
+			if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+			
+			obj.parent().prev().children('div').each(function(){
+				var itemNum = new Object();
+		    	
+		    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+		    		itemNum.text1 = parseInt($(this).children('.text1').val());
+		    		itemNum.text2 = parseInt($(this).children('.text2').val());
+		    		ctext3 = parseInt($(this).children('.text5').val());
+		    		ctext4 = parseInt($(this).children('.text4').val());
+		    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,null,ctext3);
+		    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+//		    		itemInputVal.push(itemNum);
+		    	}
+		    	
+			});
+			
+			
+			$(".clear").prev().children('div').removeClass('itemactive');   
+		    
+		    $(this).parent().children('input').each(function(index){
+		    	eptext = $(this).val();
+		    	if(eptext == ''){
+//	    			$(this).focus();
+		    		return false;
+		    	}else{
+		    		switch (index){
+		    			case 0:
+		    				text1 = parseInt(eptext);
+		    				break;
+	    				case 1:
+		    				text2 = parseInt(eptext);
+		    				break;
+	    				case 2:
+		    				text6 = parseInt(eptext);
+		    				break;
+	    				case 3:
+		    				text4 = parseInt(eptext);
+		    				ObjectiveTopic.itemJudge(text1,text2,text3,text4,null,text6);
+		    				break;
+		    		}
+		    	}
+		    });
+		    
+		    if(itemType == 0){
+		    	FillBlank.blurfFun($(this));
+		    }
+		});
+	},
+	//鼠标失去焦点
+	blurfFun:function(obj){
+//		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+
+		var qitemInputVal = [];
+		$(obj).parent().parent().children('div').each(function(){
+	    	var itemNum = new Object();
+	    	itemNum.text1 = parseInt($(this).children('.text1').val());
+			itemNum.text2 = parseInt($(this).children('.text2').val());
+			if(!isNaN(itemNum.text1) && !isNaN(itemNum.text2)){
+				for(var i = itemNum.text1; i <= itemNum.text2; i++){
+	    			qitemInputVal.push(i);
+	    		}
+			}
+			
+	    });
+	    
+	    qitemInputVal.sort(function(a,b){
+	        return b-a;
+		});
+		
+		if(qitemInputVal.length > 0){
+			var objQnumSort = new Object();
+			objQnumSort.qitemInputVal = qitemInputVal;
+			objQnumSort.qNum = $(".oqRdo option:selected").attr('value');
+			qoNum = qitemInputVal[0] + 1;
+			if(qoNum < $("#fillBlank").data('qoNum')){
+				qoNum = $("#fillBlank").data('qoNum');
+			}
+			$("#fillBlank").data('objQnumSort',objQnumSort);//存放全部题号
+		}
+			
+		$(obj).parent().parent().siblings('ul').empty();
+//		var groupArr = new Array();
+//		var singleItemListArr = new Array();
+//		var choiceTopicObj = new Object();
+//		var choiceArr = new Array();
+//		var choiceObj = new Object();
+		$(obj).parent().parent().find('div').each(function(a,b){
+//			var singleItemObj = new Object();
+//			singleItemObj.sort = a;
+//			singleItemObj.type = $('.corr_radio input[name="objectiveProblemType"]:checked ').data("type");
+//			singleItemObj.qoStart = $(this).children('.text1').val();
+//			singleItemObj.qoEnd = $(this).children('.text2').val();
+//			singleItemObj.opCunt = $(this).children('.text3').val();
+//			singleItemObj.score = $(this).children('.text4').val();;
+//			var qNum = $(this).children('span').text();
+//			var opCunt = $(this).children('input[name="opCount"]').val();
+//			var score = $(this).children('input[name="score"]').val();data-width ="'+singleItemListObj.width+'"
+			var str = '';
+			
+			for(var i = parseInt($(this).children('.text1').val()) ; i < parseInt($(this).children('.text2').val()) + 1 ; i++){
+				
+					
+				str += '<li>';
+//				str += '<span class="fl qoSubscript rightIcn" ></span>';
+				str += '<span class="fl mk_pl20 qoTitleName" >'+i+'</span>';
+				str += '<span class="fr mk_right14">';
+				
+				str += '<input type="text" class="tc_text2 singleItemText3 num" value="'+$(this).children('.text5').val()+'">';
+				str += '<label>空</label>';
+				
+				str += '<input type="text" class="tc_text2 singleItemText2 num" value="'+$(this).children('.text4').val()+'">';
+				str += '<label>分</label>';
+				str += '</span></li>';
+			}
+			$(obj).parent().parent().siblings('ul').append($(str));
+			
+			verificationFun();
+			
+			$(".tc_adddiv .qoSubscript").unbind('click').bind({
+				click:function(){
+					if(hasClass("rightIcn")){
+						$(this).removeClass('rightIcn').addClass('downIcn');
+					}else if(hasClass("downIcn")){
+						$(this).removeClass('downIcn').addClass('rightIcn');
+					}
+				}
+			})
+			
+			
+			$(obj).parent().parent().siblings('ul').find('input').blur(function (){//小题判断是否是异常数据
+				var text4,text6;
+				$(this).parent().parent().find('input').each(function(index){
+					if(index == 0){
+						text6  = parseInt($(this).val());
+					}else{
+						text4  = parseInt($(this).val());
+					}
+				});
+				ObjectiveTopic.itemJudge(null,null,null,text4,null,text6);
+			});
+
+			
+		})
+		
+	},
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+				if($("#singleChoiceLi div").length > 0){
+					FillBlank.blurfFun($('.tc_pimgtk'));
+				}else{
+					$("#singleChoiceLi").siblings('ul').empty();
+				}
+				
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		
+		var groupArr = new Array();
+		var attContent = new Object();
+		$("#singleChoiceLi div").each(function(a,b){
+			var groupObj = new Object();
+			groupObj.beginNum = $(this).children('.text1').val();
+			groupObj.endNum = $(this).children('.text2').val();
+//			groupObj.optionNum = parseInt($(this).children('.text3').val()) ;
+			groupObj.score = $(this).children('.text4').val();
+			groupObj.spaceNum = $(this).children('.text5').val();
+			
+			groupObj.sort = a;
+			groupArr.push(groupObj);
+		})
+		attContent.group = groupArr;
+		
+		
+//		var qitemInputVal = new Array();
+		var fillBlankItems = new Array();
+		$(".tc_adddiv li").each(function(a,b){
+			var fillBankItemsObj = new Object();
+			fillBankItemsObj.qid = parseInt($(this).children('.qoTitleName').text());
+			fillBankItemsObj.score = $(this).children('span').children('.singleItemText2').val();
+			fillBankItemsObj.type = 1;
+			fillBankItemsObj.qSpaceNum = $(this).children('span').children('.singleItemText3').val();
+//			qitemInputVal.push(parseInt($(this).children('.qoTitleName').text()));
+			
+			var exist = false;
+			if(data != undefined){
+				for(var i = 0; i < data.faFillBankItemList.length ; i++){
+					var faFillBankItemList = data.faFillBankItemList[i];
+					if(faFillBankItemList.fiTopicNum == parseInt($(this).children('.qoTitleName').text())){
+						fillBankItemsObj.id = faFillBankItemList.fsId;
+						exist = true;
+						break;
+					}
+				}
+			}
+			
+			if(!exist){
+				fillBankItemsObj.id = "";
+			}
+			
+			fillBankItemsObj.sort = parseInt($(this).children('.qoTitleName').text());
+			var attContentItems = new Object();
+			attContentItems.width = 300;
+			fillBankItemsObj.attContent = attContentItems;
+			fillBlankItems.push(fillBankItemsObj);
+		})
+		
+		var fillBlankObj = new Object();
+		fillBlankObj.fillBlankItems = fillBlankItems;
+		fillBlankObj.attContent = attContent;
+		fillBlankObj.bigQid = $(".oqRdo option:selected").val();
+		fillBlankObj.type = 1;
+		fillBlankObj.topicType = 0;
+		fillBlankObj.sort = $(".oqRdo option:selected").val();
+		fillBlankObj.name = $(".bqName").val();
+		fillBlankObj.sizeTitle = $(".sizeTitle").val();
+		
+		
+		if($('#additionalQuestions').is(':checked')) {
+			fillBlankObj.isBonusQuestion = true;
+		}else{
+			fillBlankObj.isBonusQuestion = false;
+		}
+		//临时
+//		for(var i = 0; i < subjectNum.length ; i++){
+//			if(fillBlankObj.bigQid == subjectNum[i].qNum){
+//				subjectNum.splice(i,1);
+//				break;
+//			}
+//		}
+//		var obj = new Object();
+//		obj.qNum = fillBlankObj.bigQid;
+//		obj.qitemInputVal = qitemInputVal;
+//		subjectNum.push(obj);
+		
+		if(data == undefined){
+			fillBlankObj.id = "";
+			
+		}else{
+			fillBlankObj.id = data.fiId;
+			answerSheetOperate.answerPageListDelete(data);
+		}
+		answerSheetOperate.addFillBack(fillBlankObj);
+		
+	}
+}
+
+
+/*
+ * 客观题-a
+ */
+//var topicList = [],
+var itemInputVal = new Array();
+var itemType = 0;//错误内容提示
+var ObjectiveTopic = {
+
+	delOneTopic:function(){
+		itemType = 0;
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+				if($("#singleChoiceLi div").length > 0){
+					ObjectiveTopic.blurfFun($('.tc_pimgtk'));
+				}else{
+					$("#singleChoiceLi").siblings('ul').empty();
+				}
+			}
+		})
+	},
+	
+	/*
+	 * 添加一个题目
+	*/
+	addOneTopic:function(obj){
+//		var topicList = new Array();
+		
+		var str = '';
+		str+='<div>';
+		str+='<label  class="tc_labl">小题题号：</label><input type="text"  class="tc_text2 text1 num" value ="'+qoNum+'"> —— <input type="text" class="tc_text2 text2 num">';
+		var optNum = $('.quetype input[name=objque]:checked').data('type');
+		str+='<label  class="tc_labl">选项个数：</label>';
+		str += '<input type="text" disabled="true" value="2" class="tc_text2 text3 num judgeque">';
+		str+='<input type="text" value="4" class="tc_text2 text3 num rmque">';
+		
+		str+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 text4 num">';
+		str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+		str+='</div>';
+//		$("#singleChoiceLi").append($(str));
+		obj.parent().prev().append($(str));
+		
+		
+		if(optNum == 2){//判断题
+			$(".judgeque").show();
+			$(".rmque").hide();
+		}else{
+			$(".rmque").show();
+			$(".judgeque").hide();
+		}
+		
+		//调用删除题目
+		ObjectiveTopic.delOneTopic();
+		verificationFun();
+//		ObjectiveTopic.blurfFun(obj);
+		
+		$("#singleChoiceLi input").blur(function(){
+		    obj.parent().prev().children('div').removeClass('itemactive');
+			$(this).parent().addClass('itemactive');
+		    
+		    var text1,text2,text3,text4,eptext;
+		    
+	    	itemInputVal = [];
+	    	
+	    	if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+	    	
+		    $(".clear").prev().children('div').each(function(){
+		    	var itemNum = new Object();
+		    	
+		    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+		    		itemNum.text1 = parseInt($(this).children('.text1').val());
+		    		itemNum.text2 = parseInt($(this).children('.text2').val());
+		    		ctext3 = parseInt($(this).children('.text3').val());
+		    		ctext4 = parseInt($(this).children('.text4').val());
+		    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,ctext3,ctext4);
+		    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+		    		
+		    	}
+		    });
+		    
+			$(".clear").prev().children('div').removeClass('itemactive');   
+		    
+		    $(this).parent().children('input').each(function(index){
+		    	eptext = $(this).val();
+		    	if(eptext == ''){
+//	    			$(this).focus();
+		    		return false;
+		    	}else{
+		    		switch (index){
+		    			case 0:
+		    				text1 = parseInt(eptext);
+		    				break;
+	    				case 1:
+		    				text2 = parseInt(eptext);
+		    				break;
+	    				case 2:case 3:
+	    					if($(this).hasClass('rmque') && !$('.rmque').is(':hidden')){//
+								text3 = parseInt(eptext);
+							}else if($(this).hasClass('judgeque') && !$(".judgeque").is(':hidden')){
+								text3 = parseInt(eptext);
+							}
+		    				break;
+	    				case 4:
+		    				text4 = parseInt(eptext);
+		    				ObjectiveTopic.itemJudge(text1,text2,text3,text4);
+		    				break;
+		    		}
+		    	}
+		    });
+		    
+		    if(itemType == 0){
+		    	ObjectiveTopic.blurfFun($(this));
+		    }
+		});
+	},
+	
+	itemJudge:function(text1,text2,text3,text4,text5,text6){//判断题号大小
+		if(text1 != null && isNaN(text1)){
+    		itemType = 8;
+    	}else if(text2 != null && isNaN(text2)){
+    		itemType = 7;
+    	}else if(text3 != null && isNaN(text3)){
+    		itemType = 10;
+    	}else if(text4 != null && isNaN(text4)){
+    		itemType = 9;
+    	}else if(text5 != null && isNaN(text5)){
+    		itemType = 24;
+    	}else if(text6 != null && isNaN(text6)){
+    		itemType = 29;
+    	}else if (text3 == 0){
+			itemType = 6;
+		}else if (text5 == 0){
+			itemType = 23;
+		}else if (text6 == 0){
+			itemType = 17;
+		}else if (text3 > 16){
+			itemType = 11;
+		}else if (text4 == 0){
+			itemType = 2;
+		}else if(text1 != null && text2 != null && !isNaN(text1) && !isNaN(text2)){
+		    if(text1 == 0){
+    			itemType = 4;
+    		}else if (text2 == 0){
+    			itemType = 5;
+    		}else if(text1 > 0 && text2 > 0){
+    			if(text1 <= text2){
+    				itemType = 0;
+	    			if(itemInputVal.length > 0){//修
+	    				
+				    	for(var i = 0; i < itemInputVal.length; i++){
+		    					for(var k = text1; k <= text2; k++){
+		    						if(k == itemInputVal[i]){
+		    							itemType = 3;
+		    						}
+			    				}
+				    	}
+				    }else{
+				    	itemType = 0;
+				    }
+		    	}else if(text1 > text2){
+		    		itemType = 1;
+		    	}else{
+		    		itemType = 0;
+		    	}
+    		}
+	    }else if (text1 == 0){
+			itemType = 26;
+		}else if(text1 != null && text2 == null && !isNaN(text1) && text1 > 0){
+			itemType = 0;
+	    	if(itemInputVal.length > 0){
+	    		for(var i = 0; i < itemInputVal.length; i++){
+					if(text1 == itemInputVal[i]){
+						itemType = 25;
+					}
+				}
+	    	}
+	    }else{
+	    	itemType = 0;
+	    }
+	    ObjectiveTopic.tipInfo(text1,text2);
+	},
+	
+	tipInfo:function(text1,text2){
+		switch (itemType){
+	    	case 1:
+	    		$('.layui-layer-btn .tipItem').text('开始题号不能大于结束题号！');
+	    		break;
+    		case 2:
+	    		$('.layui-layer-btn .tipItem').text('分数必须大于0！');
+	    		break;
+    		case 3:
+	    		$('.layui-layer-btn .tipItem').text('第' + text1 + '到' + text2 + '题已经存在，请勿重复添加！');
+	    		break;
+    		case 4:
+	    		$('.layui-layer-btn .tipItem').text('开始题号必须大于0！');
+	    		break;
+    		case 5:
+	    		$('.layui-layer-btn .tipItem').text('结束题号必须大于0！');
+	    		break;
+    		case 6:
+	    		$('.layui-layer-btn .tipItem').text('选项数必须大于1');
+	    		break;
+    		case 7:
+	    		$('.layui-layer-btn .tipItem').text('结束题号不能为空！');
+	    		break;
+    		case 8:
+	    		$('.layui-layer-btn .tipItem').text('开始题号不能为空！');
+	    		break;
+    		case 9:
+	    		$('.layui-layer-btn .tipItem').text('分数不能为空！');
+	    		break;
+    		case 10:
+	    		$('.layui-layer-btn .tipItem').text('选项数不能为空！');
+	    		break;
+    		case 11:
+	    		$('.layui-layer-btn .tipItem').text('选项数不能大于16！');
+	    		break;
+    		case 12:
+	    		$('.layui-layer-btn .tipItem').text('题目可选数不能为空！');
+	    		break;
+    		case 13:
+	    		$('.layui-layer-btn .tipItem').text('题目可选数必须大于0！');
+	    		break;
+    		case 14:
+	    		$('.layui-layer-btn .tipItem').text('应选题目不能为空！');
+	    		break;
+    		case 15:
+	    		$('.layui-layer-btn .tipItem').text('应选题目必须大于0！');
+	    		break;
+    		case 16:
+	    		$('.layui-layer-btn .tipItem').text('应选题目数不能大于或等于题目可选数！');
+	    		break;
+    		case 17:
+	    		$('.layui-layer-btn .tipItem').text('空格数必须大于0！');
+	    		break;
+    		case 18:
+	    		$('.layui-layer-btn .tipItem').text('最少字数不能为空！');
+	    		break;
+	    	case 19:
+	    		$('.layui-layer-btn .tipItem').text('总字数不能为空！');
+	    		break;	
+    		case 20:
+	    		$('.layui-layer-btn .tipItem').text('最少字数必须大于0！');
+	    		break;
+    		case 21:
+	    		$('.layui-layer-btn .tipItem').text('最少字数不能大于总字数！');
+	    		break;
+    		case 22:
+	    		$('.layui-layer-btn .tipItem').text('行数不能少于3！');
+	    		break;
+    		case 23:
+	    		$('.layui-layer-btn .tipItem').text('行数必须大于0！');
+	    		break;
+    		case 24:
+	    		$('.layui-layer-btn .tipItem').text('行数不能为空！');
+	    		break;
+	    	case 25:
+	    		$('.layui-layer-btn .tipItem').text('第' + text1 + '大题已经存在，请勿重复添加！');
+	    		break;
+    		case 26:
+	    		$('.layui-layer-btn .tipItem').text('小题题号必须大于0！');
+	    		break;
+    		case 27:
+	    		$('.layui-layer-btn .tipItem').text('小题题号不能为空！');
+	    		break;	
+    		case 28:
+	    		$('.layui-layer-btn .tipItem').text('大题题号重复,请重新选择！');
+	    		break;
+    		case 29:
+	    		$('.layui-layer-btn .tipItem').text('空格数不能为空！');
+	    		break;	
+	    	default:
+	    		$('.layui-layer-btn .tipItem').empty();
+	    		break;
+	    }
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	//鼠标失去焦点
+	blurfFun:function(obj , n){//修
+		
+		var qitemInputVal = [];
+	    $(".clear").prev().children('div').each(function(){
+	    	var itemNum = new Object();
+	    	itemNum.text1 = parseInt($(this).children('.text1').val());
+    		itemNum.text2 = parseInt($(this).children('.text2').val());
+    		ctext3 = parseInt($(this).children('.text3').val());
+    		ctext4 = parseInt($(this).children('.text4').val());
+    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+    			qitemInputVal.push(i);
+    		}
+    		
+	    });
+	    
+	    qitemInputVal.sort(function(a,b){
+            return b-a;
+		});
+		
+		if(qitemInputVal.length > 0){
+			var objQnumSort = new Object();
+			objQnumSort.qitemInputVal = qitemInputVal;
+			objQnumSort.qNum = $(".oqRdo option:selected").attr('value');
+			qoNum = qitemInputVal[0] + 1;
+			if(qoNum < $("#objectiveProblem").data('qoNum')){
+				qoNum = $("#objectiveProblem").data('qoNum');
+			}
+			$("#objectiveProblem").data('objQnumSort',objQnumSort);//存放全部题号
+		}
+
+		var blurfYype = "";
+		$(obj).parent().parent().siblings('ul').empty();
+
+		$(obj).parent().parent().find('div').each(function(a,b){
+
+
+			var str = '';
+			
+			for(var i = parseInt($(this).children('.text1').val()) ; i < parseInt($(this).children('.text2').val()) + 1 ; i++){
+		
+				if(!$('.rmque').is(':hidden')){//修
+					var opCunt = $(this).children('.rmque.text3').val();
+				}else if(!$(".judgeque").is(':hidden')){
+					var opCunt = $(this).children('.judgeque.text3').val();
+				}
+
+				
+				
+				var optNum = $('.quetype input[name=objque]:checked').data('type');
+				str += '<li>';
+				str += '<span class="fl mk_pl20 qoTitleName" >'+i+'</span>';
+				str += '<span class="fr mk_right14">';
+
+				if(optNum == 2){//判断题
+					str += '<input type="text" class="tc_text2 textSorce singleItemText1 num" disabled value = "2">';//修
+				}else{
+					str += '<input type="text" class="tc_text2 textSorce singleItemText1 num" value = "'+opCunt+'">';//修
+				}
+
+				str += '<label>个选项</label>';
+				str += '<input type="text" class="tc_text2 singleItemText2 textRows num" value="'+$(this).children('.text4').val()+'">';
+				str += '<label>分</label>';
+				str += '</span></li>';
+			}
+			$(obj).parent().parent().siblings('ul').append($(str));
+			
+			verificationFun();
+			
+			$(obj).parent().parent().siblings('ul').find('input').blur(function (){//小题判断是否是异常数据
+				$('#singleChoiceLi').siblings('ul').find('li').each(function(){
+					text3 = parseInt($(this).find('.textSorce').val());//选项个数
+					text4  = parseInt($(this).find('.textRows').val());//分数
+					ObjectiveTopic.itemJudge(null,null,text3,text4);
+					if(itemType != 0){
+						return false;
+					}
+				});
+			})
+		})
+
+		
+		if(n == 1){
+			blurfYype = n;
+			return blurfYype;
+		}
+		
+		
+	},
+	/**
+	 * 计算函数
+	 */
+	calculate: function(topicList){
+		
+	},
+	
+	save:function(data){
+		
+		var groupArr = new Array();
+		var attContent = new Object();
+		$("#singleChoiceLi div").each(function(a,b){
+			var groupObj = new Object();
+			groupObj.beginNum = $(this).children('.text1').val();
+			groupObj.endNum = $(this).children('.text2').val();
+			if($(this).children('.text3').hasClass('rmque') && !$('.rmque').is(':hidden')){//
+				groupObj.optionNum = parseInt($(this).children('.rmque').val()) ;
+			}else if($(this).children('.text3').hasClass('judgeque') && !$(".judgeque").is(':hidden')){
+				groupObj.optionNum = parseInt($(this).children('.judgeque').val()) ;
+			}
+			
+			groupObj.score = $(this).children('.text4').val();
+			groupObj.sort = a;
+			groupArr.push(groupObj);
+		})
+		attContent.group = groupArr;
+		
+		var objectTopicItems = new Array();
+//		var qitemInputVal = new Array();
+		$("#singleChoiceList li").each(function(a,b){
+			var objectTopicItemsObj = new Object();
+			var exist = false;
+			if(data != undefined){
+				for(var i = 0; i < data.faObjectiveTopicItemList.length ; i++){
+					var faObjectiveTopicItemList = data.faObjectiveTopicItemList[i];
+					if(faObjectiveTopicItemList.fiTopicNum == parseInt($(this).children('.qoTitleName').text())){
+						objectTopicItemsObj.id = faObjectiveTopicItemList.fsId;
+						exist = true;
+						break;
+					}
+				}
+			}
+			
+			if(!exist){
+				objectTopicItemsObj.id = "";
+			}
+//			qitemInputVal.push(parseInt($(this).children('.qoTitleName').text()));
+			
+			objectTopicItemsObj.qid = parseInt($(this).children('.qoTitleName').text());
+			objectTopicItemsObj.optionNum = $(this).children('span').children('.singleItemText1').val();
+			objectTopicItemsObj.score = $(this).children('span').children('.singleItemText2').val();
+			objectTopicItemsObj.type = $('.corr_radio input[name="objque"]:checked ').data("type");
+		
+			objectTopicItemsObj.sort = parseInt($(this).children('.qoTitleName').text());
+			objectTopicItems.push(objectTopicItemsObj);
+		})
+		
+		var objectTopicObj = new Object();
+		objectTopicObj.objectTopicItems = objectTopicItems;
+		objectTopicObj.attContent = attContent;
+		objectTopicObj.bigQid = $(".oqRdo option:selected").val();
+		objectTopicObj.type = 0;
+		objectTopicObj.topicType = $('.corr_radio input[name="objque"]:checked ').data("type");
+		objectTopicObj.name = $(".bqName").val();
+		objectTopicObj.sort = $(".oqRdo option:selected").val();
+		objectTopicObj.sizeTitle = $(".sizeTitle").val();
+		
+		
+		if($('#additionalQuestions').is(':checked')) {
+			objectTopicObj.isBonusQuestion = true;
+		}else{
+			objectTopicObj.isBonusQuestion = false;
+		}
+		//临时
+//		for(var i = 0; i < subjectNum.length ; i++){
+//			if(objectTopicObj.bigQid == subjectNum[i].qNum){
+//				subjectNum.splice(i,1);
+//				break;
+//			}
+//		}
+//		var obj = new Object();
+//		obj.qNum = objectTopicObj.bigQid;
+//		obj.qitemInputVal = qitemInputVal;
+//		subjectNum.push(obj);
+		
+		
+		if(data == undefined){
+			objectTopicObj.id = "";
+			
+		}else{
+			objectTopicObj.id = data.fiId;
+			answerSheetOperate.answerPageListDelete(data);
+		}
+		
+		
+		
+		answerSheetOperate.addObjectTopic(objectTopicObj);
+		
+	}
+}
+
+
+//解答题
+var answerQuestions = {
+	addOneTopic:function(obj){//改
+		var str = '';
+		str+='<div>';
+		str+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 text1" value ="'+qoNum+'"> —— <input type="text" class="tc_text2 text2">';
+		str+='<label  class="tc_labl">行数：</label><input type="text" class="tc_text2 text3">';
+		str+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 text4">';
+		str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+		str+='</div>';
+//		$("#singleChoiceLi").append($(str));
+		obj.parent().prev().append($(str));
+		
+		//调用删除题目
+		answerQuestions.delOneTopic();
+//		ObjectiveTopic.blurfFun(obj);
+		
+		
+		$("#singleChoiceLi input").blur(function(){
+			
+			obj.parent().prev().children('div').removeClass('itemactive');
+			$(this).parent().addClass('itemactive');
+			
+			var text1,text2,text5,text4,eptext;
+			itemInputVal = [];
+			
+			if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+			
+			obj.parent().prev().children('div').each(function(){
+				var itemNum = new Object();
+		    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+		    		itemNum.text1 = parseInt($(this).children('.text1').val());
+		    		itemNum.text2 = parseInt($(this).children('.text2').val());
+		    		ctext5 = parseInt($(this).children('.text3').val());
+		    		ctext4 = parseInt($(this).children('.text4').val());
+		    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,ctext5);
+//		    		itemInputVal.push(itemNum);
+					for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+		    	}
+		    	
+			});
+			
+			$(".clear").prev().children('div').removeClass('itemactive');   
+		    
+		    $(this).parent().children('input').each(function(index){
+		    	eptext = $(this).val();
+		    	if(eptext == ''){
+//	    			$(this).focus();
+		    		return false;
+		    	}else{
+		    		switch (index){
+		    			case 0:
+		    				text1 = parseInt(eptext);
+		    				break;
+	    				case 1:
+		    				text2 = parseInt(eptext);
+		    				break;
+	    				case 2:
+		    				text5 = parseInt(eptext);
+		    				break;
+	    				case 3:
+		    				text4 = parseInt(eptext);
+		    				ObjectiveTopic.itemJudge(text1,text2,null,text4,text5);
+		    				break;
+		    		}
+		    	}
+		    });
+		    
+		    if(itemType == 0){
+		    	answerQuestions.blurfFun($(this));
+		    }
+		});
+	},
+	//鼠标失去焦点
+	blurfFun:function(obj){//改
+//		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		
+		var qitemInputVal = [];
+	    $(obj).parent().parent().children('div').each(function(){
+	    	var itemNum = new Object();
+	    	itemNum.text1 = parseInt($(this).children('.text1').val());
+    		itemNum.text2 = parseInt($(this).children('.text2').val());
+    		if(!isNaN(itemNum.text1) && !isNaN(itemNum.text2)){
+				for(var i = itemNum.text1; i <= itemNum.text2; i++){
+	    			qitemInputVal.push(i);
+	    		}
+    		}
+    		
+	    });
+	    
+	    qitemInputVal.sort(function(a,b){
+            return b-a;
+		});
+		
+		if(qitemInputVal.length > 0){
+			var objQnumSort = new Object();
+			objQnumSort.qitemInputVal = qitemInputVal;
+			objQnumSort.qNum = $(".oqRdo option:selected").attr('value');
+			qoNum = qitemInputVal[0] + 1;
+			$("#answerQuestions").data('objQnumSort',objQnumSort);//存放全部题号
+		}
+		
+		$(obj).parent().parent().siblings('ul').empty();
+		$(obj).parent().parent().find('div').each(function(a,b){
+			var str = '';
+			
+			for(var i = parseInt($(this).children('.text1').val()) ; i < parseInt($(this).children('.text2').val()) + 1 ; i++){
+
+				str += '<li>';
+				str += '<span class="fl mk_pl20 qoTitleName"   >'+i+'</span>';
+				str += '<span class="fr mk_right14">';
+				str += '<input type="text" class="tc_text2 textRows num" value = "'+$(this).children('.text3').val()+'">';
+				str += '<label>行</label>';
+				str += '<input type="text" class="tc_text2 textSorce num" value="'+$(this).children('.text4').val()+'">';
+				str += '<label>分</label>';
+				str += '</span></li>';
+			}
+			$(obj).parent().parent().siblings('ul').append($(str));
+			
+			verificationFun();
+			
+			$(obj).parent().parent().siblings('ul').find('input').blur(function (){//小题判断是否是异常数据
+				$('#singleChoiceLi').siblings('ul').find('li').each(function(){
+					text4 = parseInt($(this).find('.textSorce').val());
+//					ObjectiveTopic.itemJudge(null,null,null,text4,null);
+					text5  = parseInt($(this).find('.textRows').val());
+					ObjectiveTopic.itemJudge(null,null,null,text4,text5);
+					if(itemType != 0){
+						return false;
+					}
+				});
+			});
+			
+		})
+	},
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+				if($("#singleChoiceLi div").length > 0){
+					answerQuestions.blurfFun($('.tc_pimgtk'));
+				}else{
+					$("#singleChoiceLi").siblings('ul').empty();
+				}
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		var groupArr = new Array();
+		var attContent = new Object();
+		$("#singleChoiceLi div").each(function(a,b){
+			var groupObj = new Object();
+			groupObj.beginNum = $(this).children('.text1').val();
+			groupObj.endNum = $(this).children('.text2').val();
+			groupObj.rowNum = parseInt($(this).children('.text3').val()) ;
+			groupObj.score = $(this).children('.text4').val();
+			groupObj.sort = a;
+			groupArr.push(groupObj);
+		})
+		attContent.group = groupArr;
+		
+//		var qitemInputVal = new Array();
+		
+		var answerItems = new Array();
+		$(".tc_adddiv li").each(function(a,b){
+			var answerItemsObj = new Object();
+			answerItemsObj.qid = parseInt($(this).children('.qoTitleName').text());
+			answerItemsObj.score = $(this).children('span').children('.textSorce').val();
+			answerItemsObj.type = 6;
+			
+//			qitemInputVal.push(parseInt($(this).children('.qoTitleName').text()));
+			
+			var exist = false;
+			if(data != undefined){
+				for(var i = 0; i < data.faCAnswerItemList.length ; i++){
+					var faCAnswerItemList = data.faCAnswerItemList[i];
+					if(faCAnswerItemList.fiTopicNum == parseInt($(this).children('.qoTitleName').text())){
+						answerItemsObj.id = faCAnswerItemList.fsId;
+						answerItemsObj.imgData = faCAnswerItemList.faImgData;
+						exist = true;
+						break;
+					}
+				}
+			}
+			
+			if(!exist){
+				answerItemsObj.id = "";
+			}
+			answerItemsObj.sort = parseInt($(this).children('.qoTitleName').text());
+			var attContentItems = new Object();
+			attContentItems.row = $(this).children('span').children('.textRows').val() ;
+			answerItemsObj.attContent = attContentItems;
+			answerItems.push(answerItemsObj);
+		})
+		
+		var answerObj = new Object();
+		answerObj.answerItems = answerItems;
+		answerObj.attContent = attContent;
+		answerObj.bigQid = $(".oqRdo option:selected").val();
+		answerObj.type = 6;
+		answerObj.topicType = 0;
+		answerObj.sort = $(".oqRdo option:selected").val();
+		answerObj.name = $(".bqName").val();
+		answerObj.sizeTitle = $(".sizeTitle").val();
+		if($('#isSealingLine').is(':checked')) {
+			answerObj.isSealingLine = true;
+		}else{
+			answerObj.isSealingLine = false;
+		}
+		
+		if($('#additionalQuestions').is(':checked')) {
+			answerObj.isBonusQuestion = true;
+		}else{
+			answerObj.isBonusQuestion = false;
+		}
+		//临时
+//		for(var i = 0; i < subjectNum.length ; i++){
+//			if(objectTopicObj.bigQid == subjectNum[i].qNum){
+//				subjectNum.splice(i,1);
+//				break;
+//			}
+//		}
+//		var obj = new Object();
+//		obj.qNum = objectTopicObj.bigQid;
+//		obj.qitemInputVal = qitemInputVal;
+//		subjectNum.push(obj);
+		
+		
+		if(data == undefined){
+			answerObj.id = "";
+			
+		}else{
+			answerObj.id = data.fiId;
+			answerSheetOperate.answerPageListDelete(data);
+		}
+		answerSheetOperate.addAnswerQuestions(answerObj);
+	}
+}
+
+
+
+//选做题
+var chooseTheTitle = {
+	
+	//鼠标失去焦点
+	blurfFun:function(obj){
+//		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$(obj).parent().parent().siblings('ul').empty();
+		$(obj).parent().siblings('ul').empty();
+
+		var str = '';
+		
+		for(var i = parseInt($(".text3").val()) ; i < parseInt($(".text4").val()) + 1 ; i++){
+			str += '<li>';
+			str += '<span class="fl mk_pl20 qoTitleName" >'+i+'</span>';
+			str += '<span class="fr mk_right14">';
+			str += '<span class="textSorce">'+parseInt($(".text5").val())+'</span>';
+			str += '<label>分</label>';
+			str += '<span class="textRows">'+parseInt($(".text6").val())+'</span>';
+			str += '<label>行</label>';
+			str += '</span></li>';
+		}
+		$(obj).parent().parent().siblings('ul').append($(str));
+		
+	},
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		
+		var groupArr = new Array();
+		var attContent = new Object();
+//		$("#moreChoice li").each(function(a,b){
+			var groupObj = new Object();
+			groupObj.beginNum = $('.text3').val()
+			groupObj.endNum = $('.text4').val()
+			groupObj.rowNum = parseInt($('.text6').val());
+			groupObj.chooseAllNum = $('.text1').val();
+			groupObj.chooseNum = $('.text2').val();
+			groupObj.score = $('.text5').val();
+			groupObj.sort = 0;
+			groupArr.push(groupObj);
+//		})
+		attContent.group = groupArr;
+		
+		var chooseDoItems = new Array();
+		$(".tc_adddiv li").each(function(a,b){
+			var chooseDoItemsObj = new Object();
+			chooseDoItemsObj.qid = parseInt($(this).children('.qoTitleName').text());
+			chooseDoItemsObj.score = $(this).children('span').children('.textSorce').text();
+			chooseDoItemsObj.type = 0;
+			chooseDoItemsObj.answerType = 0;
+			
+			var exist = false;
+			if(data != undefined){
+				for(var i = 0; i < data.fafiChooseAllItemList.length ; i++){
+					var fafiChooseAllItemList = data.fafiChooseAllItemList[i];
+					if(fafiChooseAllItemList.fiTopicNum == parseInt($(this).children('.qoTitleName').text())){
+						chooseDoItemsObj.id = fafiChooseAllItemList.fsId;
+						chooseDoItemsObj.imgData = fafiChooseAllItemList.faImgData;
+						exist = true;
+						break;
+					}
+				}
+			}
+			
+			if(!exist){
+				chooseDoItemsObj.id = "";
+			}
+			
+			chooseDoItemsObj.sort = parseInt($(this).children('.qoTitleName').text());
+			var attContentItems = new Object();
+			attContentItems.row = $(this).children('span').children('.textRows').text() ;
+			chooseDoItemsObj.attContent = attContentItems;
+			chooseDoItemsObj.sizeTitle = $(".sizeTitle").val();
+			chooseDoItems.push(chooseDoItemsObj);
+		})
+		
+		
+		
+		var choiceObj = new Object();
+		choiceObj.chooseDoItems = chooseDoItems;
+		choiceObj.attContent = attContent;
+		choiceObj.bigQid = $(".oqRdo option:selected").val();
+		choiceObj.type = 2;
+		choiceObj.sort = $(".oqRdo option:selected").val();
+//		choiceObj.topicType = 0;
+		choiceObj.sizeTitle = $(".sizeTitle").val();
+		choiceObj.name = $(".bqName").val();
+		if($('#isSealingLine').is(':checked')) {
+			choiceObj.isSealingLine = true;
+		}else{
+			choiceObj.isSealingLine = false;
+		}
+		
+		if($('#additionalQuestions').is(':checked')) {
+			choiceObj.isBonusQuestion = true;
+		}else{
+			choiceObj.isBonusQuestion = false;
+		}
+		if(data == undefined){
+			choiceObj.id = "";
+			
+		}else{
+			choiceObj.id = data.fsId;
+			answerSheetOperate.answerPageListDelete(data);
+		}
+		
+		answerSheetOperate.chooseTheTitle(choiceObj);
+		
+	}
+}
+
+
+
+//英语作文题
+var englishWriting = {
+	
+	
+	
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		var compositionEnglishObj = new Object();
+		var compositionEnglishItemsObj =  new Object();
+		var compositionEnglishItemsArr =  new Array();
+		compositionEnglishItemsObj.qid = $(".tc_content1 .text2").val();
+		compositionEnglishItemsObj.score = $(".tc_content1 .text4").val();
+		compositionEnglishItemsObj.sort = 0;
+		compositionEnglishItemsObj.answerType = 0;
+		compositionEnglishItemsObj.lineNum = $(".tc_content1 .text3").val();
+		if($('#additionalQuestions').is(':checked')) {
+			compositionEnglishObj.isBonusQuestion = true;
+		}else{
+			compositionEnglishObj.isBonusQuestion = false;
+		}
+		var attContentObj = new Object();
+		
+		
+		if(data != undefined){
+			var faCCompositionEnglishList = data.faCCompositionEnglishList;
+			compositionEnglishItemsObj.id = faCCompositionEnglishList[0].fsId;
+		}else{
+			compositionEnglishItemsObj.id = "";
+		}
+		compositionEnglishItemsObj.attContent = attContentObj;
+		
+		compositionEnglishItemsArr.push(compositionEnglishItemsObj);
+		
+		compositionEnglishObj.name = $(".tc_content1 .bqName").val();
+		compositionEnglishObj.bigQid = $(".tc_content1 .oqRdo option:selected").val();
+		compositionEnglishObj.type = 3;
+		compositionEnglishObj.sort = $(".tc_content1 .oqRdo option:selected").val();
+		compositionEnglishObj.sizeTitle = $(".sizeTitle").val();
+		if(data != undefined){
+			compositionEnglishObj.id = data.fsId;
+			answerSheetOperate.answerPageListDelete(data);
+		}else{
+			compositionEnglishObj.id = "";
+		}
+		compositionEnglishObj.compositionEnglishItems = compositionEnglishItemsArr;
+		
+		answerSheetOperate.englishWriting(compositionEnglishObj);
+
+	}
+}
+
+
+//语文作文题
+var languageWriting = {
+	
+	
+	
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		var compositionChineseObj = new Object();
+		var compositionChineseItemsObj =  new Object();
+		var compositionChineseItemsArr =  new Array();
+		
+		compositionChineseItemsObj.qid = $(".tc_content .text2").val();
+		compositionChineseItemsObj.score = $(".tc_content .text5").val();
+		compositionChineseItemsObj.sort = 0;
+		compositionChineseItemsObj.answerType = 0;
+		
+		
+		if($('#additionalQuestions').is(':checked')) {
+			compositionChineseObj.isBonusQuestion = true;
+		}else{
+			compositionChineseObj.isBonusQuestion = false;
+		}
+		
+		var attContentObj = new Object();
+		attContentObj.totalCharNum = $(".tc_content .text4").val();
+		attContentObj.minCharNum = $(".tc_content .text3").val();
+		
+		if(data != undefined){
+			compositionChineseItemsObj.id = data.ffSmallQid;
+		}else{
+			compositionChineseItemsObj.id = "";
+		}
+		compositionChineseItemsObj.attContent = attContentObj;
+		
+		compositionChineseItemsArr.push(compositionChineseItemsObj);
+		
+		compositionChineseObj.name = $(".tc_content .bqName").val();
+		compositionChineseObj.bigQid = $(".tc_content .oqRdo option:selected").val();
+		compositionChineseObj.sort = $(".tc_content .oqRdo option:selected").val();
+		compositionChineseObj.type = 4;
+		compositionChineseObj.sizeTitle = $(".sizeTitle").val();
+		
+		if(data == undefined ){
+			compositionChineseObj.id = "";
+		}else{
+			compositionChineseObj.id = data.fsId;
+			
+		}
+		
+		
+		compositionChineseObj.compositionChineseItems = compositionChineseItemsArr;
+		
+
+		if(data == undefined ){
+			
+		}else{
+			answerSheetOperate.answerPageListDelete(data);
+		}
+		
+		answerSheetOperate.languageWriting(compositionChineseObj);
+	}
+}
+
+
+//非作答区
+var nonresponsiveZone ={
+	delOneTopic:function(){
+		$(".tc_pimgtk img").unbind('click').bind({
+			click:function(){
+				itemType = 0;
+				$(".layui-layer-btn .tipItem").empty();
+				$(this).parent().parent().remove();
+			}
+		})
+	},
+	/*
+	 * 三次一个题目
+	*/
+	editOneTopic: function(topicEntity){
+		var topicList = new Array();
+		var val_payPlatform = $('.corr_radio input[name="objectiveProblemType"]:checked ').val();
+		$("#itemsSingle").find('div').each(function(i,v){
+			var singleItemObj = new Array();
+			var qNum = $(this).children('span').text();
+			var opCunt = $(this).children('input[name="opCount"]').val();
+			var score = $(this).children('input[name="score"]').val();
+			singleItemObj.qNum = qNum;
+			singleItemObj.opCunt = opCunt;
+			singleItemObj.score = score;
+		})
+		ObjectiveTopic.topicList.push(singleItemObj);
+	},
+	save:function(data){
+		var nonresponsiveZoneObj = new Object();
+		nonresponsiveZoneObj.type = 5;
+		if(data == undefined){
+			nonresponsiveZoneObj.id = "";
+		}else{
+			nonresponsiveZoneObj.id = data.fsId;
+		}
+		
+		nonresponsiveZoneObj.position = 1;
+		nonresponsiveZoneObj.bigQid = $("#position option:selected").val();
+		nonresponsiveZoneObj.height = $(".tc_content1 .text1").val();
+		nonresponsiveZoneObj.name = "非作答区";
+		nonresponsiveZoneObj.sort = 100;
+		
+		
+		if(data == undefined){
+			nonresponsiveZoneObj.id = "";
+		}else{
+			answerSheetOperate.answerPageListDelete(data);
+		}
+	
+		answerSheetOperate.nonresponsiveZone(nonresponsiveZoneObj);
+	}
+}

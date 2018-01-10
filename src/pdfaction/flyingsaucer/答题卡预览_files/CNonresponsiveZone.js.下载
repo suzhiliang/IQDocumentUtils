@@ -1,0 +1,264 @@
+/*
+ * 作文题-英
+ */
+function CNonresponsiveZone(){
+	// 基类方法
+	CTopicModuleBasis.call(this);
+	
+	this.ffWidth = 708.5;
+	// 大题号
+	this.fiBigQid = null;
+	
+	this.fsId = "";
+			
+	//题型的类型
+	this.fiType = 7;
+	
+	//模块排序值
+	this.fiSort = 0;
+	
+	// 每个框的行数
+	this.fiRows = 0;
+	
+	//每个框的id
+	this.fvCode = "";	
+	this.sort = 100;
+		
+	// 一行高度
+	this.fiNonresponsiveZoneItemRowsHeight = 70;
+	
+	// 倍数
+	this.fiKValue = 2;
+	
+	// 模块相对大页面左上定点y坐标
+	this.ffPageTopUI = 0;
+	
+	// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+	this.ffModuleHeightUI = 0;
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(data){
+		moduleWidth = this.ffWidth * this.fiKValue;
+		
+		this.fiBigQid = data.qNum;
+		this.fsId = data.id;
+		this.fsBigTitle = data.name;
+		this.fiType = data.type;
+		
+		//模块排序值
+		this.fiSort = data.sort;
+		this.position = data.position;
+		this.fiRows = data.height;
+		this.fvCode = "NonresponsiveItem_"  + generateUUID();
+	}
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView =  function(uiInfo){
+		var moduleWidth = this.ffWidth * this.fiKValue;
+		// 页脚高度
+//		var headerFooterHeight = 80 + 80;
+		if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+			if(uiInfo.fitestType == 1){
+				var headerFooterHeight = 0;
+			}else{
+				var headerFooterHeight = 80 + 80;
+			}
+		}else{
+			var headerFooterHeight = 80 + 80;
+		}
+		
+		var svgUI = null;
+		var listGroupItemUI = null;
+		
+		var newNowTopUI = uiInfo.ffNowModuleTopUI ;
+		
+		// 创建 listGroupItem
+		var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+		listGroupItemUI = $(listGroupItemUIStr);
+		uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+		
+		this.faSvgIdArray = new Array();
+		var svgId = "NonresponsiveItem_" + this.faSvgIdArray.length + "_" + generateUUID();
+		this.faSvgIdArray.push(svgId);
+		
+		// SVG 高度
+	 	var viewBoxHeight = 0;
+		
+		// 加入标题
+		var titleUIStr = '<defs></defs>';
+		var svgUINowHtmlStr = titleUIStr;
+		var svgUINowHtmlRectAfter = "";
+		
+		// 当前元素布局后，相对当前页面高度新top位置
+		uiInfo.ffNowTopUI = uiInfo.ffNowTopUI ;
+		
+		// 整个模块相对大页面左上顶点坐标
+		this.ffPageTopUI = (uiInfo.faNewAnswerPageList.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI + this.fiTitleHeight / this.fiKValue;
+		
+		var kouChuHeight = 0;  // 相对于 viewBox外面坐标系
+		
+		var rowNowIndex = 0;  // 统计行数
+	
+		for(var i = 0 ; i < parseInt(this.fiRows); i++){// 标题当成一行，因此多加“1”
+			rowNowIndex++;
+			
+			var newNowTopUI = (this.fiNonresponsiveZoneItemRowsHeight * rowNowIndex ) / this.fiKValue - kouChuHeight;
+			var newPageAbsTopUI = uiInfo.ffNowModuleTopUI + newNowTopUI; 
+			
+			if ((newPageAbsTopUI + this.fiNonresponsiveZoneItemRowsHeight / this.fiKValue) > (uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2)){// 最后要留出一行, 不够位置排序, 创建新的一页出来
+				
+				var svgUINowHtmlRectAfter = "";
+				var lineItemStr = ""; 
+				lineTextY = (viewBoxHeight + this.fiNonresponsiveZoneItemRowsHeight)/2 + 22;
+				lineItemStr += '<text x="456" y="'+lineTextY+'" fill="block" style="font-size: 62px; font-family: 文泉驿微米黑; font-weight: bold;">请勿在此区域作答</text>';
+					
+				svgUINowHtmlRectAfter = svgUINowHtmlRectAfter + lineItemStr;
+				if ("" != svgUINowHtmlRectAfter){// 当前已经有内容，直接添加进去
+					viewBoxHeight = viewBoxHeight + this.fiNonresponsiveZoneItemRowsHeight;  // 尾巴要多留出一行
+					var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+					var svgHeight = viewBoxHeight / this.fiKValue;
+					var svgStr = '';
+					svgStr += '<ul class="btnSetting btnZindex" style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+					svgStr += '<li style="margin-right: 10px;">';
+					svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+					svgStr += '<span>修改</span></li>';
+					svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+					listGroupItemUI.children("div").append(svgStr);
+					var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+					svgUI = $(svgUIStr);
+					
+					var rectHtmlStr = '<rect x="0" y="0" width="' + moduleWidth + '" height="'+ viewBoxHeight + '" stroke="#000000" fill="#f1f1f1"></rect>';
+					
+					svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+					
+					svgUI.html(svgUINowHtmlStr);
+					listGroupItemUI.children("div").append(svgUI);
+				}
+
+				kouChuHeight = kouChuHeight + uiInfo.ffNowTopUI;
+				viewBoxHeight = 0;
+				
+				svgUINowHtmlStr = "";
+				svgUINowHtmlRectAfter = "";
+				
+				newNowTopUI = this.fiNonresponsiveZoneItemRowsHeight / this.fiKValue;
+				
+				// 创建一页出来
+				uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+				
+				var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+				listGroupItemUI = $(listGroupItemUIStr);
+				uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+			}
+			
+			// 具体一个个排列
+			uiInfo.ffNowTopUI = newNowTopUI;
+			var viewBoxHeightNew = newNowTopUI * this.fiKValue;
+			if (viewBoxHeight < viewBoxHeightNew){
+				viewBoxHeight = viewBoxHeightNew;
+			}
+		}
+		var svgUINowHtmlRectAfter = "";
+		var lineItemStr = ""; 
+		lineTextY = (viewBoxHeight + this.fiNonresponsiveZoneItemRowsHeight)/2 + 22;
+		lineItemStr += '<text x="456" y="'+lineTextY+'" fill="block" style="font-size: 62px; font-family: 文泉驿微米黑; font-weight: bold;">请勿在此区域作答</text>';
+			
+		svgUINowHtmlRectAfter = svgUINowHtmlRectAfter + lineItemStr;
+	
+		if ("" != svgUINowHtmlRectAfter){
+			viewBoxHeight = viewBoxHeight + this.fiNonresponsiveZoneItemRowsHeight;  // 尾巴要多留出一行
+			var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+			var svgHeight = viewBoxHeight / this.fiKValue;
+			var svgStr = '';
+			svgStr += '<ul class="btnSetting btnZindex" style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+			svgStr += '<li style="margin-right: 10px;">';
+			svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+			svgStr += '<span>修改</span></li>';
+			svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+			listGroupItemUI.children("div").append(svgStr);
+			var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+			svgUI = $(svgUIStr);
+			
+			// 矩形
+			var rectHtmlStr = '<rect x="0" y="0" width="' + moduleWidth + '" height="'+ viewBoxHeight  + '" stroke="#000000" fill="#f1f1f1"></rect>';
+			svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+			svgUI.html(svgUINowHtmlStr);
+			listGroupItemUI.children("div").append(svgUI);
+		}
+		
+		uiInfo.ffNowModuleTopUI = uiInfo.ffNowModuleTopUI + viewBoxHeight / this.fiKValue + 5;
+	
+		// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+		var tmpValue = (uiInfo.foNowPageListGroupUI.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI;
+		uiInfo.ffModuleHeightUI = tmpValue - this.ffPageTopUI;
+	}
+		
+	/**
+	 * 保存
+	 */
+	this.save =  function(){
+		var topic = new Object();
+		topic.type = this.fiType;
+		topic.id = this.fsId;
+		topic.bigQid = this.fiBigQid;
+		topic.name = this.fsBigTitle;
+		topic.height = this.fiRows;
+		topic.sort = this.sort;
+//		topic.position =this.position;
+		var attContent = new Object();
+		attContent.moduelTop = this.ffPageTopUI;
+		attContent.moduelHeight = this.ffModuleHeightUI;
+		topic.attContent = attContent;
+		return topic;
+	},
+	
+	
+			/*
+	 * 添加上传数据
+	 */
+	
+	this.addModelData = function(data){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].imgData ==  modelData.code){
+//				modelDataObj.imgStyle = modelData.imgStyle;
+//				modelDataObj.url = modelData.url;
+//				this.faCAnswerItemList[i].imgData.push(modelDataObj);
+//			}
+//		}
+	},
+	
+	
+	/*
+	 * 修改上传数据
+	 */
+	
+	this.editModelData = function(modelData){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].fsCode ==  modelData.itmeId){
+//				var imgData =  this.faCAnswerItemList[i].faImgData;
+//				for(var j = 0; j < imgData.length ; j ++){
+//					if(imgData[j].id == modelData.id){
+//						this.faCAnswerItemList[i].faImgData[j].imgStyle = modelData.imgStyle;
+//					}
+//					
+//				}
+//			}
+//		}
+	},
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load =  function(jsonData){
+		
+	}
+}

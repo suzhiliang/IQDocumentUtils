@@ -1,0 +1,413 @@
+/*
+ * 作文题-英
+ */
+function CCompositionChinese(){
+	// 基类方法
+	CTopicModuleBasis.call(this);
+	
+	// 大题号
+	this.fiBigQid = null;
+	
+	// 大标题
+	this.fsBigTitle = null;
+	
+	//  小题号
+	this.fiTopicNum = 0;
+	
+	//小题号的id
+	this.ffSmallQid = "";
+	
+	//模块排序值
+	this.fiSort = 0;
+	
+	//题型的类型
+	this.fiType = 6;
+	
+	//小标题号
+	this.fsSmallTitleHeight = 84;
+	
+	//作文外框的高度距离每一个月的顶部高度
+	this.fsFrameHeight = 116;
+	
+	//作文内框的高度距离每一个月的顶部高度
+	this.fsInnerFrameHeight = 96;
+	
+	//分数统计
+	this.ffCountScore = 0;
+	
+	// 长度
+	this.ffWidth = 708.5;
+	
+	// 行距
+	this.fiRowSpaceValue = 30;
+	
+	// 列间距
+	this.fiColSpaceValue = 0;
+	
+	//小标题
+	this.fsSizeTitle = "";
+	
+	// 行数
+	this.fiFillBankItemRowsCount = 1;
+	
+	// 一行高度
+	this.fiFillBankItemRowsHeight = 77;
+	
+	//大标题id
+	this.fsId = "";
+	
+	//是否有附加题
+	this.fsAdditionalQuestions = true;
+	
+	// 大标题高度
+	this.fiTitleHeight = 80;
+	
+	
+	this.ffRechHeight = 133;
+	
+	// 单个数组
+	this.faCCompositionChineseList = new Array();
+	
+	// svg id 数组
+	this.faSvgIdArray = null;
+	
+	// 倍数
+	this.FiKValue = 2;
+	
+	
+	// 模块相对大页面左上定点y坐标
+	this.ffPageTopUI = 0;
+	
+	// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+	this.ffModuleHeightUI = 0;
+	
+	/**
+	 * 初始化函数
+	 */
+	this.init = function(data){
+		var moduleWidth = this.ffWidth * this.FiKValue;
+//		this.qoName = data.qoName;
+
+		this.fiType = data.type;
+		this.fiBigQid = data.bigQid;
+		this.fsId = data.id;
+		this.fsBigTitle =  data.name;
+		this.fsSizeTitle = data.sizeTitle;
+		//模块排序值
+		this.fsAdditionalQuestions = data.isBonusQuestion;
+		if(this.fsAdditionalQuestions){
+			this.fiSort = 99;
+		}else{
+			this.fiSort = data.sort;
+		}
+//		this.fiSort =  data.sort;
+		
+		var compositionChineseItemsData = data.compositionChineseItems[0];//新加
+		this.ffCountScore = compositionChineseItemsData.score;
+		this.answerType = compositionChineseItemsData.answerType;
+		this.minCharNum = compositionChineseItemsData.attContent.minCharNum;
+		this.totalCharNum = compositionChineseItemsData.attContent.totalCharNum;
+		this.answerType = compositionChineseItemsData.answerType;
+		this.ffSmallQid = compositionChineseItemsData.id;
+		this.fiTopicNum = compositionChineseItemsData.qid;
+
+		
+		var code = "CompositionChineseItem_" + compositionChineseItemsData.qid + "_" + generateUUID();
+		var fiToplineY1 = 119;
+		var fiToplineY2 = 119;
+		var fiButlineY1 = 134;
+		var fiButlineY2 = 134;
+		var fiClineX1 = 77;
+		var fiClineX2 = 77;
+		var fiClineY1 = 56;
+		var fiClineY2 = 119;
+		for(var i = 0 ; i < parseInt(this.totalCharNum/22); i ++){
+			var compositionEnglishItem = new CCompositionChineseItem();
+			fiToplineY1 = fiToplineY1 + this.fiFillBankItemRowsHeight;
+			fiButlineY1 = fiButlineY1 + this.fiFillBankItemRowsHeight;
+			fiClineX2 = fiClineX2 + this.fiFillBankItemRowsHeight;
+			fiClineY1 = fiClineY1 + this.fiFillBankItemRowsHeight;
+			fiClineY2 = fiClineY2 + this.fiFillBankItemRowsHeight;
+			compositionEnglishItem.init(code, this.fiTopicNum , fiClineY1, fiClineY2 , fiToplineY1 , fiButlineY1, this.score, this.minCharNum , this.totalCharNum ,i);
+			this.faCCompositionChineseList.push(compositionEnglishItem);
+		}
+		
+	}
+	
+	/**
+	 * 布局函数
+	 * @param {Object} answerSheet
+	 * @param {Object} uiInfo
+	 */
+	this.layoutView =  function(uiInfo){
+		var moduleWidth = this.ffWidth * this.FiKValue;
+		// 页脚高度
+//		var headerFooterHeight = 80 + 80;
+		if(GetQueryString("preview") == 1 || GetQueryString("download") == 1){
+			if(uiInfo.fiTestType == 1){
+				var headerFooterHeight = 10;
+			}else{
+				var headerFooterHeight = 80 + 80;
+			}
+		}else{
+			var headerFooterHeight = 80 + 80;
+		}
+		
+		var svgUI = null;
+		var listGroupItemUI = null;
+		
+		// 先判断题号有没有超出
+		var newNowTopUI = uiInfo.ffNowModuleTopUI + this.fiTitleHeight / this.FiKValue;
+		if (newNowTopUI > (uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight) || ((uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight / 2) - newNowTopUI < 79)){// 不够位置排序, 创建新的一页出来
+			uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+		}
+		
+		
+		// 创建 listGroupItem
+		var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+		listGroupItemUI = $(listGroupItemUIStr);
+		uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+		
+		this.faSvgIdArray = new Array();
+		var svgId = "CompositionChineseItem_" + this.faSvgIdArray.length + "_" + generateUUID();
+		this.faSvgIdArray.push(svgId);
+		
+		
+		// SVG 高度
+	 	var viewBoxHeight = this.fiTitleHeight;
+		
+		// 加入标题
+		var titleUIStr = '<defs></defs>';
+		if(this.fsAdditionalQuestions){
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + "附加题："+ this.fsBigTitle;
+		}else{
+			var bigTitle = digitalConversion(this.fiBigQid) + "、" + this.fsBigTitle;
+		}
+		titleUIStr += '<text x="0" y="50" style="font-size: 38px; font-family: 文泉驿微米黑; font-weight: bold;">' + bigTitle + "("+this.ffCountScore+"分)" + '</text>';
+		if(this.fsSizeTitle == undefined || this.fsSizeTitle == null || this.fsSizeTitle == ""){
+			var name = "";
+		}else{
+			var name = "("+this.fsSizeTitle+")";
+		}
+		titleUIStr += '<text x="480" y="50" style="font-size: 28px; font-family: 文泉驿微米黑; font-weight: bold;">'+name+'</text>';
+		var svgUINowHtmlStr = titleUIStr;
+		var svgUINowHtmlRectAfter = "";
+		
+		// 当前元素布局后，相对当前页面高度新top位置
+		uiInfo.ffNowTopUI = uiInfo.ffNowTopUI + this.fiTitleHeight / this.FiKValue;
+		
+		// 整个模块相对大页面左上顶点坐标
+		this.ffPageTopUI = (uiInfo.faNewAnswerPageList.length - 1) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI + this.fiTitleHeight / this.FiKValue;
+		
+		var kouChuHeight = 0;  // 相对于 viewBox外面坐标系
+		var kouChuTitleHeight = this.fiTitleHeight;
+		var frequency = 0; // 判断是否是分页
+		var pageNum = 0;
+		for (var i = 0; i < this.faCCompositionChineseList.length; i++) {
+			var fiCompositionChineseItem = this.faCCompositionChineseList[i];
+			
+			var newNowTopUI = (fiCompositionChineseItem.ffToplineY1 + this.fiFillBankItemRowsHeight) / this.FiKValue - kouChuHeight;
+			var newPageAbsTopUI = uiInfo.ffNowModuleTopUI + newNowTopUI; 
+			
+			if (newPageAbsTopUI > uiInfo.foNewNowAnswerPage.ffHeight - headerFooterHeight){// 不够位置排序, 创建新的一页出来
+				
+				if ("" != svgUINowHtmlRectAfter){// 当前已经有内容，直接添加进去
+					frequency ++ ;
+					pageNum ++ ;
+					var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+					var svgHeight = viewBoxHeight / this.FiKValue;
+					var svgStr = '';
+					if(pageNum > 1){
+						svgStr += '<ul class="btnSetting btnZindex" style="top: -20px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+					}else{
+						svgStr += '<ul class="btnSetting btnZindex" style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+					}
+				
+					svgStr += '<li style="margin-right: 10px;">';
+					svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+					svgStr += '<span>修改</span></li>';
+					svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+					listGroupItemUI.children("div").append(svgStr);
+					var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+					svgUI = $(svgUIStr);
+					
+					// 矩形
+					var rectHtmlStr = '<rect x="0" y="' + kouChuTitleHeight + '" width="' + moduleWidth + '" height="'+ (viewBoxHeight - kouChuTitleHeight) + '" stroke="#000000" style="fill-opacity: 0;"></rect>';
+					if(frequency > 1){// 判断是否是第一页，且是否有小标题号的
+						rectHtmlStr +='<rect x="14" y="'+(kouChuTitleHeight + 30)+'" width="1388" height="'+ (viewBoxHeight - kouChuTitleHeight - this.fsInnerFrameHeight) + '" stroke="#000000" lineWidth="0.3" style="fill-opacity: 0;"></rect>';
+					}else{
+						rectHtmlStr +='<rect x="14" y="'+(kouChuTitleHeight + this.fsSmallTitleHeight)+'" width="1388" height="'+ (viewBoxHeight - kouChuTitleHeight - this.fsFrameHeight) + '" stroke="#000000" lineWidth="0.3" style="fill-opacity: 0;"></rect>';
+						var fiTopicNum = this.fiTopicNum +".";
+						rectHtmlStr +='<text x="14" y="123" style="font-size: 32px; font-family: 文泉驿微米黑;">'+fiTopicNum+'</text>';
+					}
+					if(pageNum == 1){
+						svgUINowHtmlStr = titleUIStr;
+					}
+					kouChuTitleHeight = 0;
+					svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+					
+					svgUI.html(svgUINowHtmlStr);
+					listGroupItemUI.children("div").append(svgUI);
+				}
+				if(i == 0){
+					svgId = "CompositionChineseItem_" + this.faSvgIdArray.length + "_" + generateUUID();
+					this.faSvgIdArray.push(svgId);
+				}
+				
+	 			kouChuHeight = kouChuHeight + uiInfo.ffNowTopUI - this.fiFillBankItemRowsHeight + this.fiRowSpaceValue;
+
+				viewBoxHeight = 0;
+				
+				svgUINowHtmlStr = "";
+				svgUINowHtmlRectAfter = "";
+				
+				newNowTopUI = (fiCompositionChineseItem.ffToplineY1 + this.fiFillBankItemRowsHeight) / this.FiKValue - kouChuHeight - uiInfo.ffNowModuleTopUI;
+
+				// 创建一页出来
+				uiInfo.foNowAnswerPage.createOnePageByUIInfo(uiInfo);
+				
+				var listGroupItemUIStr = '<li class="list-group-item"><div></div></li>';
+				listGroupItemUI = $(listGroupItemUIStr);
+				uiInfo.foNowPageListGroupUI.append(listGroupItemUI);
+			}
+			
+			// 具体一个个排列
+			uiInfo.ffNowTopUI = newNowTopUI;
+			var viewBoxHeightNew = newNowTopUI * this.FiKValue;
+			if (viewBoxHeight < viewBoxHeightNew){
+				viewBoxHeight = viewBoxHeightNew;
+			}
+			if(frequency > 0){
+				var fillBlankItemHtmlStr = fiCompositionChineseItem.layoutView(kouChuHeight * this.FiKValue);
+			}else{
+				var fillBlankItemHtmlStr = fiCompositionChineseItem.layoutView(kouChuHeight * this.FiKValue - 30);
+			}
+			
+			svgUINowHtmlRectAfter = svgUINowHtmlRectAfter + fillBlankItemHtmlStr;
+		}
+		
+		if ("" != svgUINowHtmlRectAfter){
+			if(viewBoxHeight < 98){
+				viewBoxHeight = 176;
+			}
+			var viewBox = "0" + " " + "0" + " " + moduleWidth + " " + viewBoxHeight;
+			var svgHeight = viewBoxHeight / this.FiKValue;
+			var svgStr = '';
+			svgStr += '<ul class="btnSetting btnZindex" style="top: 10px; left: 633px; display: none;" data-id ="' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '">';
+			svgStr += '<li style="margin-right: 10px;">';
+			svgStr += '<button type="button" class="btnEdit" data-toggle="modal" data-target="#modal">编辑</button>';
+			svgStr += '<span>修改</span></li>';
+			svgStr += '<li><button type="button" class="btnDel">删除</button><span>删除</span></li></ul>';
+			listGroupItemUI.children("div").append(svgStr);
+			var svgUIStr = '<svg id = "' + this.faSvgIdArray[this.faSvgIdArray.length - 1] + '"  width="' + this.ffWidth + '" height="'+ svgHeight + '" viewbox="' + viewBox + '"></svg>';
+			svgUI = $(svgUIStr);
+			frequency ++ ;
+			// 矩形
+			
+			var rectHtmlStr = '<rect x="0" y="' + kouChuTitleHeight + '" width="' + moduleWidth + '" height="'+ (viewBoxHeight - kouChuTitleHeight) + '" stroke="#000000" style="fill-opacity: 0;"></rect>';
+			
+			
+//			rectHtmlStr ='<rect x="0" y="'+kouChuTitleHeight+'" width="' + moduleWidth + '" height="'+ (viewBoxHeight - kouChuTitleHeight) + '" stroke="#000000" lineWidth="0.3" style="fill-opacity: 0;"></rect>';
+			if(frequency > 1){// 判断是否是第一页，且是否有小标题号的	
+				rectHtmlStr +='<rect x="14" y="'+(kouChuTitleHeight + 30)+'" width="1388" height="'+ (viewBoxHeight - kouChuTitleHeight - this.fsInnerFrameHeight) + '" stroke="#000000" lineWidth="0.3" style="fill-opacity: 0;"></rect>';
+			}else{
+				rectHtmlStr +='<rect x="14" y="'+(kouChuTitleHeight + this.fsSmallTitleHeight)+'" width="1388" height="'+ (viewBoxHeight - kouChuTitleHeight - this.fsFrameHeight) + '" stroke="#000000" lineWidth="0.3" style="fill-opacity: 0;"></rect>';
+				var fiSmallQid = this.fiTopicNum +".";
+				rectHtmlStr +='<text x="14" y="123" style="font-size: 32px; font-family: 文泉驿微米黑;">'+fiSmallQid+'</text>';
+			}
+			
+			svgUINowHtmlStr = svgUINowHtmlStr + rectHtmlStr + svgUINowHtmlRectAfter;
+			svgUI.html(svgUINowHtmlStr);
+			listGroupItemUI.children("div").append(svgUI);
+		}
+		
+		uiInfo.ffNowModuleTopUI = uiInfo.ffNowModuleTopUI + viewBoxHeight / this.FiKValue + 5;
+
+		// 整个模块高度（如果改模块跨了多个页面，那么页面之间的页眉页脚也算作高度的一部分）
+		var tmpValue = (uiInfo.fiNewNowPageOrd) * uiInfo.ffPageHeight +  uiInfo.ffNowModuleTopUI;
+		uiInfo.ffModuleHeightUI = tmpValue - this.ffPageTopUI;
+	},
+	
+	
+		/*
+	 * 修改上传数据
+	 */
+	
+	this.addModelData = function(data){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].imgData ==  modelData.code){
+//				modelDataObj.imgStyle = modelData.imgStyle;
+//				modelDataObj.url = modelData.url;
+//				this.faCAnswerItemList[i].imgData.push(modelDataObj);
+//			}
+//		}
+	}
+	
+	
+	/*
+	 * 修改上传数据
+	 */
+	
+	this.editModelData = function(modelData){
+//		for(var i = 0 ; i < this.faCAnswerItemList.length ; i++){
+//			var modelDataObj = new Object();
+//			if(this.faCAnswerItemList[i].fsCode ==  modelData.itmeId){
+//				var imgData =  this.faCAnswerItemList[i].faImgData;
+//				for(var j = 0; j < imgData.length ; j ++){
+//					if(imgData[j].id == modelData.id){
+//						this.faCAnswerItemList[i].faImgData[j].imgStyle = modelData.imgStyle;
+//					}
+//					
+//				}
+//			}
+//		}
+	},
+	
+	
+	/**
+	 * 保存
+	 */
+	this.save =  function(){
+		var topic = new Object();
+		topic.type = this.fiType;
+		topic.sort = this.fiSort;
+		topic.id = this.fsId;
+		topic.bigQid = this.fiBigQid;
+		topic.name = this.fsBigTitle;
+		topic.sizeTitle = this.fsSizeTitle;
+		topic.isBonusQuestion = this.fsAdditionalQuestions;
+		var compositionChineseItemsArr = new Array();
+
+		var compositionChineseItemsObj = new Object();
+		compositionChineseItemsObj.id = this.ffSmallQid;
+		compositionChineseItemsObj.answerType = 0;
+		compositionChineseItemsObj.qid = this.fiTopicNum;
+		
+		compositionChineseItemsObj.score = this.ffCountScore;
+		compositionChineseItemsObj.sort = 0;
+		
+		compositionChineseItemsObj.minCharNum = this.minCharNum;
+		compositionChineseItemsObj.totalCharNum = this.totalCharNum;
+		var attContentObj = new Object;
+		attContentObj.minCharNum = this.minCharNum;
+		attContentObj.totalCharNum = this.totalCharNum;
+		compositionChineseItemsObj.attContent = attContentObj;
+		compositionChineseItemsArr.push(compositionChineseItemsObj);
+		topic.compositionChineseItems = compositionChineseItemsArr;
+		var attContent = new Object();
+		
+		attContent.moduelTop = this.ffPageTopUI;
+		attContent.moduelHeight = this.ffModuleHeightUI;
+		topic.attContent = attContent;
+		return topic;
+	},
+	
+	/**
+	 * 载入
+	 * @param {Object} jsonData
+	 */
+	this.load =  function(jsonData){
+		
+	}
+}

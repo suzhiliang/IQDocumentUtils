@@ -1,0 +1,1937 @@
+$(function(){
+	
+	//添加客观题
+	$("#objectiveProblem").unbind('click').bind({
+		click:function(){
+			btnAnswerType.objectiveProblem();
+		}
+	})
+	
+	
+	//添加填空题
+	$("#fillBlank").unbind('click').bind({
+		click:function(){
+			btnAnswerType.addQuestion();
+		}
+	})
+	
+	//添加解答题
+	$("#answerQuestions").unbind('click').bind({//改
+		click:function(){
+			btnAnswerType.answerQuestions();
+		}
+	})
+	
+	//添加选做题
+	$("#chooseTheTitle").unbind('click').bind({//改
+		click:function(){
+			btnAnswerType.chooseTheTile();
+		}
+	})
+	
+	//添加作文（英）
+	$("#englishWriting").unbind('click').bind({//改
+		click:function(){
+			btnAnswerType.englishWriting();
+			
+		}
+	})
+	//添加作文（语）
+	$("#languageWriting").unbind('click').bind({
+		click:function(){
+			btnAnswerType.languageWriting();
+		}
+	})
+	//添加非作答区
+	$("#nonresponsiveZone").unbind('click').bind({//改
+		click:function(){
+			btnAnswerType.nonresponsiveZone();
+		}
+	})
+})
+
+var btnAnswerType = {
+	answerQuestions:function(data){
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					var obj = new Object();
+					obj.qitemInputVal = subjectNum[i].qitemInputVal;
+					$("#answerQuestions").data('objQnumSort',obj)
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		$("#answerQuestions").data('qoNum', qoNum);
+		itemType = 0;
+		var html = '';
+		html+='<div class="tc_content">';
+		html+='<li><label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName"  value="解答题">';
+		html+='<label  class="tc_labl" >大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+//		html+='<option value="11">十一</option>';
+//		html+='<option value="12">十二</option>';
+//		html+='<option value="13">十三</option>';
+//		html+='<option value="14">十四</option>';
+//		html+='<option value="15">十五</option>';
+//		html+='<option value="16">十六</option>';
+		html+='</select>';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>附加题</label>';
+		html+='<label class="sa_moption"><input id="isSealingLine" type="checkbox"><i style="top:17px"></i>无横线</label>';
+		
+//		html+='<label class="tc_labl">是否为附加题：</label><input type="checkbox" class="tc_text2 bqName">';
+//		html+='<label class="tc_labl">是否为无横线：</label><input type="checkbox" class="tc_text2 bqName">';
+		html+='</li>';	
+		html+='<li><label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle"></li>';
+		html+='<div id="moreChoice">';
+		html+='<li id="singleChoiceLi" class="choiceArr">';
+		
+		html+='</li>';
+	
+		html+='<li><span class="tc_addti btnAddQuestion">+分段添加小题</span></li>';
+		html+='<ul class="tc_adddiv">';
+		html+='</ul>';
+		html+='</div>';
+		html+='</div>';
+		
+			
+		layer.open({
+		  	type: 1,
+		  	title: "解答题",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['800px', '500px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){
+		  		if(itemType == 0){
+			  		itemInputVal = [];
+			  		if(subjectNum.length > 0){
+				    	for(var i = 0; i < subjectNum.length; i++){
+				    		var objnum = new Array();
+				    		objnum = subjectNum[i].qitemInputVal;
+				    		itemInputVal = itemInputVal.concat(objnum);
+				    	}
+				    }
+			  		var qNum = $(".oqRdo option:selected").attr('value');
+				    for(var i = 0; i < subjectNum.length ; i++){
+				    	if(qNum == subjectNum[i].qNum) {
+				    		itemType = 28;
+				    		ObjectiveTopic.tipInfo();
+				    		itemType = 0;
+				    		return false;
+				    	}else{
+				    		itemType = 0;
+			    			ObjectiveTopic.tipInfo();
+				    	}
+				    }
+			  		
+			  		$(".tc_addti").parent().prev().children('div').each(function(){
+				    	var itemNum = new Object();
+				    	if($(this).parent().parent().css('display') != 'none'){
+				    		itemNum.text1 = parseInt($(this).children('.text1').val());
+				    		itemNum.text2 = parseInt($(this).children('.text2').val());
+				    		ctext4 = parseInt($(this).children('.text4').val());
+				    		ctext5 = parseInt($(this).children('.text3').val());
+				    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,ctext5);
+				    		if(itemType != 0){
+				    			return false;
+				    		}
+				    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+				    			itemInputVal.push(i);
+				    		}
+//				    		itemInputVal.push(itemNum);
+			    		}
+				    });
+			  		if(itemType == 0 && $("#singleChoiceLi div").length > 0){
+			  			if(data == undefined ){
+			  				answerQuestions.save();
+		  				}else{
+		  					answerQuestions.save(data);
+		  				}
+			  			var obj = $("#answerQuestions").data('objQnumSort');
+						obj.qNum =  $(".oqRdo option:selected").attr('value');
+						subjectNum.push(obj);
+			  			layer.closeAll();
+			  		}
+		  		}
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			    if(subjectIems != ""){
+			  		 subjectNum.push(subjectIems);
+			  	}
+			    qoNum = $("#answerQuestions").data('qoNum');
+			},cancel: function(){ //92修
+			    //右上角关闭回调
+			    if(subjectIems != ""){
+			  		 subjectNum.push(subjectIems);
+			  	}
+			    qoNum = $("#answerQuestions").data('qoNum');
+		  	}
+		});
+		//改
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		if(subjectNum.length > 0){
+			
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".tc_addti").unbind('click').bind({//改
+			click:function(){
+				
+				itemInputVal = [];
+		  		if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+				
+				$(this).parent().prev().children('div').each(function(){
+					var itemNum = new Object();
+					itemNum.text1 = parseInt($(this).children('.text1').val());
+		    		itemNum.text2 = parseInt($(this).children('.text2').val());
+		    		ctext5 = parseInt($(this).children('.text3').val());
+		    		ctext4 = parseInt($(this).children('.text4').val());
+		    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,ctext5);
+		    		if(itemType != 0){
+		    			return false;
+		    		}
+		    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+//			    		itemInputVal.push(itemNum);
+				});
+				if(0 == itemType){//修
+					answerQuestions.addOneTopic($(this));
+				}
+//					ObjectiveTopic.delOneTopic($(this));
+			}
+		});
+		
+		if(data == undefined){
+			$(".btnAddQuestion").trigger('click');
+		}else{
+			var faGroupDataList = data.faGroupDataList;
+			var faCAnswerItemList = data.faCAnswerItemList;
+			
+//			topic.sizeTitle = this.fsSizeTitle;
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			
+			if(data.fsIsSealingLine){
+				$('#isSealingLine').attr("checked",'true');
+			}else{
+				$('#isSealingLine').removeAttr("checked");
+			}
+			
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".bqName").val(data.fsBigTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			
+			$(".quetype input[name='objque']").each(function(){  
+			    if($(this).data("type") == data.fiType){  
+			        $(this).prop( "checked", true );  
+			    }  
+			});
+			var str = '';
+			for(var i = 0 ; i < faGroupDataList.length ; i++){
+				str+='<div>';
+				str+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 text1" value ="'+faGroupDataList[i].beginNum+'"> —— <input type="text" value="'+faGroupDataList[i].endNum+'" class="tc_text2 text2">';
+				str+='<label  class="tc_labl">行数：</label><input type="text" value="'+faGroupDataList[i].rowNum+'" class="tc_text2 text3">';
+				
+				str+='<label  class="tc_labl">每题分数：</label><input type="text" value="'+faGroupDataList[i].score+'" class="tc_text2 text4">';
+				str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+				str+='</div>';
+				
+			}
+			$("#singleChoiceLi").append($(str));
+			
+			var strHtml = '';
+			for(var i = 0 ; i < faCAnswerItemList.length ; i++){
+				strHtml += '<li data-id = "'+faCAnswerItemList[i].fsId+'" id = "answerItem_faCAnswerItemList[i].fsId">';
+				strHtml += '<span class="fl mk_pl20 qoTitleName"   >'+faCAnswerItemList[i].fiTopicNum+'</span>';
+				strHtml += '<span class="fr mk_right14">';
+				strHtml += '<input type="text" class="tc_text2 textRows num" value = "'+faCAnswerItemList[i].fiEachQuestionCountRows+'">';
+				strHtml += '<label>行</label>';
+				strHtml += '<input type="text" class="tc_text2 textSorce num" value="'+faCAnswerItemList[i].ffScore+'">';
+				strHtml += '<label>分</label>';
+				strHtml += '</span></li>';
+			
+			}
+			$(".tc_adddiv").append($(strHtml));
+//			for(var i = 0 ; i < faCAnswerItemList.length ; i++){
+//				if(faCAnswerItemList[i].imgData != undefined){
+//					$("#answerItem_" + faCAnswerItemList[i].fsId).data(faCAnswerItemList[i].imgData);
+//				}
+//				
+//			}
+			
+			//调用删除题目
+			answerQuestions.delOneTopic();
+			
+			$('#singleChoiceLi').siblings('ul').find('input').blur(function (){//小题判断是否是异常数据
+				$('#singleChoiceLi').siblings('ul').find('li').each(function(){
+					text4 = parseInt($(this).find('.textSorce').val());
+//					ObjectiveTopic.itemJudge(null,null,null,text4,null);
+					text5  = parseInt($(this).find('.textRows').val());
+					ObjectiveTopic.itemJudge(null,null,null,text4,text5);
+					if(itemType != 0){
+						return false;
+					}
+				});
+			});
+			
+			$("#singleChoiceLi input").blur(function(){
+			
+//				obj.parent().prev().children('div').removeClass('itemactive');
+//				$(this).parent().addClass('itemactive');
+				
+				var text1,text2,text5,text4,eptext;
+				itemInputVal = [];
+				
+				if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+				
+				$(".clear").prev().children('div').each(function(){
+					var itemNum = new Object();
+			    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+			    		itemNum.text1 = parseInt($(this).children('.text1').val());
+			    		itemNum.text2 = parseInt($(this).children('.text2').val());
+			    		ctext5 = parseInt($(this).children('.text3').val());
+			    		ctext4 = parseInt($(this).children('.text4').val());
+			    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,ctext5);
+	//		    		itemInputVal.push(itemNum);
+						for(var i = itemNum.text1; i <= itemNum.text2; i++){
+			    			itemInputVal.push(i);
+			    		}
+			    	}
+			    	
+				});
+				
+				$(".clear").prev().children('div').removeClass('itemactive');   
+			    
+			    $(this).parent().children('input').each(function(index){
+			    	eptext = $(this).val();
+			    	if(eptext == ''){
+	//	    			$(this).focus();
+			    		return false;
+			    	}else{
+			    		switch (index){
+			    			case 0:
+			    				text1 = parseInt(eptext);
+			    				break;
+		    				case 1:
+			    				text2 = parseInt(eptext);
+			    				break;
+		    				case 2:
+			    				text5 = parseInt(eptext);
+			    				break;
+		    				case 3:
+			    				text4 = parseInt(eptext);
+			    				ObjectiveTopic.itemJudge(text1,text2,null,text4,text5);
+			    				break;
+			    		}
+			    	}
+			    });
+			    
+			    if(itemType == 0){
+			    	answerQuestions.blurfFun($(this));
+			    }
+			});
+			
+			
+		}
+		
+		
+	},
+	chooseTheTile:function(data){
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		$("#chooseTheTitle").data('qoNum', qoNum);
+		itemType = 0;
+		
+		var html = '';
+		
+		html+='<div class="tc_content">';
+		html+='<li>';
+		html+='<label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName" value="选做题">	';	
+		html+='<label  class="tc_labl">大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+		html+='</select>';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>附加题</label>';
+		html+='<label class="sa_moption"><input id="isSealingLine" type="checkbox"><i style="top:17px"></i>无横线</label>';
+		html+='</li>';
+		html+='<div id="moreChoice">';
+		html+='<li>';
+		html+='<label  class="tc_labl">几选几：</label><input type="text" class="tc_text2 textBlur text1 num" > 选 <input type="text" class="tc_text2 textBlur text2 num">';
+		html+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 textBlur text3 num"> —— <input type="text" disabled  class="tc_text2 textBlur text4 num">';
+		
+		html+='<li>';
+		html+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 textBlur text5 num">';
+		html+='<label  class="tc_labl">行数：</label><input type="text" class="tc_text2 textBlur text6 num">';
+		html+='<label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle">';
+		html+='</li>';
+		html+='</li>';
+		html+='</div>';
+		html+='<ul class="tc_adddiv">';
+
+		html+='</ul>';
+		html+='</div>';
+		
+			
+		layer.open({
+		  	type: 1,
+		  	title: "选做题",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['800px', '500px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){
+		  		itemInputVal = [];
+		  		if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+		  		
+		  		var qNum = $(".oqRdo option:selected").attr('value');
+			    for(var i = 0; i < subjectNum.length ; i++){
+			    	if(qNum == subjectNum[i].qNum) {
+			    		itemType = 28;
+			    		ObjectiveTopic.tipInfo();
+			    		itemType = 0;
+			    		return false;
+			    	}else{
+			    		itemType = 0;
+			    		ObjectiveTopic.tipInfo();
+			    	}
+			    }
+		    	var itemNum = new Object();
+	    		itemNum.text1 = parseInt($('.text3').val());
+	    		itemNum.text2 = parseInt($('.text4').val());
+	    		ctext4 = parseInt($('.text5').val());
+	    		ctext5 = parseInt($('.text6').val());
+	    		
+	    		ctext3 = parseInt($('.text1').val());
+	    		ctext6 = parseInt($('.text2').val());
+	    		
+	    		if(isNaN(ctext3)){
+					itemType = 12;
+					ObjectiveTopic.tipInfo(itemNum.text1,itemNum.text2);
+				}else if(isNaN(ctext6)){
+					itemType = 14;
+					ObjectiveTopic.tipInfo(itemNum.text1,itemNum.text2);
+				}else if(ctext3 == 0){
+					itemType = 13;
+					ObjectiveTopic.tipInfo(itemNum.text1,itemNum.text2);
+				}else if(ctext6 == 0){
+					itemType = 15;
+					ObjectiveTopic.tipInfo(itemNum.text1,itemNum.text2);
+				}else if(ctext6 >= ctext3){
+					itemType = 16;
+					ObjectiveTopic.tipInfo(itemNum.text1,itemNum.text2);
+				}else{
+					itemType = 0;
+					ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,ctext5);
+					for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+//								itemInputVal.push(itemNum);
+				}
+			    
+		  		if(itemType == 0){
+		  			if(data == undefined ){
+	  					chooseTheTitle.save();
+	  				}else{
+	  					chooseTheTitle.save(data);
+	  				}
+	  				if($("#chooseTheTitle").data('objQnumSort') == undefined){
+		  				var obj = new Object();
+		  			}else{
+		  				var obj = $("#chooseTheTitle").data('objQnumSort');
+		  			}
+					obj.qNum =  $(".oqRdo option:selected").attr('value');
+					subjectNum.push(obj);
+	  				
+		  			layer.closeAll();
+		  		}
+		  		
+  				
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			    
+				if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			    qoNum = $("#chooseTheTitle").data('qoNum');
+			},cancel: function(){ 
+			    //右上角关闭回调
+			    if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			    qoNum = $("#chooseTheTitle").data('qoNum');
+		  	}
+		});
+		
+		$(".text3").val(qoNum);
+		
+		verificationFun();
+		
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		if(subjectNum.length > 0){
+			
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".tc_content .textBlur").blur(function(){
+			
+			var text1,text2,text3,text4,text5,text6,eptext;
+			
+			itemInputVal = [];
+			if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+			
+			$(".tc_content .textBlur").each(function(index){
+				eptext = $(this).val();
+				if(eptext == ''){
+					return false;
+				}else{
+					switch (index){
+						case 0:
+							text3 = parseInt(eptext);//可选题数
+							break;
+						case 1:
+							text6 = parseInt(eptext);//应选题数
+							break;
+						case 2:
+							text1 = parseInt(eptext);
+							if(text3 == undefined){
+								itemType = 12;
+							}else if(text6 == undefined){
+								itemType = 14;
+							}else if(text3 == 0){
+								itemType = 13;
+							}else if(text6 == 0){
+								itemType = 15;
+							}else if(text6 >= text3){
+								itemType = 16;
+							}else{
+								$('.text4').val(text3 + text1 - 1);
+								itemType = 0;
+							}
+							ObjectiveTopic.tipInfo();
+							break;
+						case 3:
+							text2 = parseInt(eptext);
+							break;
+						case 4:
+							text4 = parseInt(eptext);
+							break;
+						case 5:
+							text5 = parseInt(eptext);
+							ObjectiveTopic.itemJudge(text1,text2,null,text4,text5);
+							break;
+					}
+				}
+			});
+			
+			if(itemType == 0){
+				if(text4 != undefined && text5 != undefined){
+					chooseTheTitle.blurfFun($(this));
+				}
+				
+				
+		    	var qitemInputVal = [];
+			    	
+			    $(this).parent().each(function(){
+			    	var itemNum = new Object();
+			    	itemNum.text1 = parseInt($(this).children('.text3').val());
+		    		itemNum.text2 = parseInt($(this).children('.text4').val());
+		    		if(!isNaN(itemNum.text1) && !isNaN(itemNum.text2)){
+		    			for(var i = itemNum.text1; i <= itemNum.text2; i++){
+			    			qitemInputVal.push(i);
+			    		}
+//			    			qitemInputVal.push(itemNum);
+		    		}
+		    		
+			    });
+			    
+			    qitemInputVal.sort(function(a,b){
+		            return b-a;
+				});
+			    
+				if(qitemInputVal.length > 0){
+					var objQnumSort = new Object();
+					objQnumSort.qitemInputVal = qitemInputVal;
+					objQnumSort.qNum = $(".oqRdo option:selected").attr('value');
+					qoNum = qitemInputVal[0] + 1;
+					if(qoNum < $("#chooseTheTitle").data('qoNum')){
+						qoNum = $("#chooseTheTitle").data('qoNum');
+					}
+					$("#chooseTheTitle").data('objQnumSort',objQnumSort);//存放全部题号
+				}
+		    }
+			
+		    
+		});
+		
+		
+		
+		if(data == undefined){
+			
+		}else{
+			var faGroupDataList = data.faGroupDataList;
+			var fafiChooseAllItemList = data.fafiChooseAllItemList;
+			
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			
+			if(data.fsIsSealingLine){
+				$('#isSealingLine').attr("checked",'true');
+			}else{
+				$('#isSealingLine').removeAttr("checked");
+			}
+			
+			$(".bqName").val(data.fsBigTitle);
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			$(".text1").val(data.fiChooseAllNum);
+			$(".text2").val(data.fiChooseNum);
+			$(".text3").val(faGroupDataList[0].beginNum);
+			$(".text4").val(faGroupDataList[0].endNum);
+			$(".text5").val(faGroupDataList[0].score);
+			$(".text6").val(faGroupDataList[0].rowNum);
+			
+			
+			
+			var strHtml = '';
+			for(var i = 0 ; i < fafiChooseAllItemList.length ; i++){
+				strHtml += '<li data-id = "'+fafiChooseAllItemList[i].fsId+'">';
+				strHtml += '<span class="fl mk_pl20 qoTitleName"   >'+fafiChooseAllItemList[i].fiTopicNum+'</span>';
+				strHtml += '<span class="fr mk_right14">';
+				strHtml += '<span class="textSorce">'+fafiChooseAllItemList[i].ffScore+'</span>';
+				strHtml += '<label>分</label>';
+				strHtml += '<span class="textRows">'+fafiChooseAllItemList[i].fiEachQuestionCountRows+'</span>';
+				strHtml += '<label>行</label>';
+				strHtml += '</span></li>';
+			
+			}
+			$(".tc_adddiv").append($(strHtml));
+			
+			
+			
+		}
+		
+		
+		
+	},
+	englishWriting:function(data){
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		
+		$("#englishWriting").data('qoNum',qoNum);
+		itemType = 0;
+		
+		var html = '';
+		html+='<div class="tc_content1">';
+		html+='<li>';
+		html+='<label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName" value="作文">	';	
+		html+='<label  class="tc_labl">大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+		html+='</select>';
+		
+//		html+='<label class="sa_moption"><input id="sealingLine" type="checkbox"><i style="top:17px"></i>是否为无横线</label>';
+		html+='</li>';
+
+		html+='<li class="english">';
+		html+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 text2 num "> 题  <label  class="tc_labl">作文行数：</label><input type="text" class="tc_text2 text3 num">';
+		html+='</li>';
+		html+='<li class="english">';
+		html+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 text4 num">';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i></i>附加题</label>';
+		html+='</li>';
+		html+='<li><label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle"></li>';
+		html+='</div>';
+		
+		
+			
+		layer.open({
+		  	type: 1,
+		  	title: "作文（英）",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['650px', '400px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){//改
+				itemInputVal = [];
+				if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+				
+				var qNum = $(".oqRdo option:selected").attr('value');
+			    for(var i = 0; i < subjectNum.length ; i++){
+			    	if(qNum == subjectNum[i].qNum) {
+			    		itemType = 28;
+			    		ObjectiveTopic.tipInfo();
+			    		itemType = 0;
+			    		return false;
+			    	}else{
+			    		itemType = 0;
+			    		ObjectiveTopic.tipInfo();
+			    	}
+			    }
+				
+//				$(".english").each(function(){
+					ctext1 = parseInt($('.text2').val());
+					ctext2 = parseInt($('.text3').val());
+					ctext3 = parseInt($('.text4').val());
+					if(isNaN(ctext1)){
+						itemType = 27;
+						ObjectiveTopic.tipInfo();
+					}else{
+						ObjectiveTopic.itemJudge(ctext1,null,null,ctext3,ctext2);
+					}
+					itemInputVal.push(ctext1);
+//				});
+				
+				if(itemType == 0){
+					if(data == undefined ){
+						englishWriting.save();
+					}else{
+						englishWriting.save(data);
+					}
+					var englishObj = new Object();
+					var englishitem = new Array();
+					englishObj.qNum = $(".oqRdo option:selected").attr('value');
+					englishitem.push(parseInt($('.text2').val()));
+					englishObj.qitemInputVal = englishitem;
+					qoNum = englishitem[0] + 1;
+					if(qoNum < $("#englishWriting").data('qoNum')){
+						qoNum = $("#englishWriting").data('qoNum');
+					}
+					subjectNum.push(englishObj);
+					layer.closeAll();
+				}
+  				
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			    
+				if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			    qoNum = $("#englishWriting").data('qoNum');
+			},cancel: function(){ 
+			    //右上角关闭回调
+				if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			    qoNum = $("#englishWriting").data('qoNum');
+		  	}
+		});
+		
+		$(".text2").val(qoNum);
+		
+		verificationFun();
+		
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		if(subjectNum.length > 0){
+			
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".english input").blur(function(){///改改改改
+			
+			var text1,text2,text3,eptext;
+			itemInputVal = [];
+			if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+			
+			$(".english input").each(function(index){
+				eptext = $(this).val();
+				if(eptext == ""){
+					return false;
+				}else{
+					switch (index){
+						case 0://小题题号
+							text1 = parseInt(eptext);
+							break;
+						case 1://行数
+							text2 = parseInt(eptext);
+							break;
+						case 2://分数
+							text3 = parseInt(eptext);
+							if(isNaN(text1)){
+								itemType = 27;
+								ObjectiveTopic.tipInfo();
+							}else{
+								ObjectiveTopic.itemJudge(text1,null,null,text3,text2);
+							}
+							break;
+					}
+				}
+			});
+		});
+		
+		
+		if(data == undefined){
+			
+		}else{
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			var faCCompositionEnglishList = data.faCCompositionEnglishList;
+			$(".bqName").val(data.fsBigTitle);
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			$(".text2").val(data.smallQid);
+			$(".text3").val(data.fiRows);
+			$(".text4").val(data.ffCountScore);
+		}
+		
+	},
+	languageWriting:function(data){
+		
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		$("#languageWriting").data('qoNum', qoNum);
+		itemType = 0;
+		
+		var html = '';
+		
+		html+='<div class="tc_content">';
+		html+='<li>';
+		html+='<label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName" value="作文">	';
+		html+='<label  class="tc_labl">大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+		html+='</select>';
+		html+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 chinese text2 num"> 题</li>';
+		html+='<li>';
+		html+='<label  class="tc_labl">最少字数：</label><input type="text" class="tc_text2 chinese text3 num" value="800">';
+		
+		html+='<li>';
+		html+='<label  class="tc_labl">总字数：</label><input type="text" class="tc_text2 chinese text4 num" value = "1000">';
+		html+='</li>';
+		html+='<li>';
+		html+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 chinese text5 num">';
+		html+='</li>';
+		html+='<li><label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle"></li>';
+		html+='<li>';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>附加题</label>';
+//		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>是否为无横线</label>';
+		html+='</li>';
+		html+='</div>';
+			
+		layer.open({
+		  	type: 1,
+		  	title: "作文（语）",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['800px', '500px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){
+		  		itemInputVal = [];
+		  		if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+		  		
+		  		var qNum = $(".oqRdo option:selected").attr('value');
+			    for(var i = 0; i < subjectNum.length ; i++){
+			    	if(qNum == subjectNum[i].qNum) {
+			    		itemType = 28;
+			    		ObjectiveTopic.tipInfo();
+			    		itemType = 0;
+			    		return false;
+			    	}else{
+			    		itemType = 0;
+			    		ObjectiveTopic.tipInfo();
+			    	}
+			    }
+		  		
+		  		var text1,text2,text3,text4,eptext;
+		  		$(".chinese").each(function(index){
+					eptext = $(this).val();
+					switch (index){
+						case 0://小题题号
+							text1 = parseInt(eptext);
+							break;
+						case 1://最少字数
+							text2 = parseInt(eptext);
+							break;
+						case 2://总字数
+							text3 = parseInt(eptext);
+							break;
+						case 3://分数
+							text4 = parseInt(eptext);
+							if(isNaN(text2)){
+								itemType = 18;
+							}else if(isNaN(text1)){
+								itemType = 27;
+							}else if(isNaN(text3)){
+								itemType = 19;
+							}else if(text2 == 0){
+								itemType = 20;
+							}else if(text2 > text3){
+								itemType = 21;
+							}else{
+								itemType = 0;
+							}
+							if(itemType == 0){
+								ObjectiveTopic.itemJudge(text1,null,null,text4,text2);
+							}else{
+								ObjectiveTopic.tipInfo();
+							}
+							break;
+					}
+				});
+				
+				
+				
+		  		if(itemType == 0){
+		  			if(data == undefined ){
+						languageWriting.save();
+					}else{
+						languageWriting.save(data);
+					}
+		  			
+		  			
+		  			var chineseObj = new Object();
+					chineseObj.qNum = $(".oqRdo option:selected").attr('value');
+					itemInputVal = [];
+					itemInputVal.push(parseInt($(".text2").val()))
+					chineseObj.qitemInputVal = itemInputVal;
+					qoNum = itemInputVal[0] + 1;
+					if(qoNum < $("#languageWriting").data('qoNum')){
+						qoNum = $("#languageWriting").data('qoNum');
+					}
+					subjectNum.push(chineseObj);
+					layer.closeAll();
+		  		}
+  				
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			    qoNum = $("#languageWriting").data('qoNum');
+			    if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			},cancel: function(){ 
+			    //右上角关闭回调
+			    qoNum = $("#languageWriting").data('qoNum');
+			    if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+		  	}
+		});
+		//改改改
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		verificationFun();
+		
+		if(subjectNum.length > 0){
+			
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".text2").val(qoNum);
+		
+		$(".chinese").blur(function(){
+			
+			var text1,text2,text3,text4,eptext;
+			itemInputVal = [];
+			if(subjectNum.length > 0){
+		    	for(var i = 0; i < subjectNum.length; i++){
+		    		var objnum = new Array();
+		    		objnum = subjectNum[i].qitemInputVal;
+		    		itemInputVal = itemInputVal.concat(objnum);
+		    	}
+		    }
+			
+			$(".chinese").each(function(index){
+				eptext = $(this).val();
+				if(eptext == ""){
+					return false;
+				}else{
+					switch (index){
+						case 0://小题题号
+							text1 = parseInt(eptext);
+							break;
+						case 1://最少字数
+							text2 = parseInt(eptext);
+							break;
+						case 2://总字数
+							text3 = parseInt(eptext);
+							break;
+						case 3://分数
+							text4 = parseInt(eptext);
+							if(isNaN(text2)){
+								itemType = 18;
+							}else if(isNaN(text1)){
+								itemType = 27;
+							}else if(isNaN(text3)){
+								itemType = 19;
+							}else if(text2 == 0){
+								itemType = 20;
+							}else if(text2 > text3){
+								itemType = 21;
+							}else{
+								itemType = 0;
+							}
+							if(itemType == 0){
+								ObjectiveTopic.itemJudge(text1,null,null,text4,text2);
+							}else{
+								ObjectiveTopic.tipInfo();
+							}
+							break;
+					}
+				}
+			});
+			
+		});//改改改
+		
+		if(data == undefined){
+			
+		}else{
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".bqName").val(data.fsBigTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			$(".text2").val(data.fiTopicNum);
+			$(".text3").val(data.minCharNum);
+			$(".text4").val(data.totalCharNum);
+			$(".text5").val(data.ffCountScore);
+		}
+		
+	},
+	nonresponsiveZone:function(data){
+		
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		itemType = 0;
+		var html = '';
+		
+		html+='<div class="tc_content1">';
+//		html+='<li><label class="tc_labl">题目名称：</label><input type="text" class="tc_text" value="非作答区"></li>';	
+//		html+='<li><label  class="tc_labl">位置：</label>';
+//		html+='<select class="tc_select" id="position">';
+//		html+='<option>位置一</option><option>位置二</option>';
+//		html+='</select></li>';
+		html+='<li><label class="tc_labl">高度：</label><input type="text" class="tc_text text1 num" value="3">行</li></div>';	
+			
+		layer.open({
+		  	type: 1,
+		  	title: "非作答区",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['650px', '250px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){
+		  		if($('.text1').val() == ''){
+					itemType = 24;
+				}else{
+					text1 = parseInt($('.text1').val());
+					if(text1 == 0){
+						itemType = 23;
+					}else if(text1 < 3){
+						itemType = 22;
+					}else{
+						itemType = 0;
+					}
+				}
+		  		
+		  		if(itemType == 0){
+		  			if(data == undefined){
+		  				nonresponsiveZone.save();
+		  			}else{
+		  				nonresponsiveZone.save(data);
+		  			}
+		  			layer.closeAll();
+		  		}
+  				
+			},btn2: function(index, layero){
+				if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+			    //按钮【按钮二】的回调
+			},cancel: function(){ 
+			    //右上角关闭回调
+			    if(subjectIems != ""){
+					subjectNum.push(subjectIems);
+				}
+		  	}
+		});
+		
+		verificationFun();
+		
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		$(".text1").blur(function(){
+			
+			if($(this).val() == ''){
+				itemType = 24;
+			}else{
+				text1 = parseInt($(this).val());
+				if(text1 == 0){
+					itemType = 23;
+				}else if(text1 < 3){
+					itemType = 22;
+				}else{
+					itemType = 0;
+				}
+			}
+			
+			ObjectiveTopic.tipInfo();
+		});
+		
+		if(data == undefined){
+			
+		}else{
+//			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+//			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			$(".text1 ").val(data.fiRows);
+		}
+		
+	},
+	addQuestion:function (data){
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					var obj = new Object();
+					obj.qitemInputVal = subjectNum[i].qitemInputVal;
+					$("#fillBlank").data('objQnumSort',obj)
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		$("#fillBlank").data('qoNum', qoNum);
+		itemType = 0;
+		var html = '';
+		html+='<div class="tc_content">';
+		html+='<li><label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName"  value="填空题">';
+		html+='<label  class="tc_labl" >大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+		html+='</select>';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>附加题</label>';
+		
+//		html+='<label class="sa_moption"><input id="sealingLine" type="checkbox"><i style="top:17px"></i>是否为无横线</label>';
+		html+='</li>';	
+		html+='<li><label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle"></li>';
+		html+='<div id="moreChoice">';
+		html+='<li id="singleChoiceLi" class="choiceArr">';
+		
+		html+='</li>';
+	
+		html+='<li><span class="tc_addti btnAddQuestion">+分段添加小题</span></li>';
+		html+='<ul class="tc_adddiv">';
+
+		html+='</ul>';
+		html+='</div>';
+		
+		html+='</div>';
+			
+		layer.open({
+		  	type: 1,
+		  	title: "填空题",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['800px', '500px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){
+		  		if(itemType == 0){
+			  		itemInputVal = [];
+			  		if(subjectNum.length > 0){
+				    	for(var i = 0; i < subjectNum.length; i++){
+				    		var objnum = new Array();
+				    		objnum = subjectNum[i].qitemInputVal;
+				    		itemInputVal = itemInputVal.concat(objnum);
+				    	}
+				    }
+			  		
+			  		var qNum = $(".oqRdo option:selected").attr('value');
+				    for(var i = 0; i < subjectNum.length ; i++){
+				    	if(qNum == subjectNum[i].qNum) {
+				    		itemType = 28;
+				    		ObjectiveTopic.tipInfo();
+				    		itemType = 0;
+				    		return false;
+				    	}else{
+				    		itemType = 0;
+			    			ObjectiveTopic.tipInfo();
+				    	}
+				    }
+				    
+			  		
+			  		$(".btnAddQuestion").parent().prev().children('div').each(function(){
+				    	var itemNum = new Object();
+				    	if($(this).parent().parent().css('display') != 'none'){
+				    		itemNum.text1 = parseInt($(this).children('.text1').val());
+				    		itemNum.text2 = parseInt($(this).children('.text2').val());
+				    		ctext4 = parseInt($(this).children('.text4').val());
+				    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4);
+				    		if(itemType != 0){
+				    			return false;
+				    		}
+				    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+				    			itemInputVal.push(i);
+				    		}
+		//		    		itemInputVal.push(itemNum);
+			    		}
+				    });
+				    
+			  		if(itemType == 0 && $("#singleChoiceLi div").length > 0){
+			  			if(data == undefined ){
+		  					FillBlank.save();
+		  				}else{
+		  					FillBlank.save(data);
+		  				}
+			  			
+			  			if($("#fillBlank").data('objQnumSort') == undefined){
+			  				var obj = new Object();
+			  			}else{
+			  				var obj = $("#fillBlank").data('objQnumSort');
+			  			}
+						obj.qNum =  $(".oqRdo option:selected").attr('value');
+						subjectNum.push(obj);
+			  			
+			  			layer.closeAll();
+			  		}
+		  		}
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			    qoNum = $("#fillBlank").data('qoNum');
+			    if(subjectIems != ""){
+			  		 subjectNum.push(subjectIems);
+			  	}
+			},cancel: function(){ //92修
+			    //右上角关闭回调
+			    qoNum = $("#fillBlank").data('qoNum');
+			    if(subjectIems != ""){
+			  		 subjectNum.push(subjectIems);
+			  	}
+		  	}
+		});
+		
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		if(subjectNum.length > 0){
+			
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".btnAddQuestion").unbind('click').bind({
+			click:function(){
+				itemInputVal = [];
+				if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+				$(this).parent().prev().children('div').each(function(){
+					var itemNum = new Object();
+					itemNum.text1 = parseInt($(this).children('.text1').val());
+		    		itemNum.text2 = parseInt($(this).children('.text2').val());
+		    		ctext3 = parseInt($(this).children('.text5').val());
+		    		ctext4 = parseInt($(this).children('.text4').val());
+		    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,null,ctext3);
+		    		if(itemType != 0){
+		    			return false;
+		    		}
+		    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+		    			itemInputVal.push(i);
+		    		}
+	//	    		itemInputVal.push(itemNum);
+				});
+				if(0 == itemType){//修
+					FillBlank.addOneTopic($(this));
+					FillBlank.delOneTopic($(this));
+				}
+	//			if($("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text2').val() == "" || $("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text2').val() == undefined || $("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text2').val() == null){
+	//				return false;	
+	//			}else if($("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text3').val() == "" || $("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text3').val() == undefined || $("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text3').val() == null){
+	//				layer.msg("分值不能为空", {icon: 2});
+	//			}else if(parseInt($("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text1').val()) < parseInt($("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text2').val()) - 1){
+	//				var questionNum1 = parseInt($("#blankList0").find('li').eq($("#blankList0").find('li').length - 1).children('.text2').val()) + 1;
+	//				var strHtml = '';
+	//				strHtml+='<li>';
+	//			    strHtml+='<label  class="tc_labl">小题题号：</label><input id = "questionNumStart0" type="text" value="'+questionNum1+'" class="tc_text2 text1"> 到 <input id="questionNumEnd0" type="text" class="tc_text2 text2">';
+	//			    strHtml+='<label  class="tc_labl">每题分数：</label><input type="text" class="tc_text2 text3" id = "share0">';
+	//			    strHtml+='<span class="tc_pimg"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';
+	//			    strHtml+='</li>';
+	//			    $("#blankList0").append($(strHtml));
+	//			}else{
+	//				layer.msg("开始题号不能大于结束题号", {icon: 2});
+	//			}
+	//			alert($("#blankList0").find('li').eq($("#blankList0").find('li').length- 1).children('.text2').val())
+				
+				
+			}
+		});
+		
+		//判断是不是修改
+		if(data == undefined){
+//			$("#singleChoice .tc_addti").trigger("click");//修
+			$(".btnAddQuestion").trigger('click');
+		}else{
+			var faGroupDataList = data.faGroupDataList;
+			var faFillBankItemDataList = data.faFillBankItemDataList;
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".bqName").val(data.fsBigTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			
+//			$(".quetype input[name='objque']").each(function(){  
+//			    if($(this).data("type") == data.fiType){  
+//			        $(this).prop( "checked", true );  
+//			    }  
+//			});
+			var str = '';
+			for(var i = 0 ; i < faGroupDataList.length ; i++){
+				str+='<div>';
+				str+='<label  class="tc_labl">小题题号：</label><input type="text" class="tc_text2 text1" value ="'+faGroupDataList[i].beginNum+'"> —— <input type="text" value="'+faGroupDataList[i].endNum+'" class="tc_text2 text2">';
+				str+='<label  class="tc_labl">每空：</label><input type="text" class="tc_text2 text5" value = "'+faGroupDataList[i].spaceNum+'">';
+				str+='<label  class="tc_labl">每题分数：</label><input type="text" value="'+faGroupDataList[i].score+'" class="tc_text2 text4">';
+				str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+				str+='</div>';
+				
+			}
+			$("#singleChoiceLi").append($(str));
+			
+			var strHtml = '';
+			for(var i = 0 ; i < faFillBankItemDataList.length ; i++){
+				strHtml += '<li data-id = "'+faFillBankItemDataList[i].fsId+'">';
+				strHtml += '<span class="fl mk_pl20 qoTitleName" >'+faFillBankItemDataList[i].fiTopicNum+'</span>';
+				strHtml += '<span class="fr mk_right14">';
+
+				strHtml += '<input type="text" class="tc_text2 singleItemText3 num" value="'+faFillBankItemDataList[i].fiQspaceNumList+'">';
+				strHtml += '<label>空</label>';
+				strHtml += '<input type="text" class="tc_text2 singleItemText2 textRows num" value="'+faFillBankItemDataList[i].ffScore+'">';
+				strHtml += '<label>分</label>';
+				strHtml += '</span></li>';
+			}
+			$(".tc_adddiv").append($(strHtml));
+			
+			//调用删除题目
+			FillBlank.delOneTopic();
+			
+			$('#singleChoiceLi').siblings('ul').find('input').blur(function (){//小题判断是否是异常数据
+				text4  = parseInt($(this).val());
+				ObjectiveTopic.itemJudge(null,null,null,text4);
+			});
+			
+			$("#singleChoiceLi input").blur(function(){
+//				obj.parent().prev().children('div').removeClass('itemactive');
+//				$(this).parent().addClass('itemactive');
+				
+				var text1,text2,text3,text4,eptext;
+				itemInputVal = [];
+				
+				if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+				
+				$(".clear").prev().children('div').each(function(){
+					var itemNum = new Object();
+			    	
+			    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+			    		itemNum.text1 = parseInt($(this).children('.text1').val());
+			    		itemNum.text2 = parseInt($(this).children('.text2').val());
+			    		ctext3 = parseInt($(this).children('.text5').val());
+			    		ctext4 = parseInt($(this).children('.text4').val());
+			    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,null,ctext4,null,ctext3);
+			    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+			    			itemInputVal.push(i);
+			    		}
+			    	}
+			    	
+				});
+				
+				
+				$(".clear").prev().children('div').removeClass('itemactive');   
+			    
+			    $(this).parent().children('input').each(function(index){
+			    	eptext = $(this).val();
+			    	if(eptext == ''){
+			    		return false;
+			    	}else{
+			    		switch (index){
+			    			case 0:
+			    				text1 = parseInt(eptext);
+			    				break;
+		    				case 1:
+			    				text2 = parseInt(eptext);
+			    				break;
+		    				case 2:
+			    				text4 = parseInt(eptext);
+			    				ObjectiveTopic.itemJudge(text1,text2,text3,text4);
+			    				break;
+			    		}
+			    	}
+			    });
+			    
+			    if(itemType == 0){
+			    	FillBlank.blurfFun($(this));
+			    }
+			});
+			
+		}
+		
+	},
+	objectiveProblem:function(data){//客观题弹窗
+	
+		var subjectIems = "";
+		if(data != undefined){
+			for(var i = 0; i < subjectNum.length ; i++){
+				if(subjectNum[i].qNum == data.fiBigQid){
+					subjectIems = subjectNum[i];
+					var obj = new Object();
+					obj.qitemInputVal = subjectNum[i].qitemInputVal;
+					$("#objectiveProblem").data('objQnumSort',obj)
+					subjectNum.splice(i,1);
+				}
+			}
+		}
+		
+		$("#objectiveProblem").data('qoNum',qoNum);
+		itemType = 0;
+		var html = '';
+		html+='<div class="tc_content">';
+		html+='<li><label class="tc_labl">题目名称：</label><input type="text" class="tc_text2 bqName" value="客观题"><label  class="tc_labl">大题题号：</label>';
+		html+='<select class="tc_select2 oqRdo">';
+		html+='<option value="1">一</option>';
+		html+='<option value="2">二</option>';
+		html+='<option value="3">三</option>';
+		html+='<option value="4">四</option>';
+		html+='<option value="5">五</option>';
+		html+='<option value="6">六</option>';
+		html+='<option value="7">七</option>';
+		html+='<option value="8">八</option>';
+		html+='<option value="9">九</option>';
+		html+='<option value="10">十</option>';
+		html+='</select>';
+		html+='<label class="sa_moption"><input id="additionalQuestions" type="checkbox"><i style="top:17px"></i>附加题</label>';
+//		html+='<label class="sa_moption"><input id="sealingLine" type="checkbox"><i style="top:17px"></i>是否为无横线</label>';
+		html+='</li>';
+		html+='<li><label class="tc_labl">小标题：</label><input placeholder="小标题字数不能超过20" maxlength="20" type="text" style="width:220px" class="tc_text2 sizeTitle"></li>';
+		html+='<li class="quetype">';
+		html+='<label class="tc_labl">题目类型：</label>';
+		html+='<label class="corr_radio"><input type="radio" alt="single" name="objque" data-type = "0"  checked="checked"><i></i><span>单选题</span></label>';
+		html+='<label class="corr_radio"><input type="radio" alt="multiple" name="objque"  data-type = "1" ><i></i><span>多选题</span></label>';
+		html+='<label class="corr_radio"><input type="radio" alt="judge" name="objque" data-type = "2" ><i></i><span>判断题</span></label>';
+//			html+='<ul class="tabitem"><li alt="single" class="active" data-type = "1">单选题</li><li alt="multiple" class="" data-type = "2">多选题</li><li alt="judge" class="" data-type = "3 ">判断题</li></ul>';
+		html+='</li>';
+		html+='<div id="singleChoice">';
+		html+='<li id = "singleChoiceLi">';
+	
+		html+='</li>';
+		
+		html+='<li class="clear"><span class="tc_addti" >+分段添加小题</span></li>';
+		html+='<ul class="tc_adddiv" id ="singleChoiceList" >';
+
+		html+='</ul>';
+		html+='</div>';
+		html+='</div>';
+			
+		layer.open({
+		  	type: 1,
+		  	title: "客观题",
+		  	skin: 'layui-layer-rim', //加上边框
+		  	area: ['800px', '530px'], //宽高
+		  	content: html,
+		  	btn: ["确定", "取消"]
+		  	,yes: function(index, layero){ 
+		  		if(itemType == 0){
+			  		itemInputVal = [];
+			  		if(subjectNum.length > 0){
+				    	for(var i = 0; i < subjectNum.length; i++){
+				    		var objnum = new Array();
+				    		objnum = subjectNum[i].qitemInputVal;
+				    		itemInputVal = itemInputVal.concat(objnum);
+				    	}
+				    }
+			  		
+			  		var qNum = $(".oqRdo option:selected").attr('value');
+				    for(var i = 0; i < subjectNum.length ; i++){
+				    	if(qNum == subjectNum[i].qNum) {
+				    		itemType = 28;
+				    		ObjectiveTopic.tipInfo();
+				    		itemType = 0;
+				    		return false;
+				    	}else{
+				    		itemType = 0;
+			    			ObjectiveTopic.tipInfo();
+				    	}
+				    }
+			  		
+			  		$(".clear").prev().children('div').each(function(){
+				    	var itemNum = new Object();
+				    	if($(this).parent().parent().css('display') != 'none'){
+				    		itemNum.text1 = parseInt($(this).children('.text1').val());
+				    		itemNum.text2 = parseInt($(this).children('.text2').val());
+				    		ctext3 = parseInt($(this).children('.text3').val());
+				    		ctext4 = parseInt($(this).children('.text4').val());
+				    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,ctext3,ctext4);
+				    		if(itemType != 0){
+				    			return false;
+				    		}
+				    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+				    			itemInputVal.push(i);
+				    		}
+//				    		itemInputVal.push(itemNum);
+			    		}
+				    });
+				    
+		  			if(itemType == 0 && $("#singleChoiceLi div").length > 0){
+		  				if(data == undefined ){
+		  					ObjectiveTopic.save();
+		  				}else{
+		  					ObjectiveTopic.save(data);
+		  				}
+		  				if($("#objectiveProblem").data('objQnumSort') == undefined){
+			  				var obj = new Object();
+			  			}else{
+			  				var obj = $("#objectiveProblem").data('objQnumSort');
+			  			}
+		  				
+		  				obj.qNum =  $(".oqRdo option:selected").attr('value');
+			  			subjectNum.push(obj);
+			  			layer.closeAll();
+			  		}
+  				}	
+			},btn2: function(index, layero){
+			    //按钮【按钮二】的回调
+			   qoNum = $("#objectiveProblem").data('qoNum');
+			  	if(subjectIems != ""){
+			  		subjectNum.push(subjectIems);
+			  	}
+			  
+			   
+			},cancel: function(){ //92修
+			    //右上角关闭回调
+			    if(subjectIems != ""){
+			  		 subjectNum.push(subjectIems);
+			  	}
+			    qoNum = $("#objectiveProblem").data('qoNum');
+		  	}
+		});
+		
+		var tipstr = '<span class="tipItem" style="display: inline-block;float: left;margin-left: 50px;color: red;margin-top: 5px;"></span>';
+		$('.layui-layer-btn').append(tipstr);
+		
+		if(subjectNum.length > 0){
+			subjectNum.sort(function(a,b){
+				return parseInt(a.qNum) - parseInt(b.qNum);
+			});
+			var titleNum = parseInt(subjectNum[subjectNum.length - 1].qNum);
+			$(".oqRdo option").each(function(){
+				val = parseInt($(this).attr('value'));
+				if(val == titleNum + 1){
+					$(this).prop("selected",true);
+				}
+			});
+		}
+		
+		$(".tc_addti").unbind('click').bind({
+			click:function(){
+				itemInputVal = [];
+				if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+			    $(".clear").prev().children('div').each(function(){
+			    	var itemNum = new Object();
+				    if($(this).parent().parent().css('display') != 'none'){
+				    	itemNum.text1 = parseInt($(this).children('.text1').val());
+			    		itemNum.text2 = parseInt($(this).children('.text2').val());
+			    		ctext3 = parseInt($(this).children('.text3').val());
+			    		ctext4 = parseInt($(this).children('.text4').val());
+			    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,ctext3,ctext4);
+			    		if(itemType != 0){
+			    			return false;
+			    		}
+			    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+			    			itemInputVal.push(i);
+			    		}
+//				    		itemInputVal.push(itemNum);
+		    		}
+			    });
+			    
+			    if(0 == itemType){//修
+
+					ObjectiveTopic.addOneTopic($(this));
+					ObjectiveTopic.delOneTopic($(this));
+
+			 	}
+			}
+		});
+		
+		
+		
+		$('.quetype input[name=objque]').unbind('click').bind({//题目类型切换
+			click:function (){
+				var optNum = $('.quetype input[name=objque]:checked').data('type');
+				if(optNum == 2){//判断题
+					itemType = 0;
+					$(".layui-layer-btn .tipItem").empty();
+					$(".judgeque").show();
+					$(".rmque").hide();
+				}else{
+					itemType = 0;
+					$(".layui-layer-btn .tipItem").empty();
+					$(".rmque").show();
+					$(".judgeque").hide();
+				}
+				
+				ObjectiveTopic.blurfFun($("#singleChoiceLi input.text1"));
+			}
+			
+		});
+		
+		if(data == undefined){
+			$("#singleChoice .tc_addti").trigger("click");//修
+//			$(".tc_addti").trigger('click');
+		}else{
+			var faGroupDataList = data.faGroupDataList;
+			var faObjectiveTopicItemList = data.faObjectiveTopicItemList;
+			
+			if(data.fsAdditionalQuestions){
+				$('#additionalQuestions').attr("checked",'true');
+			}else{
+				$('#additionalQuestions').removeAttr("checked");
+			}
+			$(".sizeTitle").val(data.fsSizeTitle);
+			$(".bqName").val(data.fsBigTitle);
+			$(".oqRdo").find('option[value="'+data.fiBigQid+'"]').attr("selected",true);
+			
+			$(".quetype input[name='objque']").each(function(){  
+			    if($(this).data("type") == data.topicType){  
+			        $(this).prop( "checked", true );  
+			    }  
+			});
+			var str = '';
+			for(var i = 0 ; i < faGroupDataList.length ; i++){
+				str+='<div>';
+				str+='<label  class="tc_labl">小题题号：</label><input type="text"  class="tc_text2 text1 num" value ="'+faGroupDataList[i].beginNum+'"> —— <input type="text" value="'+faGroupDataList[i].endNum+'" class="tc_text2 text2 num">';
+//				var optNum = $('.quetype input[name=objque]:checked').data('type');
+//				if(optNum == 2){//判断题
+//					str+='<label  class="tc_labl judgeque">选项个数：</label><input type="text" disabled="true" value="'+faGroupDataList[i].optionNum+'" class="tc_text2 text3 num judgeque">';
+//				}else{
+//					str+='<label  class="tc_labl rmque">选项个数：</label><input type="text" value="'+faGroupDataList[i].optionNum+'" class="tc_text2 text3 num rmque">';
+//				}
+				
+				var optNum = $('.quetype input[name=objque]:checked').data('type');
+				str+='<label  class="tc_labl">选项个数：</label>';
+				str += '<input type="text" disabled="true" value="2" class="tc_text2 text3 num judgeque">';
+				str+= '<input type="text" value="' + faGroupDataList[i].optionNum + '" class="tc_text2 text3 num rmque">';
+
+				
+				str+='<label  class="tc_labl">每题分数：</label><input value="'+faGroupDataList[i].score+'" type="text" class="tc_text2 text4 num">';
+				str+='<span class="tc_pimgtk"><img src="/IQCloudMarking/resources/images/sa_sub.png"></span>';	
+				str+='</div>';
+				
+			}
+			$("#singleChoiceLi").append($(str));
+			
+			if(optNum == 2){//判断题
+				$(".judgeque").show();
+				$(".rmque").hide();
+			}else{
+				$(".rmque").show();
+				$(".judgeque").hide();
+			}
+			
+			var strHtml = '';
+			for(var i = 0 ; i < faObjectiveTopicItemList.length ; i++){
+				strHtml += '<li data-id = "'+faObjectiveTopicItemList[i].fsId+'">';
+				strHtml += '<span class="fl mk_pl20 qoTitleName" >'+faObjectiveTopicItemList[i].fiTopicNum+'</span>';
+				strHtml += '<span class="fr mk_right14">';
+				
+				var optNum = $('.quetype input[name=objque]:checked').data('type');
+				if(optNum == 2){//判断题
+					strHtml += '<input type="text" class="tc_text2 textSorce singleItemText1 num" disabled value = "2">';//修
+				}else{
+					strHtml += '<input type="text" class="tc_text2 textSorce singleItemText1 num" value = "'+faObjectiveTopicItemList[i].faSelValueArray.length+'">';//修
+				}
+
+				strHtml += '<label>个选项</label>';
+				strHtml += '<input type="text" class="tc_text2 singleItemText2 textRows num" value="'+faObjectiveTopicItemList[i].ffScore+'">';
+				strHtml += '<label>分</label>';
+				strHtml += '</span></li>';
+			}
+			$("#singleChoiceList").append($(strHtml));
+			
+			ObjectiveTopic.delOneTopic();//调用删除
+			
+			$("#singleChoiceList").find('input').blur(function (){//小题判断是否是异常数据
+				$('#singleChoiceLi').siblings('ul').find('li').each(function(){
+					text3 = parseInt($(this).find('.textSorce').val());//选项个数
+					text4  = parseInt($(this).find('.textRows').val());//分数
+					ObjectiveTopic.itemJudge(null,null,text3,text4);
+					if(itemType != 0){
+						return false;
+					}
+				});
+			})
+			
+			$("#singleChoiceLi input").blur(function(){
+			    $("#singleChoiceLi div").removeClass('itemactive');
+				$(this).parent().addClass('itemactive');
+			    
+			    var text1,text2,text3,text4,eptext;
+			    
+		    	itemInputVal = [];
+		    	
+		    	if(subjectNum.length > 0){
+			    	for(var i = 0; i < subjectNum.length; i++){
+			    		var objnum = new Array();
+			    		objnum = subjectNum[i].qitemInputVal;
+			    		itemInputVal = itemInputVal.concat(objnum);
+			    	}
+			    }
+		    	
+			    $(".clear").prev().children('div').each(function(){
+			    	var itemNum = new Object();
+			    	
+			    	if(!($(this).hasClass('itemactive')) && $(this).children('.text2').val() != "" && $(this).children('.text1').val() != ""){
+			    		itemNum.text1 = parseInt($(this).children('.text1').val());
+			    		itemNum.text2 = parseInt($(this).children('.text2').val());
+			    		ctext3 = parseInt($(this).children('.text3').val());
+			    		ctext4 = parseInt($(this).children('.text4').val());
+			    		ObjectiveTopic.itemJudge(itemNum.text1,itemNum.text2,ctext3,ctext4);
+			    		for(var i = itemNum.text1; i <= itemNum.text2; i++){
+			    			itemInputVal.push(i);
+			    		}
+			    		
+			    	}
+			    });
+			    
+				$(".clear").prev().children('div').removeClass('itemactive');   
+			    
+			    $(this).parent().children('input').each(function(index){
+			    	eptext = $(this).val();
+			    	if(eptext == ''){
+	//	    			$(this).focus();
+			    		return false;
+			    	}else{
+			    		switch (index){
+			    			case 0:
+			    				text1 = parseInt(eptext);
+			    				break;
+		    				case 1:
+			    				text2 = parseInt(eptext);
+			    				break;
+		    				case 2:case 3:
+		    					if($(this).hasClass('rmque') && !$('.rmque').is(':hidden')){//
+									text3 = parseInt(eptext);
+								}else if($(this).hasClass('judgeque') && !$(".judgeque").is(':hidden')){
+									text3 = parseInt(eptext);
+								}
+			    				break;
+		    				case 4:
+			    				text4 = parseInt(eptext);
+			    				ObjectiveTopic.itemJudge(text1,text2,text3,text4);
+			    				break;
+			    		}
+			    	}
+			    });
+			    
+			    if(itemType == 0){
+			    	ObjectiveTopic.blurfFun($(this));
+			    }
+			});
+		}
+		
+
+	}
+	
+}
+
